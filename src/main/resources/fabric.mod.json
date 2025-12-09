@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "night-of-the-dead",
+	"version": "${version}",
+	"name": "Night of the Dead",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/night-of-the-dead/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.bobbacon.NightOfTheDead"
+		],
+		"client": [
+			"net.bobbacon.NightOfTheDeadClient"
+		],
+		"fabric-datagen": [
+			"net.bobbacon.NightOfTheDeadDataGenerator"
+		]
+	},
+	"mixins": [
+		"night-of-the-dead.mixins.json",
+		{
+			"config": "night-of-the-dead.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.1",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

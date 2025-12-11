@@ -1,12 +1,19 @@
 package net.bobbacon;
 
+import net.bobbacon.entity.ModEntities;
 import net.bobbacon.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +33,20 @@ public class NightOfTheDead implements ModInitializer {
 
 		LOGGER.info("Hello Fabric world!");
 		ModItems.init();
+		ModEntities.init();
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,
 				ZombieEntity.createZombieAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0)
 		);
+
+
+		ServerEntityEvents.ENTITY_LOAD.register((Entity entity, ServerWorld world) -> {
+			if (entity instanceof CreeperEntity creeper){
+				NbtCompound nbt = new NbtCompound();
+				nbt.putByte("ExplosionRadius", (byte)8);
+				creeper.readCustomDataFromNbt(nbt);
+			}
+		});
 	}
 }

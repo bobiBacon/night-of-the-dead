@@ -35,10 +35,15 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
     @Override
     protected void onCollision(HitResult hitResult) {
         explode(hitResult.getPos().x,hitResult.getPos().y,hitResult.getPos().z);
-        this.discard();
     }
-    protected void explode(double colx,double coly,double colz){
-        int radius= 4;
+
+    @Override
+    protected float getGravity() {
+        return 0.05f;
+    }
+
+    protected void explode(double colx, double coly, double colz){
+        int radius= 3;
         World world = getWorld();
         if (world.isClient){
             return;
@@ -85,6 +90,11 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
                 }
             }
         }
+        FireDrop potionEntity = new FireDrop((LivingEntity) this.getOwner(),world);
+        potionEntity.setVelocity(this.getOwner(), 0, 0, 0, 1F, 1.0F);
+        world.spawnEntity(potionEntity);
+        this.discard();
+
 
     }
 

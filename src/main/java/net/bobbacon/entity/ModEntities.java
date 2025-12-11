@@ -18,6 +18,9 @@ public class ModEntities {
     public static final EntityType<MolotovEntity> MOLOTOV = register(
             "molotov_entity", FabricEntityTypeBuilder.<MolotovEntity>create( SpawnGroup.MISC, MolotovEntity::new).dimensions(new EntityDimensions(0.5f,0.5f,true))
     );
+    public static final EntityType<FireDrop> FIRE_DROP = register(
+            "fire_drop_entity", FabricEntityTypeBuilder.<FireDrop>create( SpawnGroup.MISC, FireDrop::new).dimensions(new EntityDimensions(0.2f,0.2f,true))
+    );
     private static <T extends Entity> EntityType<T> register(String id, FabricEntityTypeBuilder<T> type) {
         return Registry.register(Registries.ENTITY_TYPE, id, type.build());
     }

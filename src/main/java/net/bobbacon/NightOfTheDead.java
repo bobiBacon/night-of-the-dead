@@ -1,5 +1,6 @@
 package net.bobbacon;
 
+import net.bobbacon.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -24,6 +25,7 @@ public class NightOfTheDead implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+		ModItems.init();
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,

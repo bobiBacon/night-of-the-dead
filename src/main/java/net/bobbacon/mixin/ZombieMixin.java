@@ -34,9 +34,9 @@ public class ZombieMixin extends HostileEntity {
 
     @Inject(at = @At("RETURN"), method = "createZombieAttributes", cancellable = true)
     private static void BoostHp(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
-        DefaultAttributeContainer.Builder builder = cir.getReturnValue();
-        builder.add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0);
-        cir.setReturnValue(builder);
+//        DefaultAttributeContainer.Builder builder = cir.getReturnValue();
+//        builder.add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0);
+//        cir.setReturnValue(builder);
     }
     @Inject(method = "applyAttributeModifiers", at = @At("TAIL"))
     private void onSpawn(float chanceMultiplier, CallbackInfo ci) {

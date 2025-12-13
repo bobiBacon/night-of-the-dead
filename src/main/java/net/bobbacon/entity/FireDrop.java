@@ -12,6 +12,8 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.FireChargeItem;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -87,6 +89,8 @@ public class FireDrop extends ProjectileEntity {
             if (world.isClient){
                 return;
             }
+            world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS,1.0F, world.getRandom().nextFloat() * 0.4F + 1F);
+
             BlockHitResult blockHitResult = (BlockHitResult)hitResult; 
             BlockPos pos =new BlockPos((int) Math.floor(hitResult.getPos().x), (int) Math.floor(hitResult.getPos().y), (int) Math.floor(hitResult.getPos().z));
             BlockPos pos2 = pos;

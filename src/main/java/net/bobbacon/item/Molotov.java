@@ -16,6 +16,8 @@ import net.minecraft.item.Items;
 import net.minecraft.item.ThrowablePotionItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -52,6 +54,7 @@ public class Molotov extends Item {
             itemStack.decrement(1);
             return TypedActionResult.success(itemStack, world.isClient());
         } else if (user.getStackInHand(Hand.OFF_HAND).isOf(Items.FLINT_AND_STEEL)) {
+            world.playSound(null,user.getX(),user.getY(),user.getZ(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS,1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
             if (!world.isClient) {
                 setLit(itemStack, true);
             }

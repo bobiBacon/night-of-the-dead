@@ -9,6 +9,9 @@ import net.minecraft.entity.FlyingItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -101,9 +104,18 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
             int angle = (int) (rand.nextFloat()*360);
             fireDrop.setVelocity(Math.cos(Math.toRadians(angle))+(0.5F*this.getVelocity().getX()), 1.5, Math.sin(Math.toRadians(angle))+(0.5F*this.getVelocity().getZ()), 0.4F*rand.nextFloat()+0.3f, 2.0F);
             world.spawnEntity(fireDrop);
+
+            world.addParticle(ParticleTypes.ASH,this.getX(),this.getY(),this.getZ(),0.3f*this.getVelocity().getX()+(rand.nextFloat()-0.5f)*2f,3,0.3f*this.getVelocity().getZ()+(rand.nextFloat()-0.5f)*2f);
+
         }
 
-        this.discard();
+      world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS,0.5F, world.getRandom().nextFloat() * 0.4F + 1.2F);
+      world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS,1.2F, world.getRandom().nextFloat() * 0.4F + 1.2F);
+      world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS,1.2F, world.getRandom().nextFloat() * 0.4F + 0.8F);
+
+
+
+      this.discard();
 
 
     }

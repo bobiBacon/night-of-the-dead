@@ -7,7 +7,7 @@ import net.minecraft.registry.Registries;
 
 public class ModItems {
     private static final RegistryHelper<Item> registryHelper=new RegistryHelper<>(Registries.ITEM, NightOfTheDead.MOD_ID);
-    public static final Item MOLOTOV= registryHelper.register("molotov_cocktail",new Molotov(new Item.Settings()));
+    public static final Item MOLOTOV= registryHelper.register("molotov_cocktail",new Molotov(new Item.Settings().maxCount(1)));
 
     public static void init(){
 

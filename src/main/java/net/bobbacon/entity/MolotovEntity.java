@@ -42,8 +42,11 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
     protected float getGravity() {
         return 0.05f;
     }
+    public void explode(){
+        explode(this.getX(),this.getY(),this.getZ());
+    }
 
-    protected void explode(double colx, double coly, double colz){
+  public void explode(double colx, double coly, double colz){
         int radius= 3;
         World world = getWorld();
         if (world.isClient){

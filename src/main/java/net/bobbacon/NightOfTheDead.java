@@ -10,7 +10,9 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.entity.mob.CreeperEntity;
+import net.minecraft.entity.mob.StrayEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -38,6 +40,26 @@ public class NightOfTheDead implements ModInitializer {
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,
 				ZombieEntity.createZombieAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0)
+		);
+		FabricDefaultAttributeRegistry.register(
+				EntityType.HUSK,
+				ZombieEntity.createZombieAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0)
+		);
+		FabricDefaultAttributeRegistry.register(
+				EntityType.DROWNED,
+				ZombieEntity.createZombieAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0)
+		);
+		FabricDefaultAttributeRegistry.register(
+				EntityType.ZOMBIE_VILLAGER,
+				ZombieEntity.createZombieAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0)
+		);
+		FabricDefaultAttributeRegistry.register(
+				EntityType.SKELETON,
+				AbstractSkeletonEntity.createAbstractSkeletonAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0)
+		);
+		FabricDefaultAttributeRegistry.register(
+				EntityType.STRAY,
+				StrayEntity.createAbstractSkeletonAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0)
 		);
 
 

@@ -9,8 +9,7 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
@@ -32,24 +31,33 @@ public class ZombieMixin extends HostileEntity {
         super(entityType, world);
     }
 
-    @Inject(at = @At("RETURN"), method = "createZombieAttributes", cancellable = true)
-    private static void BoostHp(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
-//        DefaultAttributeContainer.Builder builder = cir.getReturnValue();
-//        builder.add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0);
-//        cir.setReturnValue(builder);
-    }
     @Inject(method = "applyAttributeModifiers", at = @At("TAIL"))
     private void onSpawn(float chanceMultiplier, CallbackInfo ci) {
-        this.setHealth(50);
+        ZombieEntity self = (ZombieEntity) (Object) this;
+        if (self instanceof ZombieVillagerEntity){
+            this.setHealth(40);
+
+        }else {
+            this.setHealth(50);
+
+        }
     }
 
 
     @ModifyVariable(method = "damage", at = @At("HEAD"), argsOnly = true)
     private float BoostDamage(float amount, DamageSource source){
+        ZombieEntity self = (ZombieEntity) (Object) this;
         //is client check
         float base = amount;
-        if (source.isIn(DamageTypeTags.IS_FIRE) || source.isIn(DamageTypeTags.IS_LIGHTNING) || source.isIn(DamageTypeTags.IS_EXPLOSION)){
+        if (source.isIn(DamageTypeTags.IS_LIGHTNING) || source.isIn(DamageTypeTags.IS_EXPLOSION)){
             amount = amount + base*4;
+        }
+        if (source.isIn(DamageTypeTags.IS_FIRE) && !(self instanceof HuskEntity)){
+            if (self instanceof DrownedEntity){
+                amount = amount + base*1.5f;
+            } else {
+                amount = amount + base * 4;
+            }
         }
         if (source.getAttacker()!=null && source.getAttacker() instanceof LivingEntity){
             ItemStack stack = ((LivingEntity) Objects.requireNonNull(source.getAttacker())).getStackInHand(Hand.MAIN_HAND);

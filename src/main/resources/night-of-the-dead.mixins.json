@@ -5,6 +5,7 @@
   "mixins": [
     "ExampleMixin",
     "ItemEntityMixin",
+    "LivingEntityMixin",
     "ZombieMixin"
   ],
   "injectors": {

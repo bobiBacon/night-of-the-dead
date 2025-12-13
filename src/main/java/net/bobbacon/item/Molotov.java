@@ -72,13 +72,16 @@ public class Molotov extends Item {
             int time = getRemainingTime(stack);
             time--;
             if (time<=0){
-                MolotovEntity molotovEntity = new MolotovEntity((LivingEntity) entity, world);
-                molotovEntity.setItem(stack);
-                molotovEntity.setPos(entity.getX(),entity.getY(),entity.getZ());
-                world.spawnEntity(molotovEntity);
-                molotovEntity.explode();
-                entity.setOnFireFor(15);
-                stack.decrement(1);
+                if (!world.isClient){
+                    stack.decrement(1);
+                    MolotovEntity molotovEntity = new MolotovEntity((LivingEntity) entity, world);
+                    molotovEntity.setItem(stack);
+                    molotovEntity.setPos(entity.getX(),entity.getY(),entity.getZ());
+                    world.spawnEntity(molotovEntity);
+                    molotovEntity.explode();
+                    entity.setOnFireFor(15);
+                }
+
             } else {
                 setRemainingTime(stack,time);
             }

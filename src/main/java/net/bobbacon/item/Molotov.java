@@ -1,5 +1,6 @@
 package net.bobbacon.item;
 
+import net.bobbacon.entity.FireDrop;
 import net.bobbacon.entity.ModEntities;
 import net.bobbacon.entity.MolotovEntity;
 import net.minecraft.block.Block;
@@ -27,6 +28,9 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 
 public class Molotov extends Item {
+    private static final String Lit_KEY = "lit";
+    private static final String TIME_KEY = "REMAINING_TIME_KEY";
+
     public Molotov(Settings settings) {
         super(settings);
     }
@@ -45,7 +49,7 @@ public class Molotov extends Item {
         if (!user.getAbilities().creativeMode) {
             itemStack.decrement(1);
         }
-
+        user.getItemCooldownManager().set(this, 20);
         return TypedActionResult.success(itemStack, world.isClient());
     }
 

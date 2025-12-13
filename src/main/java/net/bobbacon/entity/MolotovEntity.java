@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity {
 
@@ -90,9 +91,15 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
                 }
             }
         }
-        FireDrop potionEntity = new FireDrop((LivingEntity) this.getOwner(),world);
-        potionEntity.setVelocity(this.getOwner(), 0, 0, 0, 1F, 1.0F);
-        world.spawnEntity(potionEntity);
+        int count = radius*radius*2;
+        for (int i = 0; i <count; i++) {
+            FireDrop fireDrop = new FireDrop((LivingEntity) this.getOwner(),world,colx,coly+1,colz);
+            Random rand = new Random();
+            int angle = (int) (rand.nextFloat()*360);
+            fireDrop.setVelocity(Math.cos(Math.toRadians(angle))+(0.5F*this.getVelocity().getX()), 1.5, Math.sin(Math.toRadians(angle))+(0.5F*this.getVelocity().getZ()), 0.4F*rand.nextFloat()+0.3f, 2.0F);
+            world.spawnEntity(fireDrop);
+        }
+
         this.discard();
 
 

@@ -1,7 +1,12 @@
 package net.bobbacon;
 
+import net.bobbacon.block.ModBlocks;
 import net.bobbacon.entity.ModEntities;
+import net.bobbacon.entity.block_entity.ModBE;
 import net.bobbacon.item.ModItems;
+import net.bobbacon.recipe.AlcoholBrewingRecipe;
+import net.bobbacon.recipe.AlcoholBrewingRecipeSerializer;
+import net.bobbacon.recipe.ModRecipes;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -15,7 +20,10 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.StrayEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +44,9 @@ public class NightOfTheDead implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
 		ModItems.init();
 		ModEntities.init();
+		ModBlocks.init();
+		ModBE.init();
+		ModRecipes.init();
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,
@@ -70,5 +81,7 @@ public class NightOfTheDead implements ModInitializer {
 				creeper.readCustomDataFromNbt(nbt);
 			}
 		});
+
+
 	}
 }

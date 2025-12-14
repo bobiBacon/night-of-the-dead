@@ -1,0 +1,51 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "block/barrel_top",
+		"1": "block/barrel_side",
+		"3": "block/barrel_bottom",
+		"4": "night-of-the-dead:block/brewing_barrel",
+		"particle": "block/barrel_top"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 0, 16, 16], "rotation": 90, "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#3"},
+				"west": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#1"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"down": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#1"}
+			}
+		},
+		{
+			"from": [11, 6, -1],
+			"to": [13, 8, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [11, 6, -1]},
+			"faces": {
+				"north": {"uv": [4, 4, 6, 6], "texture": "#4"},
+				"east": {"uv": [4, 4, 5, 6], "texture": "#4"},
+				"south": {"uv": [4, 4, 6, 6], "texture": "#4"},
+				"west": {"uv": [4, 4, 6, 5], "rotation": 90, "texture": "#4"},
+				"up": {"uv": [4, 5, 6, 6], "texture": "#4"},
+				"down": {"uv": [4, 5, 6, 6], "texture": "#4"}
+			}
+		},
+		{
+			"from": [11, 5, -3],
+			"to": [13, 8, -1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [11, 5, -3]},
+			"faces": {
+				"north": {"uv": [0, 0, 2, 3], "texture": "#4"},
+				"east": {"uv": [2, 0, 4, 3], "texture": "#4"},
+				"south": {"uv": [0, 3, 2, 6], "texture": "#4"},
+				"west": {"uv": [2, 3, 4, 6], "texture": "#4"},
+				"up": {"uv": [6, 2, 4, 0], "texture": "#4"},
+				"down": {"uv": [6, 2, 4, 4], "texture": "#4"}
+			}
+		}
+	]
+}

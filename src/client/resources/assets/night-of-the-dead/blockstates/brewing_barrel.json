@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "night-of-the-dead:block/brewing_barrel", "uvlock": true },
+    "facing=east":  { "model": "night-of-the-dead:block/brewing_barrel", "y":  90, "uvlock": true },
+    "facing=south": { "model": "night-of-the-dead:block/brewing_barrel", "y": 180, "uvlock": true },
+    "facing=west":  { "model": "night-of-the-dead:block/brewing_barrel", "y": 270, "uvlock": true }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type" : "night-of-the-dead:alcohol_brewing",
+  "input" : {
+    "item": "minecraft:wheat"
+  },
+  "outputItem": "night-of-the-dead:beer",
+  "outputAmount": "1"
+}

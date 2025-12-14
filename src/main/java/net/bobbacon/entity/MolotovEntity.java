@@ -20,13 +20,17 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity {
+    public int explosionRadius;
 
-    public MolotovEntity(double d, double e, double f, World world) {
+    public MolotovEntity(double d, double e, double f, World world, int explosionRadius) {
         super(ModEntities.MOLOTOV, d, e, f, world);
+        this.explosionRadius =explosionRadius;
+
     }
 
-    public MolotovEntity(LivingEntity livingEntity, World world) {
+    public MolotovEntity(LivingEntity livingEntity, World world, int explosionRadius) {
         super(ModEntities.MOLOTOV, livingEntity, world);
+        this.explosionRadius =explosionRadius;
     }
 
     public MolotovEntity(EntityType<? extends MolotovEntity> entityType, World world) {
@@ -50,7 +54,6 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
     }
 
   public void explode(double colx, double coly, double colz){
-        int radius= 3;
         World world = getWorld();
         if (world.isClient){
             return;
@@ -61,10 +64,10 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
         int z= (int) Math.round(colz);
 
         ArrayList<BlockPos> blocks= new ArrayList<>();
-        for (float i = 1.5f; i <radius; i++) {
-            for (float j = 1.5f; j < radius; j++) {
+        for (float i = 1.5f; i <explosionRadius; i++) {
+            for (float j = 1.5f; j < explosionRadius; j++) {
 
-                if (i*i+j*j <= radius*radius){
+                if (i*i+j*j <= explosionRadius*explosionRadius){
                     int x1 = (int) (x+Math.floor(i));
                     int y1 = (int) (z+Math.floor(j));
                     int x2 = (int) (x-Math.floor(i));
@@ -76,7 +79,7 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
                 }
             }
         }
-        for (int i=-radius+1; i<radius; i++){
+        for (int i=-explosionRadius+1; i<explosionRadius; i++){
             blocks.add(new BlockPos(x +i, y, z));
             blocks.add(new BlockPos(x, y, z +i));
         }
@@ -97,7 +100,7 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
                 }
             }
         }
-        int count = radius*radius*2;
+        int count = explosionRadius*explosionRadius*2;
         for (int i = 0; i <count; i++) {
             FireDrop fireDrop = new FireDrop((LivingEntity) this.getOwner(),world,colx,coly+1,colz);
             Random rand = new Random();

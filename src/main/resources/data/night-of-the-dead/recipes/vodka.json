@@ -1,0 +1,8 @@
+{
+  "type" : "night-of-the-dead:alcohol_brewing",
+  "input" : {
+    "item": "minecraft:potato"
+  },
+  "outputItem": "night-of-the-dead:vodka",
+  "outputAmount": "1"
+}

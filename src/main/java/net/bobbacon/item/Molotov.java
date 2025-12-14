@@ -34,9 +34,14 @@ public class Molotov extends Item {
     private static final String Lit_KEY = "lit";
     private static final String TIME_KEY = "REMAINING_TIME_KEY";
     private static final int DefaultTime = 160;
+    public int explosionRadius = 3;
 
     public Molotov(Settings settings) {
         super(settings);
+    }
+    public Molotov(Settings settings, int explosionRadius) {
+        this(settings);
+        this.explosionRadius = explosionRadius;
     }
 
     @Override
@@ -44,9 +49,9 @@ public class Molotov extends Item {
         ItemStack itemStack = user.getStackInHand(hand);
         if (isLit(itemStack)) {
             if (!world.isClient) {
-                MolotovEntity molotovEntity = new MolotovEntity(user, world);
+                MolotovEntity molotovEntity = new MolotovEntity(user, world,explosionRadius);
                 molotovEntity.setItem(itemStack);
-                molotovEntity.setVelocity(user, user.getPitch(), user.getYaw(), -20.0F, 1F, 1.0F);
+                molotovEntity.setVelocity(user, user.getPitch(), user.getYaw(), -20.0F, explosionRadius/2f-0.5f, 1.0F);
                 world.spawnEntity(molotovEntity);
             }
 
@@ -98,10 +103,10 @@ public class Molotov extends Item {
     private static MolotovEntity getMolotovEntity(ItemStack stack, World world, Entity entity) {
         MolotovEntity molotovEntity;
         if (entity instanceof ItemEntity itemEntity){
-            molotovEntity = new MolotovEntity(itemEntity.getX(),itemEntity.getY(),itemEntity.getZ(), world);
+            molotovEntity = new MolotovEntity(itemEntity.getX(),itemEntity.getY(),itemEntity.getZ(), world,((Molotov)stack.getItem()).explosionRadius);
         }
         else {
-            molotovEntity = new MolotovEntity((LivingEntity) entity, world);
+            molotovEntity = new MolotovEntity((LivingEntity) entity, world,((Molotov)stack.getItem()).explosionRadius);
         }
         molotovEntity.setItem(stack);
         molotovEntity.setPos(entity.getX(), entity.getY(), entity.getZ());

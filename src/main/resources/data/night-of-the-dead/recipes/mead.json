@@ -1,0 +1,8 @@
+{
+  "type" : "night-of-the-dead:alcohol_brewing",
+  "input" : {
+    "item": "minecraft:honey_bottle"
+  },
+  "outputItem": "night-of-the-dead:mead",
+  "outputAmount": "1"
+}

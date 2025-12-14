@@ -17,5 +17,11 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 				(stack, world, entity, seed) ->
 						stack.getOrCreateNbt().getBoolean("lit") ? 1.0F : 0.0F
 		);
+		ModelPredicateProviderRegistry.register(
+				ModItems.FIERY_MOLOTOV,
+				new Identifier("lit"),
+				(stack, world, entity, seed) ->
+						stack.getOrCreateNbt().getBoolean("lit") ? 1.0F : 0.0F
+		);
 	}
 }

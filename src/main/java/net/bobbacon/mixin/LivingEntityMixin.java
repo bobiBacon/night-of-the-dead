@@ -14,6 +14,7 @@ import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,6 +26,8 @@ import java.util.Objects;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin extends Entity {
+    @Shadow private @Nullable LivingEntity attacker;
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -42,14 +45,17 @@ public class LivingEntityMixin extends Entity {
         LivingEntity self = (LivingEntity) (Object) this;
         if (self instanceof AbstractSkeletonEntity){
             float base = amount;
-            ItemStack stack = ((LivingEntity) Objects.requireNonNull(source.getAttacker())).getStackInHand(Hand.MAIN_HAND);
-            if (stack.getItem()  instanceof ToolItem item){
-                if (item.getMaterial() == ToolMaterials.GOLD){
-                    amount = amount + base;
+            if (source.getAttacker() instanceof LivingEntity attacker){
+                ItemStack stack = attacker.getStackInHand(Hand.MAIN_HAND);
+                if (stack.getItem()  instanceof ToolItem item){
+                    if (item.getMaterial() == ToolMaterials.GOLD){
+                        amount = amount + base;
+                    }
+                    if (stack.getItem() instanceof AxeItem || stack.getItem() instanceof ShovelItem){
+                        amount = amount + base;
+                    }
                 }
-                if (stack.getItem() instanceof AxeItem || stack.getItem() instanceof ShovelItem){
-                    amount = amount + base;
-                }
+
             }
             if (source.isIn(DamageTypeTags.IS_LIGHTNING) || source.isIn(DamageTypeTags.IS_EXPLOSION)){
                 amount = amount + base*4;
@@ -57,6 +63,7 @@ public class LivingEntityMixin extends Entity {
             if (source.isIn(DamageTypeTags.IS_FIRE)){
                 amount = amount + base;
             }
+
         }
         return amount;
     }

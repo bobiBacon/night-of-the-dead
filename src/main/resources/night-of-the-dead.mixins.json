@@ -3,6 +3,7 @@
   "package": "net.bobbacon.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MobEntityMixin",
     "ExampleMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",

@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Molotov extends Item {
     private static final String Lit_KEY = "lit";
@@ -144,5 +145,23 @@ public class Molotov extends Item {
         return !oldStack.getOrCreateNbt().getBoolean(Lit_KEY);
     }
 
+    @Override
+    public void onCraft(ItemStack stack, World world, PlayerEntity player) {
+        super.onCraft(stack, world, player);
+        if (world.isClient){
+            return;
+        }
+        if (world.random.nextFloat()*5f>4f){
+            world.createExplosion(null,player.getX(),player.getY(),player.getZ(),1,true, World.ExplosionSourceType.BLOCK);
+            for (int i = 0; i <6; i++) {
+                FireDrop fireDrop = new FireDrop( null, world, player.getX(),player.getY()+1.0,player.getZ());
+
+                int angle = (int) (world.random.nextFloat() * 2 * Math.PI);
+                fireDrop.setVelocity(Math.cos(angle), 1.5, Math.sin(angle), 0.4F * world.random.nextFloat() + 0.3f, 2.0F);
+                world.spawnEntity(fireDrop);
+            }
+            stack.decrement(1);
+        }
+    }
 }
 

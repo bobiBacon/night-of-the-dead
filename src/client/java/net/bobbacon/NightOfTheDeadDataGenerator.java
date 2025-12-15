@@ -4,12 +4,13 @@ import net.bobbacon.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.Model;
+import net.minecraft.data.client.Models;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
@@ -20,7 +21,6 @@ import net.minecraft.registry.*;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -31,10 +31,11 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(MyRecipeGenerator::new);
 		pack.addProvider(MyTagGenerator::new);
 		pack.addProvider(ModModelGenerator::new);
+		pack.addProvider(ModEnglishLangProvider::new);
 
 	}
 	private static class MyTagGenerator extends FabricTagProvider<Item> {
-		public static final TagKey<Item> ALCOHOL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "alcohol"));
+		public static final TagKey<Item> STRONG_ALCOHOL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "strong_alcohol"));
 
 		public MyTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, RegistryKeys.ITEM, registriesFuture);
@@ -42,8 +43,10 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-			getOrCreateTagBuilder(ALCOHOL)
-					.add(ModItems.VODKA);
+			getOrCreateTagBuilder(STRONG_ALCOHOL)
+					.add(ModItems.VODKA)
+					.add(ModItems.RUM)
+					.add(ModItems.WHISKEY);
 		}
 
 	}
@@ -62,7 +65,7 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 							FabricRecipeProvider.conditionsFromItem(Items.GHAST_TEAR))
 					.offerTo(consumer);
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.PURE_ALCOHOL)
-					.input(MyTagGenerator.ALCOHOL).input(Items.BLAZE_POWDER,4)
+					.input(MyTagGenerator.STRONG_ALCOHOL).input(Items.BLAZE_POWDER,4)
 					.criterion(FabricRecipeProvider.hasItem(Items.BLAZE_POWDER),
 							FabricRecipeProvider.conditionsFromItem(Items.BLAZE_POWDER))
 					.offerTo(consumer);
@@ -76,21 +79,44 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 
 	}
 	public static class ModModelGenerator extends FabricModelProvider {
-		public static final Model BREWING_BARREL = new Model(
-				Optional.of(Identifier.of(NightOfTheDead.MOD_ID, "block/brewing")),
-				Optional.empty());
 		public ModModelGenerator(FabricDataOutput output) {
 			super(output);
 		}
 
 		@Override
 		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-//			BlockStateModelGenerator.
 		}
 
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
+			itemModelGenerator.register(ModItems.VODKA, Models.GENERATED);
+			itemModelGenerator.register(ModItems.RUM, Models.GENERATED);
+			itemModelGenerator.register(ModItems.BEER, Models.GENERATED);
+			itemModelGenerator.register(ModItems.WHISKEY, Models.GENERATED);
+			itemModelGenerator.register(ModItems.MEAD, Models.GENERATED);
+			itemModelGenerator.register(ModItems.VINEGAR, Models.GENERATED);
+			itemModelGenerator.register(ModItems.PURE_ALCOHOL, Models.GENERATED);
 
+
+
+		}
+	}
+	private static class ModEnglishLangProvider extends FabricLanguageProvider {
+		private ModEnglishLangProvider(FabricDataOutput dataGenerator, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+			super(dataGenerator, "en_us");
+		}
+		@Override
+		public void generateTranslations(TranslationBuilder translationBuilder) {
+			translationBuilder.add(ModItems.WHISKEY,"Whiskey");
+			translationBuilder.add(ModItems.VODKA,"Vodka");
+			translationBuilder.add(ModItems.VINEGAR,"Vinegar");
+			translationBuilder.add(ModItems.MOLOTOV,"Molotov Cocktail");
+			translationBuilder.add(ModItems.FIERY_MOLOTOV,"Fiery Cocktail");
+			translationBuilder.add(ModItems.BREWING_BARREL,"Brewing Barrel");
+			translationBuilder.add(ModItems.RUM,"Rum");
+			translationBuilder.add(ModItems.PURE_ALCOHOL,"Pure Alcohol");
+			translationBuilder.add(ModItems.MEAD,"Mead");
+			translationBuilder.add(ModItems.BEER,"Beer");
 		}
 	}
 

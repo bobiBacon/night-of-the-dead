@@ -60,4 +60,5 @@ public class BrewingBarrel extends BlockWithEntity {
         }
         return ActionResult.PASS;
     }
+
 }

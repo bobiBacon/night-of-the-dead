@@ -23,6 +23,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Optional;
+
 public class BrewingBarrelBE extends BlockEntity{
     private DefaultedList<ItemStack> items= DefaultedList.ofSize(1,ItemStack.EMPTY);
     private final static String HAS_WATER_KEY = "has_water";
@@ -37,13 +39,15 @@ public class BrewingBarrelBE extends BlockEntity{
     protected int productAmount = 0;
     protected boolean isExpired = false;
 
-    private final RecipeManager.MatchGetter<Inventory, AlcoholBrewingRecipe> matchGetter = RecipeManager.createCachedMatchGetter(ModRecipes.alcoholRecipe);
+//    private final RecipeManager.MatchGetter<Inventory, AlcoholBrewingRecipe> matchGetter = RecipeManager.createCachedMatchGetter(ModRecipes.alcoholRecipe);
 
 
 
     public BrewingBarrelBE( BlockPos pos, BlockState state) {
         super(ModBE.BREWING_BARREL_BE, pos, state);
+
     }
+
 
     @Override
     public void readNbt(NbtCompound nbt) {
@@ -94,8 +98,7 @@ public class BrewingBarrelBE extends BlockEntity{
     //not to be called on client
     protected boolean isBrewing(){
 //        RecipeManager matchGetter = world.getServer().getRecipeManager();
-        NightOfTheDead.LOGGER.info(String.valueOf(items.get(0).getCount()));
-        return hasEnoughWater() && hasEnoughWarts() && matchGetter.getFirstMatch(new SimpleInventory(items.get(0)),world).isPresent()&&items.get(0).getCount()>=64;
+        return hasEnoughWater() && hasEnoughWarts() && getRecipeFor(items.get(0)).isPresent()&&items.get(0).getCount()>=64;
     }
     protected void reset(){
         time=0;
@@ -131,7 +134,9 @@ public class BrewingBarrelBE extends BlockEntity{
                 markDirty();
 
                 return ActionResult.SUCCESS;
-            } else if (matchGetter.getFirstMatch(new SimpleInventory(stack),world).isPresent()&&items.get(0).getCount()<64) {
+            }
+
+            if (getRecipeFor(stack).isPresent()&&items.get(0).getCount()<64) {
                 if (ItemStack.canCombine(stack,items.get(0))){
                     ItemStack stack1= items.get(0);
                     stack1.increment(1);
@@ -148,15 +153,22 @@ public class BrewingBarrelBE extends BlockEntity{
 
                 return ActionResult.SUCCESS;
             }
+            return ActionResult.CONSUME;
         }
         return ActionResult.PASS;
+    }
+    protected Optional<AlcoholBrewingRecipe> getRecipeFor(ItemStack stack){
+        if (world == null || world.isClient){
+            return Optional.empty();
+        }
+        return world.getServer().getRecipeManager().getFirstMatch(ModRecipes.alcoholRecipe,new SimpleInventory(stack),world);
     }
     protected ItemStack getProduct(){
         if (this.world.isClient){
             return ItemStack.EMPTY;
         }
         if (time>=brewingTime&&time<=expirationTime){
-            return matchGetter.getFirstMatch(new SimpleInventory(items.get(0)),world).get().getOutput();
+            return getRecipeFor(items.get(0)).get().getOutput().copy();
         }else if(this.isExpired){
             return ModItems.VINEGAR.getDefaultStack();
         }

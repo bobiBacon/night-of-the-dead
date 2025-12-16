@@ -3,6 +3,7 @@ package net.bobbacon;
 import net.bobbacon.item.ModItems;
 import net.bobbacon.render.entity.EntityRenderers;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.Blocks;
@@ -29,20 +30,20 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 				(stack, world, entity, seed) ->
 						stack.getOrCreateNbt().getBoolean("lit") ? 1.0F : 0.0F
 		);
-		ColorProviderRegistry.BLOCK.register(
-				(state, world, pos, tintIndex) -> {
-
-					if (NightOfTheDeadClientManager.isNightOfTheDead) {
-						return 0xFF3300; // rouge sang
-					}
-					NightOfTheDead.LOGGER.warn("this is not working");
-					return BiomeColors.getWaterColor(world, pos);
-
-				},
-				Blocks.WATER,
-				Blocks.BUBBLE_COLUMN,
-				Blocks.WATER_CAULDRON
-		);
+//		ColorProviderRegistry.BLOCK.register(
+//				(state, world, pos, tintIndex) -> {
+//
+//					if (NightOfTheDeadClientManager.isNightOfTheDead) {
+//						return 0xFF3300; // rouge sang
+//					}
+//					NightOfTheDead.LOGGER.warn("this is not working");
+//					return BiomeColors.getWaterColor(world, pos);
+//
+//				},
+//				Blocks.WATER,
+//				Blocks.BUBBLE_COLUMN,
+//				Blocks.WATER_CAULDRON
+//		);
 		ClientPlayNetworking.registerGlobalReceiver(
 				NightOfTheDead.NIGHT_OF_THE_DEAD_PACKET,
 				(client, handler, buf, responseSender) -> {
@@ -53,5 +54,6 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 					});
 				}
 		);
+
 	}
 }

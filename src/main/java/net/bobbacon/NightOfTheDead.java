@@ -7,8 +7,12 @@ import net.bobbacon.item.ModItems;
 import net.bobbacon.recipe.ModRecipes;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.Entity;
@@ -23,7 +27,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +116,23 @@ public class NightOfTheDead implements ModInitializer {
 				creeper.readCustomDataFromNbt(nbt);
 			}
 		});
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server)->{
+			ServerPlayerEntity player = handler.getPlayer();
+			ServerWorld world = player.getServerWorld();
 
-
+			PacketByteBuf buf = PacketByteBufs.create();
+			buf.writeBoolean(isNightOfTheDead(world));
+			ServerPlayNetworking.send(player, NIGHT_OF_THE_DEAD_PACKET, buf);
+		});
+		EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, sleepingPos, vanillaResult)->{
+			World world = player.getWorld();
+			if (world.isClient){
+				return ActionResult.FAIL;
+			}
+			if (isNightOfTheDead((ServerWorld) world)||(ShouldPlayANightOfTheDead((ServerWorld)world)&&world.getTimeOfDay()<13000)){
+				return ActionResult.FAIL;
+			}
+            return ActionResult.PASS;
+        });
 	}
 }

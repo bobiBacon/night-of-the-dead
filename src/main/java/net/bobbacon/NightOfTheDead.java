@@ -4,13 +4,12 @@ import net.bobbacon.block.ModBlocks;
 import net.bobbacon.entity.ModEntities;
 import net.bobbacon.entity.block_entity.ModBE;
 import net.bobbacon.item.ModItems;
-import net.bobbacon.recipe.AlcoholBrewingRecipe;
-import net.bobbacon.recipe.AlcoholBrewingRecipeSerializer;
 import net.bobbacon.recipe.ModRecipes;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -19,9 +18,10 @@ import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.StrayEntity;
 import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -34,6 +34,34 @@ public class NightOfTheDead implements ModInitializer {
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	public static final Identifier NIGHT_OF_THE_DEAD_PACKET= Identifier.of(MOD_ID,"night_of_the_dead_packet");
+
+	public static void setShouldPlayANightOfTheDead(boolean shouldPlayANightOfTheDead, ServerWorld world) {
+		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
+		data.setShouldPlayANightOfTheDead(shouldPlayANightOfTheDead);
+	}
+
+	public static void setNightOfTheDead(boolean nightOfTheDead, ServerWorld world) {
+		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
+		data.setNightOfTheDead(nightOfTheDead);
+		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeBoolean(data.isNightOfTheDead());
+		for (ServerPlayerEntity player : world.getPlayers()){
+			ServerPlayNetworking.send(player, NIGHT_OF_THE_DEAD_PACKET, buf);
+		}
+	}
+
+	public static boolean ShouldPlayANightOfTheDead( ServerWorld world) {
+		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
+		return data.ShouldPlayANightOfTheDead();
+	}
+
+	public static boolean isNightOfTheDead( ServerWorld world) {
+		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
+		return data.isNightOfTheDead();
+	}
+
 
 	@Override
 	public void onInitialize() {

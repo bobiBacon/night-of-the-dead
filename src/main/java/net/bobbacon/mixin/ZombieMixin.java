@@ -1,6 +1,7 @@
 
 package net.bobbacon.mixin;
 
+import net.bobbacon.NightOfTheDead;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
@@ -9,11 +10,16 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,6 +46,34 @@ public class ZombieMixin extends HostileEntity {
         }else {
             this.setHealth(50);
 
+        }
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void huskRegen(CallbackInfo ci){
+        if (getWorld().isClient){
+            return;
+        }
+        ZombieEntity self = (ZombieEntity) (Object) this;
+
+        if (self instanceof HuskEntity huskEntity){
+            if (!isAlive()) return;
+            if (getHealth() >= getMaxHealth()) return;
+            if (huskEntity.supportingBlockPos.isEmpty()){
+                return;
+            }
+            if (getWorld().getBlockState(huskEntity.supportingBlockPos.get()).isIn(BlockTags.SAND)){
+
+                if (self.age % 15 == 0) {
+                    double x = self.getX()+ getWorld().random.nextFloat()*2-1;
+                    double y = self.getY();
+                    double z = self.getZ()+ getWorld().random.nextFloat()*2-1;
+                    ServerWorld server= (ServerWorld) getWorld();
+                    server.spawnParticles(ParticleTypes.ASH,x,y+0.1,z,1,0.5,0.5,0.5,0.5);
+                    NightOfTheDead.LOGGER.info("heal");
+                    heal(1.0F);
+                }
+            }
         }
     }
 

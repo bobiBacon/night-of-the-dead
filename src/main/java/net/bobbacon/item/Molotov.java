@@ -1,35 +1,20 @@
 package net.bobbacon.item;
 
 import net.bobbacon.entity.FireDrop;
-import net.bobbacon.entity.ModEntities;
 import net.bobbacon.entity.MolotovEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.thrown.PotionEntity;
-import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.ThrowablePotionItem;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 public class Molotov extends Item {
     private static final String Lit_KEY = "lit";
@@ -73,7 +58,7 @@ public class Molotov extends Item {
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, world, entity, slot, selected);
-        if (world.isClient){
+        if (world.isClient()){
             return;
         }
         if (isLit(stack)){
@@ -99,15 +84,21 @@ public class Molotov extends Item {
             }
         }
     }
+    public static Molotov getMolotovFrom(ItemStack stack){
+        if (stack.getItem() instanceof Molotov molotov){
+            return molotov;
+        }
+        return (Molotov) ModItems.MOLOTOV;
+    }
 
     @NotNull
     private static MolotovEntity getMolotovEntity(ItemStack stack, World world, Entity entity) {
         MolotovEntity molotovEntity;
         if (entity instanceof ItemEntity itemEntity){
-            molotovEntity = new MolotovEntity(itemEntity.getX(),itemEntity.getY(),itemEntity.getZ(), world,((Molotov)stack.getItem()).explosionRadius);
+            molotovEntity = new MolotovEntity(itemEntity.getX(),itemEntity.getY(),itemEntity.getZ(), world, getMolotovFrom(stack).explosionRadius);
         }
         else {
-            molotovEntity = new MolotovEntity((LivingEntity) entity, world,((Molotov)stack.getItem()).explosionRadius);
+            molotovEntity = new MolotovEntity((LivingEntity) entity, world, getMolotovFrom(stack).explosionRadius);
         }
         molotovEntity.setItem(stack);
         molotovEntity.setPos(entity.getX(), entity.getY(), entity.getZ());

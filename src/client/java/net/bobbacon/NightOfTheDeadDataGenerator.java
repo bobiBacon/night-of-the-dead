@@ -18,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
@@ -73,6 +74,11 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.input('g', Items.GLOWSTONE_DUST).input('p',Items.PAPER).input('a',ModItems.PURE_ALCOHOL)
 					.criterion(FabricRecipeProvider.hasItem(ModItems.PURE_ALCOHOL),
 							FabricRecipeProvider.conditionsFromItem(ModItems.PURE_ALCOHOL))
+					.offerTo(consumer);
+			ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, ModItems.BREWING_BARREL).pattern("psp").pattern("pcp").pattern("psp")
+					.input('s',ItemTags.WOODEN_SLABS).input('p', ItemTags.PLANKS).input('c',Items.COPPER_INGOT)
+					.criterion(FabricRecipeProvider.hasItem(Items.COPPER_INGOT),
+							FabricRecipeProvider.conditionsFromItem(Items.COPPER_INGOT))
 					.offerTo(consumer);
 		}
 

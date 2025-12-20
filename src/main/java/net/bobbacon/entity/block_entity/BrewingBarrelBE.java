@@ -32,8 +32,8 @@ public class BrewingBarrelBE extends BlockEntity{
     private final static String TIME_KEY = "nether_warts_amount";
     private final static String IS_EXPIRED_KEY = "is_expired";
 
-    private final int brewingTime = 80;
-    private final int expirationTime = 200;
+    private final int brewingTime = 36000;
+    private final int expirationTime = 48000;
     protected int time= 0;
     protected int netherWartsAmount= 0;
     protected int productAmount = 0;

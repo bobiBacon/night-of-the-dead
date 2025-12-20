@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BiomeColors.class)
 public class BiomeColorsMixin {
-//    @Inject(method = "getWaterColor",at= @At("HEAD"), cancellable = true)
-//    private static void changeColor(BlockRenderView world, BlockPos pos, CallbackInfoReturnable<Integer> cir){
-//        if (NightOfTheDeadClientManager.isNightOfTheDead){
-//            cir.setReturnValue(0xFF3300);
-//        }
-//    }
+    @Inject(method = "getWaterColor",at= @At("HEAD"), cancellable = true)
+    private static void changeColor(BlockRenderView world, BlockPos pos, CallbackInfoReturnable<Integer> cir){
+        if (NightOfTheDeadClientManager.isNightOfTheDead){
+            cir.setReturnValue(0xFF3300);
+        }
+    }
 }

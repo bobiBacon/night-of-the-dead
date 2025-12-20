@@ -1,0 +1,5 @@
+accessWidener v1 named
+
+#accessible field net/minecraft/registry/BuiltinRegistries REGISTRY_BUILDER Lnet/minecraft/registry/RegistryBuilder
+
+accessible method net/minecraft/item/GlassBottleItem fill (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;

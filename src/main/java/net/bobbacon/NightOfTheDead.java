@@ -44,6 +44,8 @@ public class NightOfTheDead implements ModInitializer {
 
 	public static final Identifier NIGHT_OF_THE_DEAD_PACKET= Identifier.of(MOD_ID,"night_of_the_dead_packet");
 
+	public static boolean isNightOfTheDead = false;
+
 	public static void setShouldPlayANightOfTheDead(boolean shouldPlayANightOfTheDead, ServerWorld world) {
 		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
 		data.setShouldPlayANightOfTheDead(shouldPlayANightOfTheDead);
@@ -54,6 +56,7 @@ public class NightOfTheDead implements ModInitializer {
 		data.setNightOfTheDead(nightOfTheDead);
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeBoolean(data.isNightOfTheDead());
+		isNightOfTheDead=nightOfTheDead;
 		for (ServerPlayerEntity player : world.getPlayers()){
 			ServerPlayNetworking.send(player, NIGHT_OF_THE_DEAD_PACKET, buf);
 		}
@@ -121,7 +124,9 @@ public class NightOfTheDead implements ModInitializer {
 			ServerWorld world = player.getServerWorld();
 
 			PacketByteBuf buf = PacketByteBufs.create();
-			buf.writeBoolean(isNightOfTheDead(world));
+			isNightOfTheDead = isNightOfTheDead(world);
+			buf.writeBoolean(isNightOfTheDead);
+
 			ServerPlayNetworking.send(player, NIGHT_OF_THE_DEAD_PACKET, buf);
 		});
 		EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, sleepingPos, vanillaResult)->{

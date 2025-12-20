@@ -34,6 +34,8 @@ loom {
 			sourceSet sourceSets.client
 		}
 	}
+	accessWidenerPath = file("src/main/resources/night-of-the-dead.accesswidener")
+
 
 }
 
@@ -53,6 +55,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation("maven.modrinth:registry-helper-lib:${project.registry_version}")
 }
+
 
 processResources {
 	inputs.property "version", project.version

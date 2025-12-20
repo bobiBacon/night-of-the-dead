@@ -40,5 +40,7 @@
 	},
 	"suggests": {
 		"another-mod": "*"
-	}
+	},
+	"accessWidener": "night-of-the-dead.accesswidener"
+
 }

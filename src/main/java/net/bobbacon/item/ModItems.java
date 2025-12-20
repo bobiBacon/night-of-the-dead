@@ -8,6 +8,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 
 public class ModItems {
@@ -25,6 +26,9 @@ public class ModItems {
 
     public static final Item BREWING_BARREL = registryHelper.register("brewing_barrel", new BlockItem(ModBlocks.BREWING_BARREL, new FabricItemSettings()));
 
+    public static final Item BLOODY_WATER = registryHelper.register("bloody_water",new Item(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE)));
+    //TODO faire en sorte que ce soit un alcool qui donne de la vie quand on est un vampire
+    public static final Item BLOOD_BOTTLE = registryHelper.register("blood_bottle",new Alcohol(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE)));
 
     public static void init(){
 

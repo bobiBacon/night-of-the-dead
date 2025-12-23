@@ -37,6 +37,8 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 	}
 	private static class MyTagGenerator extends FabricTagProvider<Item> {
 		public static final TagKey<Item> STRONG_ALCOHOL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "strong_alcohol"));
+		public static final TagKey<Item> ALCOHOL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "alcohol"));
+		public static final TagKey<Item> HOOKABLE = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "hookable"));
 
 		public MyTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, RegistryKeys.ITEM, registriesFuture);
@@ -48,6 +50,19 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.add(ModItems.VODKA)
 					.add(ModItems.RUM)
 					.add(ModItems.WHISKEY);
+			getOrCreateTagBuilder(ALCOHOL)
+					.addTag(STRONG_ALCOHOL)
+					.add(ModItems.BEER)
+					.add(ModItems.MEAD);
+//			getOrCreateTagBuilder(HOOKABLE)
+//					.addTag(ALCOHOL)
+//					.add(Items.POTION)
+//					.add(Items.EXPERIENCE_BOTTLE)
+//					.add(Items.GLASS_BOTTLE)
+//					.add(Items.HONEY_BOTTLE)
+//					.add(ModItems.BLOOD_BOTTLE)
+//					.add(ModItems.BLOODY_WATER);
+
 		}
 
 	}

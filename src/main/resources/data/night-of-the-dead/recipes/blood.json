@@ -1,0 +1,29 @@
+{
+  "type": "farmersdelight:cooking",
+  "cookingtime": 1000,
+  "experience": 1.0,
+  "ingredients": [
+    {
+      "item": "night-of-the-dead:bloody_water"
+    },
+    {
+      "item": "night-of-the-dead:bloody_water"
+    },
+    {
+      "item": "night-of-the-dead:bloody_water"
+    },
+    {
+      "item": "night-of-the-dead:bloody_water"
+    },
+    {
+      "item": "night-of-the-dead:bloody_water"
+    },
+    {
+      "item": "night-of-the-dead:bloody_water"
+    }
+  ],
+  "recipe_book_tab": "drinks",
+  "result": {
+    "item": "night-of-the-dead:blood_bottle"
+  }
+}

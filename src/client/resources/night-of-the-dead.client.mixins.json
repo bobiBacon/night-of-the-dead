@@ -3,8 +3,8 @@
   "package": "net.bobbacon.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "BiomeColorsMixin",
     "ExampleClientMixin",
-    "BiomeColorsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

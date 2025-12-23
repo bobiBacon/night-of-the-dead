@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:tools",
+    "#night-of-the-dead:alcohol",
+    "minecraft:potion",
+    "minecraft:experience_bottle",
+    "minecraft:glass_bottle",
+    "minecraft:honey_bottle",
+    "night-of-the-dead:blood_bottle",
+    "night-of-the-dead:bloody_water"
+  ]
+}

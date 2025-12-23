@@ -21,8 +21,11 @@ public class ModEntities {
     public static final EntityType<FireDrop> FIRE_DROP = register(
             "fire_drop_entity", FabricEntityTypeBuilder.<FireDrop>create( SpawnGroup.MISC, FireDrop::new).dimensions(new EntityDimensions(0.2f,0.2f,true))
     );
+    public static final EntityType<MetalSupport> METAL_SUPPORT = register(
+            "metal_support", FabricEntityTypeBuilder.<MetalSupport>create( SpawnGroup.MISC, MetalSupport::new).dimensions(new EntityDimensions(0.2f,0.4f,true))
+    );
     private static <T extends Entity> EntityType<T> register(String id, FabricEntityTypeBuilder<T> type) {
-        return Registry.register(Registries.ENTITY_TYPE, id, type.build());
+        return Registry.register(Registries.ENTITY_TYPE, Identifier.of(NightOfTheDead.MOD_ID,id), type.build());
     }
     public static void init(){
 

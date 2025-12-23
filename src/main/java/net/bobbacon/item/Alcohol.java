@@ -16,6 +16,7 @@ import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +29,7 @@ public class Alcohol extends Item {
     public ArrayList<StatusEffectInstance> effects= new ArrayList<>();
 
     public Alcohol(Settings settings, StatusEffectInstance... effects) {
-        super(settings);
+        super(settings.maxDamage(4).recipeRemainder(Items.GLASS_BOTTLE));
         this.effects= new ArrayList<>(List.of(effects));
     }
     @Override
@@ -46,28 +47,24 @@ public class Alcohol extends Item {
                     user.addStatusEffect(new StatusEffectInstance(statusEffectInstance));
                 }
             }
-        }
-
-        if (playerEntity != null) {
-            playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
-            if (!playerEntity.getAbilities().creativeMode) {
-                stack.decrement(1);
-            }
-        }
-
-        if (playerEntity == null || !playerEntity.getAbilities().creativeMode) {
-            if (stack.isEmpty()) {
-                return new ItemStack(Items.GLASS_BOTTLE);
-            }
-
-            if (playerEntity != null) {
-                playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
+            if (playerEntity instanceof ServerPlayerEntity serverPlayerEntity) {
+                playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
+                if (!playerEntity.getAbilities().creativeMode) {
+                    stack=decrement(stack,serverPlayerEntity);
+                }
             }
         }
 
         user.emitGameEvent(GameEvent.DRINK);
         return stack;
     }
+    public static ItemStack decrement(ItemStack stack,ServerPlayerEntity player){
+        if (stack.damage(1, Random.create(),player)){
+            return stack.getRecipeRemainder();
+        }
+        return stack;
+    }
+
     @Override
     public int getMaxUseTime(ItemStack stack) {
         return MAX_USE_TIME;

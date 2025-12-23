@@ -5,6 +5,7 @@ import net.bobbacon.entity.ModEntities;
 import net.bobbacon.entity.block_entity.ModBE;
 import net.bobbacon.item.ModItems;
 import net.bobbacon.recipe.ModRecipes;
+import net.bobbacon.status_effect.ModEffects;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
@@ -85,6 +86,7 @@ public class NightOfTheDead implements ModInitializer {
 		ModBlocks.init();
 		ModBE.init();
 		ModRecipes.init();
+		ModEffects.init();
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,
@@ -115,7 +117,7 @@ public class NightOfTheDead implements ModInitializer {
 		ServerEntityEvents.ENTITY_LOAD.register((Entity entity, ServerWorld world) -> {
 			if (entity instanceof CreeperEntity creeper){
 				NbtCompound nbt = new NbtCompound();
-				nbt.putByte("ExplosionRadius", (byte)8);
+				nbt.putByte("ExplosionRadius", (byte)6);
 				creeper.readCustomDataFromNbt(nbt);
 			}
 		});

@@ -3,3 +3,12 @@ accessWidener v1 named
 #accessible field net/minecraft/registry/BuiltinRegistries REGISTRY_BUILDER Lnet/minecraft/registry/RegistryBuilder
 
 accessible method net/minecraft/item/GlassBottleItem fill (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;
+
+accessible method net/minecraft/client/render/entity/ItemFrameEntityRenderer getModelId (Lnet/minecraft/entity/decoration/ItemFrameEntity;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/client/util/ModelIdentifier;
+extendable method net/minecraft/client/render/entity/ItemFrameEntityRenderer getModelId (Lnet/minecraft/entity/decoration/ItemFrameEntity;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/client/util/ModelIdentifier;
+
+accessible class net/minecraft/client/gui/hud/InGameHud$HeartType
+extendable class net/minecraft/client/gui/hud/InGameHud$HeartType
+
+accessible field net/minecraft/client/render/entity/ItemFrameEntityRenderer itemRenderer Lnet/minecraft/client/render/item/ItemRenderer;
+accessible field net/minecraft/client/render/entity/ItemFrameEntityRenderer blockRenderManager Lnet/minecraft/client/render/block/BlockRenderManager;

@@ -1,13 +1,13 @@
 package net.bobbacon.mixin;
 
+import net.bobbacon.status_effect.ModEffects;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.AbstractSkeletonEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
@@ -21,8 +21,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Objects;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin extends Entity {
@@ -39,6 +37,7 @@ public class LivingEntityMixin extends Entity {
             self.setHealth(40);
         }
     }
+
 
     @ModifyVariable(method = "damage", at = @At("HEAD"), argsOnly = true)
     private float BoostDamage(float amount, DamageSource source) {
@@ -66,6 +65,17 @@ public class LivingEntityMixin extends Entity {
 
         }
         return amount;
+    }
+
+    @ModifyVariable(method = "heal", at = @At("HEAD"), argsOnly = true)
+    private float modifyHeal(float value){
+        LivingEntity self= (LivingEntity) (Object) this;
+        StatusEffectInstance effect= self.getStatusEffect(ModEffects.ATTRITION);
+        if (effect!=null) {
+            int i= self.getGroup()== EntityGroup.UNDEAD? -1:1;
+            value -= 0.25f*effect.getAmplifier()*value*i;
+        }
+        return value;
     }
 
         @Override

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "night-of-the-dead:block/altar", "uvlock": false },
+    "facing=east":  { "model": "night-of-the-dead:block/altar", "y":  90, "uvlock": false },
+    "facing=south": { "model": "night-of-the-dead:block/altar", "y": 180, "uvlock": false },
+    "facing=west":  { "model": "night-of-the-dead:block/altar", "y": 270, "uvlock": false }
+  }
+}

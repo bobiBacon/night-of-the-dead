@@ -5,6 +5,8 @@ import net.bobbacon.entity.ModEntities;
 import net.bobbacon.entity.block_entity.ModBE;
 import net.bobbacon.item.ModItems;
 import net.bobbacon.recipe.ModRecipes;
+import net.bobbacon.registry.ModRegistries;
+import net.bobbacon.spell.SpellType;
 import net.bobbacon.status_effect.ModEffects;
 import net.fabricmc.api.ModInitializer;
 
@@ -81,12 +83,15 @@ public class NightOfTheDead implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+		ModRegistries.init();
+		SpellType.init();
 		ModItems.init();
 		ModEntities.init();
 		ModBlocks.init();
 		ModBE.init();
 		ModRecipes.init();
 		ModEffects.init();
+
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,

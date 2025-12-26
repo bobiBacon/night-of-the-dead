@@ -5,6 +5,10 @@
   "client": [
     "BiomeColorsMixin",
     "ExampleClientMixin",
+    ,
+    "ItemRendererAccessor",
+    "ItemRendererMixin",
+    "ModelLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

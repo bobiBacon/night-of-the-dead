@@ -2,6 +2,7 @@ package net.bobbacon.mixin;
 
 import net.bobbacon.NightOfTheDead;
 import net.bobbacon.NightOfTheDeadManager;
+import net.bobbacon.ritual.RitualManager;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.PlayerManager;
@@ -35,6 +36,7 @@ public abstract class ServerWorldMixin {
         if (world.isDay()&& NightOfTheDead.isNightOfTheDead(world)) {
             NightOfTheDead.setNightOfTheDead(false,world);
         }
+        RitualManager.get(world).tick();
 
     }
 }

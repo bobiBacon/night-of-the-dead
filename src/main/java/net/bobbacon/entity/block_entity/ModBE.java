@@ -16,6 +16,10 @@ public class ModBE {
             "brewing_barrel",
             BlockEntityType.Builder.create(BrewingBarrelBE::new, ModBlocks.BREWING_BARREL).build(null)
     );
+    public static final BlockEntityType<AltarBE> ALTAR_BE = register(
+            "altar",
+            BlockEntityType.Builder.create(AltarBE::new, ModBlocks.ALTAR).build(null)
+    );
     public static void init(){
 
     }

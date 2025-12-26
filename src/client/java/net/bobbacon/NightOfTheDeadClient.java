@@ -1,8 +1,11 @@
 package net.bobbacon;
 
 import net.bobbacon.item.ModItems;
+import net.bobbacon.registry.ModRegistries;
+import net.bobbacon.render.blockEntity.BlockEntityRenderers;
 import net.bobbacon.render.entity.EntityRenderers;
 import net.bobbacon.render.fluids.ColoredWaterRenderHandler;
+import net.bobbacon.render.item.ItemRenderers;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -18,6 +21,7 @@ import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Identifier;
@@ -36,7 +40,15 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
+		MinecraftClient client = MinecraftClient.getInstance();
+
+//		ModRegistries.SPELL_TYPES.stream().forEach(spell -> {
+//			SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE
+//					.addSprite(spell.symbolTexture());
+//		});
 		EntityRenderers.init();
+		BlockEntityRenderers.init();
+		ItemRenderers.init();
 		ModelPredicateProviderRegistry.register(
 				ModItems.MOLOTOV,
 				new Identifier("lit"),

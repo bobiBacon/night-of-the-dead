@@ -4,15 +4,14 @@ import net.bobbacon.NightOfTheDead;
 import net.bobbacon.api.RegistryHelper;
 import net.bobbacon.block.ModBlocks;
 import net.bobbacon.entity.ModEntities;
+import net.bobbacon.registry.ModRegistries;
+import net.bobbacon.spell.SpellType;
 import net.bobbacon.status_effect.ModEffects;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.entity.EntityType;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemFrameItem;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.Registries;
 
@@ -37,9 +36,19 @@ public class ModItems {
     public static final Item BLOOD_BOTTLE = registryHelper.register("blood_bottle",new Alcohol(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(ModEffects.INSANITY,300,1)));
     public static final Potion ATTRITION = potionRegistryHelper.register("attrition",new Potion(new StatusEffectInstance(ModEffects.ATTRITION,1200,1)));
     public static final Item METAL_SUPPORT = registryHelper.register("metal_support", new MetalSupportItem(ModEntities.METAL_SUPPORT, new Item.Settings()));
+    public static final Item SCROLL = registryHelper.register("scroll", new ScrollItem(SpellType.CORRUPTION_RITUAL, new Item.Settings()));
+    public static final Item ALTAR = registryHelper.register("altar", new BlockItem(ModBlocks.ALTAR, new FabricItemSettings()));
+
 
 
     public static void init(){
-
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
+                .register(entries -> {
+                    for (SpellType<?> spell : ModRegistries.SPELL_TYPES) {
+                        ItemStack stack = new ItemStack(ModItems.SCROLL);
+                        ScrollItem.setSpell(stack, spell);
+                        entries.add(stack);
+                    }
+                });
     }
 }

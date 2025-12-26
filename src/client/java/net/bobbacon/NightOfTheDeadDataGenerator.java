@@ -95,6 +95,16 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.criterion(FabricRecipeProvider.hasItem(Items.COPPER_INGOT),
 							FabricRecipeProvider.conditionsFromItem(Items.COPPER_INGOT))
 					.offerTo(consumer);
+			ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, ModItems.METAL_SUPPORT).pattern("nin").pattern(" n ")
+					.input('i',Items.IRON_INGOT).input('n', Items.IRON_NUGGET)
+					.criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
+							FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
+					.offerTo(consumer);
+			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.ALTAR).pattern(" w ").pattern("sgs").pattern("bbb")
+					.input('w',Items.RED_WOOL).input('s', Items.NETHERITE_SCRAP).input('g',Items.GILDED_BLACKSTONE).input('b',Items.CHISELED_POLISHED_BLACKSTONE)
+					.criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
+							FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
+					.offerTo(consumer);
 		}
 
 
@@ -119,6 +129,7 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(ModItems.PURE_ALCOHOL, Models.GENERATED);
 			itemModelGenerator.register(ModItems.BLOODY_WATER, Models.GENERATED);
 			itemModelGenerator.register(ModItems.BLOOD_BOTTLE, Models.GENERATED);
+			itemModelGenerator.register(ModItems.METAL_SUPPORT, Models.GENERATED);
 
 
 

@@ -40,15 +40,15 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
-		MinecraftClient client = MinecraftClient.getInstance();
+//		MinecraftClient client = MinecraftClient.getInstance();
 
 //		ModRegistries.SPELL_TYPES.stream().forEach(spell -> {
 //			SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE
 //					.addSprite(spell.symbolTexture());
 //		});
+		ItemRenderers.init();
 		EntityRenderers.init();
 		BlockEntityRenderers.init();
-		ItemRenderers.init();
 		ModelPredicateProviderRegistry.register(
 				ModItems.MOLOTOV,
 				new Identifier("lit"),

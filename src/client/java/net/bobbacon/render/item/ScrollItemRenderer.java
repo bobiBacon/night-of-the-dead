@@ -28,7 +28,7 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
             client.getItemRenderer().renderBakedItemModel(
                     client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_2d","inventory")),
                     stack,
-                    255,
+                    15728880,
                     overlay,
                     matrices,
                     vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, true))

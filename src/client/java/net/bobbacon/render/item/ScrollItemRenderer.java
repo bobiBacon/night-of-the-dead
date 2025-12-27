@@ -1,6 +1,5 @@
 package net.bobbacon.render.item;
 
-import net.bobbacon.NightOfTheDead;
 import net.bobbacon.NightOfTheDeadClient;
 import net.bobbacon.item.ScrollItem;
 import net.bobbacon.spell.SpellType;
@@ -14,7 +13,6 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -30,7 +28,7 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
             client.getItemRenderer().renderBakedItemModel(
                     client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_2d","inventory")),
                     stack,
-                    light,
+                    255,
                     overlay,
                     matrices,
                     vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, true))
@@ -42,6 +40,7 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
             model.getTransformation()
                     .getTransformation(mode)
                     .apply(false, matrices);
+            matrices.translate(0F, 0.F, 0.5F);
             client.getItemRenderer().renderBakedItemModel(
                     model,
                     stack,
@@ -65,7 +64,7 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
         MinecraftClient client = MinecraftClient.getInstance();
 
         Sprite sprite = client.getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)
-                .apply(spell.symbolTexture());
+                .apply(spell.symbolTextureFor2d());
 
         VertexConsumer consumer = vertices.getBuffer(
                 RenderLayer.getEntityCutoutNoCull(sprite.getAtlasId())
@@ -73,7 +72,7 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
 
         matrices.push();
 
-        matrices.translate(0.5, 0.5, 0.5);
+        matrices.translate(0.4, 0.4, 0.8);
 //        matrices.scale(1f, 1f, 1f);
         matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(90));
 

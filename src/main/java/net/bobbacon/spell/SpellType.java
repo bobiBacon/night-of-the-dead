@@ -3,8 +3,6 @@ package net.bobbacon.spell;
 import net.bobbacon.NightOfTheDead;
 import net.bobbacon.api.RegistryHelper;
 import net.bobbacon.registry.ModRegistries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -27,7 +25,7 @@ public class SpellType<T extends Spell> {
         return factory.create(this,world);
     }
 
-    public Identifier symbolTexture() {
+    public Identifier symbolTextureFor2d() {
         Identifier spellId= ModRegistries.SPELL_TYPES.getId(this);
         String path;
         String nameSpace;
@@ -40,6 +38,10 @@ public class SpellType<T extends Spell> {
             nameSpace= spellId.getNamespace();
         }
         return Identifier.of(nameSpace,"item/"+path);
+    }
+    public Identifier symbolTextureFor3d(){
+        Identifier base = symbolTextureFor2d();
+        return Identifier.of(base.getNamespace(),base.getPath()+"_3d");
     }
 
     public interface SpellFactory<T extends Spell> {

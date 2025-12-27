@@ -6,16 +6,16 @@ import net.bobbacon.item.ScrollItem;
 import net.bobbacon.spell.SpellType;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -23,8 +23,33 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
     @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         SpellType<?> spell = ScrollItem.getSpell(stack);
-        NightOfTheDead.LOGGER.warn("rendering scroll");
+//        NightOfTheDead.LOGGER.warn("rendering scroll");
         MinecraftClient client = MinecraftClient.getInstance();
+        if (mode == ModelTransformationMode.GUI){
+//
+            client.getItemRenderer().renderBakedItemModel(
+                    client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_2d","inventory")),
+                    stack,
+                    light,
+                    overlay,
+                    matrices,
+                    vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, true))
+
+            );
+        }else {
+
+            BakedModel model=client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d","inventory"));
+            model.getTransformation()
+                    .getTransformation(mode)
+                    .apply(false, matrices);
+            client.getItemRenderer().renderBakedItemModel(
+                    model,
+                    stack,
+                    light,
+                    overlay,
+                    matrices,
+                    vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, true)));
+        }
 
 
         if (spell != null) {
@@ -32,7 +57,7 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
         }
     }
     private void renderSymbol(
-            SpellType spell,
+            SpellType<?> spell,
             MatrixStack matrices,
             VertexConsumerProvider vertices,
             int light
@@ -48,8 +73,9 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
 
         matrices.push();
 
-        matrices.translate(0.5, 0.5, 0.01);
-        matrices.scale(0.5f, 0.5f, 0.5f);
+        matrices.translate(0.5, 0.5, 0.5);
+//        matrices.scale(1f, 1f, 1f);
+        matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(90));
 
         MatrixStack.Entry entry = matrices.peek();
         Matrix4f matrix = entry.getPositionMatrix();

@@ -12,3 +12,5 @@ extendable class net/minecraft/client/gui/hud/InGameHud$HeartType
 
 accessible field net/minecraft/client/render/entity/ItemFrameEntityRenderer itemRenderer Lnet/minecraft/client/render/item/ItemRenderer;
 accessible field net/minecraft/client/render/entity/ItemFrameEntityRenderer blockRenderManager Lnet/minecraft/client/render/block/BlockRenderManager;
+
+accessible method net/minecraft/client/render/item/ItemRenderer renderBakedItemModel (Lnet/minecraft/client/render/model/BakedModel;Lnet/minecraft/item/ItemStack;IILnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;)V

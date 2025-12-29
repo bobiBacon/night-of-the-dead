@@ -51,20 +51,7 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 //		ItemRenderers.init();
 		EntityRenderers.init();
 		BlockEntityRenderers.init();
-		ModelPredicateProviderRegistry.register(
-				ModItems.SCROLL,
-				new Identifier("spell"),
-				(stack, world, entity, seed) -> {
-					SpellType<?> spell = ScrollItem.getSpell(stack);
-					return spell == null ? 0 : spell.getNumericId();
-				}
-		);
-		ModelPredicateProviderRegistry.register(
-				ModItems.SCROLL,
-				new Identifier("gui"),
-				(stack, world, entity, seed) ->
-						entity != null ? 1.0F : 0.0F
-		);
+
 		ModelPredicateProviderRegistry.register(
 				ModItems.MOLOTOV,
 				new Identifier("lit"),

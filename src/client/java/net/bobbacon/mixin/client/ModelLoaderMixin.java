@@ -28,10 +28,5 @@ public abstract class ModelLoaderMixin {
         profiler.swap("items");
 
         this.addModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID, "scroll_3d", "inventory"));
-        this.addModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID, "scroll_base", "inventory"));
-        for (SpellType<?> spell: ModRegistries.SPELL_TYPES){
-            this.addModel(new ModelIdentifier(spell.getModelId(),"inventory"));
-        }
-        this.addModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID, "scroll_2d", "inventory"));
     }
 }

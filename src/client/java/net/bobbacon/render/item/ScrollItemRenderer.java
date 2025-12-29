@@ -26,88 +26,8 @@ import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
-    @Override
-    public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        SpellType<?> spell = ScrollItem.getSpell(stack);
-        NightOfTheDead.LOGGER.warn("rendering scroll");
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (mode == ModelTransformationMode.GUI){
-//            DiffuseLighting.disableGuiDepthLighting();
-////            client.getItemRenderer().renderBakedItemModel(
-////                    client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_2d","inventory")),
-////                    stack,
-////                    light,
-////                    overlay,
-////                    matrices,
-////                    vertexConsumers.getBuffer(RenderLayer.getGui())
-////            );
-//            VertexConsumer consumer = ItemRenderer.getItemGlintConsumer(
-//                    vertexConsumers,
-//                    RenderLayer.getItemEntityTranslucentCull(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE),
-//                    false,
-//                    stack.hasGlint()
-//            );
-//
-//            client.getItemRenderer().renderBakedItemModel(
-//                    client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_2d","inventory")),
-//                    stack,
-//                    15728880, // lumière GUI forcée
-//                    OverlayTexture.DEFAULT_UV,
-//                    matrices,
-//                    consumer
-//            );
-//            DiffuseLighting.enableGuiDepthLighting();
-//
+public class ScrollItemRenderer {
 
-//            model.getTransformation()
-//                    .getTransformation(mode)
-//                    .apply(false, matrices);
-////            client.getItemRenderer().renderItem(stack,mode,false,matrices,vertexConsumers,15728880,OverlayTexture.DEFAULT_UV,model);
-//
-//            client.getItemRenderer().renderItem(Items.PAPER.getDefaultStack(), ModelTransformationMode.GUI, false, matrices, vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV, model);
-//            DiffuseLighting.enableGuiDepthLighting();
-//            matrices.push();
-//            matrices.translate(8, 8, (float)(150));
-//
-//                matrices.multiplyPositionMatrix(new Matrix4f().scaling(1.0F, -1.0F, 1.0F));
-//                matrices.scale(16.0F, 16.0F, 16.0F);
-//                boolean bl = !model.isSideLit();
-//                if (bl) {
-//                    NightOfTheDead.LOGGER.info("not side lit");
-//                    DiffuseLighting.disableGuiDepthLighting();
-//                }
-//                RenderSystem.disableDepthTest();
-//
-//                client
-//                        .getItemRenderer()
-//                        .renderItem(stack, ModelTransformationMode.GUI, false, matrices, vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV, model);
-//                RenderSystem.enableDepthTest();
-//                if (bl) {
-//                    DiffuseLighting.enableGuiDepthLighting();
-//                }
-            return;
-        }else {
-//            NightOfTheDeadClient.LOGGER.info("rendering scroll 3d");
-//            BakedModel model=client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d","inventory"));
-//            model.getTransformation()
-//                    .getTransformation(mode)
-//                    .apply(false, matrices);
-//            matrices.translate(0F, 0.F, 0.5F);
-//            client.getItemRenderer().renderBakedItemModel(
-//                    model,
-//                    stack,
-//                    light,
-//                    overlay,
-//                    matrices,
-//                    vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, true)));
-        }
-
-
-        if (spell != null) {
-//            renderSymbol(spell, matrices, vertexConsumers, light);
-        }
-    }
     public static void renderSpellSymbolGui(
             ItemStack stack,
             MatrixStack matrices,
@@ -116,16 +36,15 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
     ) {
         MinecraftClient client = MinecraftClient.getInstance();
         SpellType<?> spell = ScrollItem.getSpell(stack);
-        if (spell == null) return;
+        if (spell == null || spell.isEmpty()) return;
         Sprite sprite = client.getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)
                 .apply(spell.symbolTextureFor2d());
 
-        Identifier texture = spell.symbolTextureFor2d();
 
         matrices.push();
 
         // On se place AU-DESSUS de l'item
-        matrices.translate(-0.1f, -0.1f, 200);
+        matrices.translate(-0.1f, -0.1f, 1);
         matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(90));
 
         Matrix4f matrix = matrices.peek().getPositionMatrix();

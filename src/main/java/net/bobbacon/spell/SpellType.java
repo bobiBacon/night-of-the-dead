@@ -37,7 +37,7 @@ public class SpellType<T extends Spell> {
             path= spellId.getPath();
             nameSpace= spellId.getNamespace();
         }
-        return Identifier.of(nameSpace,"item/"+path);
+        return Identifier.of(nameSpace,"item/spell/"+path);
     }
     public Identifier getId(){
         return ModRegistries.SPELL_TYPES.getId(this);
@@ -66,6 +66,9 @@ public class SpellType<T extends Spell> {
             return 1.0f;
         }
         return 0;
+    }
+    public boolean isEmpty(){
+        return this.getId() == EMPTY.getId();
     }
 
     public interface SpellFactory<T extends Spell> {

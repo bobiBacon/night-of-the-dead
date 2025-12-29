@@ -1,6 +1,8 @@
 package net.bobbacon.mixin.client;
 
 import net.bobbacon.NightOfTheDeadClient;
+import net.bobbacon.registry.ModRegistries;
+import net.bobbacon.spell.SpellType;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
@@ -21,9 +23,14 @@ public abstract class ModelLoaderMixin {
     @Shadow
     protected abstract void addModel(ModelIdentifier modelId);
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/ModelLoader;addModel(Lnet/minecraft/client/util/ModelIdentifier;)V", ordinal = 3, shift = At.Shift.AFTER))
-    public void addRubyStaff(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<ModelLoader.SourceTrackedData>> blockStates, CallbackInfo ci) {
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void addModels(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<ModelLoader.SourceTrackedData>> blockStates, CallbackInfo ci) {
+        profiler.swap("items");
+
         this.addModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID, "scroll_3d", "inventory"));
+        for (SpellType<?> spell: ModRegistries.SPELL_TYPES){
+            this.addModel(new ModelIdentifier(spell.getModelId(),"inventory"));
+        }
         this.addModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID, "scroll_2d", "inventory"));
     }
 }

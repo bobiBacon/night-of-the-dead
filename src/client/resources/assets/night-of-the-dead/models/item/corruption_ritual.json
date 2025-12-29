@@ -1,0 +1,7 @@
+{
+  "parent": "night-of-the-dead:item/scroll_2d",
+  "gui_light" : "front",
+  "textures": {
+    "layer1": "night-of-the-dead:item/corruption_ritual"
+  }
+}

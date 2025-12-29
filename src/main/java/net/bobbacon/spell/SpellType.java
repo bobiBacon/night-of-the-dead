@@ -39,6 +39,23 @@ public class SpellType<T extends Spell> {
         }
         return Identifier.of(nameSpace,"item/"+path);
     }
+    public Identifier getId(){
+        return ModRegistries.SPELL_TYPES.getId(this);
+    }
+    public Identifier getModelId() {
+        Identifier spellId= ModRegistries.SPELL_TYPES.getId(this);
+        String path;
+        String nameSpace;
+        if (spellId==null){
+            path="empty";
+            nameSpace= NightOfTheDead.MOD_ID;
+        }
+        else {
+            path= spellId.getPath();
+            nameSpace= spellId.getNamespace();
+        }
+        return Identifier.of(nameSpace,path);
+    }
     public Identifier symbolTextureFor3d(){
         Identifier base = symbolTextureFor2d();
         return Identifier.of(base.getNamespace(),base.getPath()+"_3d");

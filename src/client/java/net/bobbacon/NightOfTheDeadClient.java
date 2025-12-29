@@ -6,7 +6,6 @@ import net.bobbacon.registry.ModRegistries;
 import net.bobbacon.render.blockEntity.BlockEntityRenderers;
 import net.bobbacon.render.entity.EntityRenderers;
 import net.bobbacon.render.fluids.ColoredWaterRenderHandler;
-import net.bobbacon.render.item.ItemRenderers;
 import net.bobbacon.spell.SpellType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;

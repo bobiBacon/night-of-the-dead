@@ -11,7 +11,7 @@ import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 
 public class ModRegistries {
-    public static final RegistryKey<Registry<SpellType<?>>> SPELL_REGISTRY_KEY =
+    private static final RegistryKey<Registry<SpellType<?>>> SPELL_REGISTRY_KEY =
             RegistryKey.ofRegistry(new Identifier(NightOfTheDead.MOD_ID, "spell"));
     public static final SimpleRegistry<SpellType<?>> SPELL_TYPES = FabricRegistryBuilder.createSimple(SPELL_REGISTRY_KEY)
             .attribute(RegistryAttribute.SYNCED)

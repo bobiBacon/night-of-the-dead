@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
@@ -65,5 +66,14 @@ public class ScrollItem extends Item {
         }else {
             stack.getOrCreateNbt().putString(SPELL_KEY, id.toString());
         }
+    }
+
+    @Override
+    public String getTranslationKey(ItemStack stack) {
+        SpellType<?> spell = getSpell(stack);
+        if (!spell.isEmpty()){
+            return "item.night-of-the-dead.scroll.spell."+ModRegistries.SPELL_TYPES.getId(spell).getPath();
+        }
+        return super.getTranslationKey(stack);
     }
 }

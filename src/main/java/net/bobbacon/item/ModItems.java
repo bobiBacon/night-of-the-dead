@@ -38,7 +38,6 @@ public class ModItems {
     public static final Item METAL_SUPPORT = registryHelper.register("metal_support", new MetalSupportItem(ModEntities.METAL_SUPPORT, new Item.Settings()));
     public static final Item SCROLL = registryHelper.register("scroll", new ScrollItem(SpellType.CORRUPTION_RITUAL, new Item.Settings()));
     public static final Item ALTAR = registryHelper.register("altar", new BlockItem(ModBlocks.ALTAR, new FabricItemSettings()));
-    public static final Item Test = registryHelper.register("corruption_ritual", new Item(new FabricItemSettings()));
 
 
 
@@ -46,9 +45,13 @@ public class ModItems {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
                 .register(entries -> {
                     for (SpellType<?> spell : ModRegistries.SPELL_TYPES) {
-                        ItemStack stack = new ItemStack(ModItems.SCROLL);
-                        ScrollItem.setSpell(stack, spell);
-                        entries.add(stack);
+                        if (!spell.isEmpty()){
+                            ItemStack stack = new ItemStack(ModItems.SCROLL);
+                            ScrollItem.setSpell(stack, spell);
+                            entries.add(stack);
+                        }else {
+                            entries.add(ModItems.SCROLL.getDefaultStack());
+                        }
                     }
                 });
     }

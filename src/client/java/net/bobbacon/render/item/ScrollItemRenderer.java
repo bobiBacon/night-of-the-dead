@@ -88,19 +88,19 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
 //                }
             return;
         }else {
-            NightOfTheDeadClient.LOGGER.info("rendering scroll 3d");
-            BakedModel model=client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d","inventory"));
-            model.getTransformation()
-                    .getTransformation(mode)
-                    .apply(false, matrices);
-            matrices.translate(0F, 0.F, 0.5F);
-            client.getItemRenderer().renderBakedItemModel(
-                    model,
-                    stack,
-                    light,
-                    overlay,
-                    matrices,
-                    vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, true)));
+//            NightOfTheDeadClient.LOGGER.info("rendering scroll 3d");
+//            BakedModel model=client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d","inventory"));
+//            model.getTransformation()
+//                    .getTransformation(mode)
+//                    .apply(false, matrices);
+//            matrices.translate(0F, 0.F, 0.5F);
+//            client.getItemRenderer().renderBakedItemModel(
+//                    model,
+//                    stack,
+//                    light,
+//                    overlay,
+//                    matrices,
+//                    vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, true)));
         }
 
 
@@ -108,6 +108,74 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
 //            renderSymbol(spell, matrices, vertexConsumers, light);
         }
     }
+    public static void renderSpellSymbolGui(
+            ItemStack stack,
+            MatrixStack matrices,
+            VertexConsumerProvider consumers,
+            int overlay
+    ) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        SpellType<?> spell = ScrollItem.getSpell(stack);
+        if (spell == null) return;
+        Sprite sprite = client.getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)
+                .apply(spell.symbolTextureFor2d());
+
+        Identifier texture = spell.symbolTextureFor2d();
+
+        matrices.push();
+
+        // On se place AU-DESSUS de l'item
+        matrices.translate(-0.1f, -0.1f, 200);
+        matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(90));
+
+        Matrix4f matrix = matrices.peek().getPositionMatrix();
+
+        VertexConsumer vc = consumers.getBuffer(
+                RenderLayer.getEntityCutoutNoCull(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
+        );
+
+        int light = 0xF000F0; // FULL BRIGHT
+
+        float min = 4f;
+        float max = 12f;
+        MatrixStack.Entry entry = matrices.peek();
+        Matrix3f normal = entry.getNormalMatrix();
+
+        vc.vertex(matrix, -0.5f, -0.5f, 0)
+                .color(255, 255, 255, 255)
+                .texture(sprite.getMinU(), sprite.getMinV())
+                .overlay(overlay)
+                .light(light)
+                .normal(normal, 0, 0, 1)
+                .next();
+
+        vc.vertex(matrix, 0.5f, -0.5f, 0)
+                .color(255, 255, 255, 255)
+                .texture(sprite.getMaxU(), sprite.getMinV())
+                .overlay(overlay)
+                .light(light)
+                .normal(normal, 0, 0, 1)
+                .next();
+
+        vc.vertex(matrix, 0.5f, 0.5f, 0)
+                .color(255, 255, 255, 255)
+                .texture(sprite.getMaxU(), sprite.getMaxV())
+                .overlay(overlay)
+                .light(light)
+                .normal(normal, 0, 0, 1)
+                .next();
+
+        vc.vertex(matrix, -0.5f, 0.5f, 0)
+                .color(255, 255, 255, 255)
+                .texture(sprite.getMinU(), sprite.getMaxV())
+                .overlay(overlay)
+                .light(light)
+                .normal(normal, 0, 0, 1)
+                .next();
+
+        matrices.pop();
+    }
+
     private void renderSymbol(
             SpellType<?> spell,
             MatrixStack matrices,

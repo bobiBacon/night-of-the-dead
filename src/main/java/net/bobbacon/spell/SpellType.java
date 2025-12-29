@@ -61,6 +61,13 @@ public class SpellType<T extends Spell> {
         return Identifier.of(base.getNamespace(),base.getPath()+"_3d");
     }
 
+    public float getNumericId() {
+        if (this.equals(SpellType.CORRUPTION_RITUAL)){
+            return 1.0f;
+        }
+        return 0;
+    }
+
     public interface SpellFactory<T extends Spell> {
         T create(SpellType<T> type, World world);
     }

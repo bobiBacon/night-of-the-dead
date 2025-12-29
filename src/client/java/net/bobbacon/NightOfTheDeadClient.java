@@ -1,11 +1,13 @@
 package net.bobbacon;
 
 import net.bobbacon.item.ModItems;
+import net.bobbacon.item.ScrollItem;
 import net.bobbacon.registry.ModRegistries;
 import net.bobbacon.render.blockEntity.BlockEntityRenderers;
 import net.bobbacon.render.entity.EntityRenderers;
 import net.bobbacon.render.fluids.ColoredWaterRenderHandler;
 import net.bobbacon.render.item.ItemRenderers;
+import net.bobbacon.spell.SpellType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -49,6 +51,20 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 		ItemRenderers.init();
 		EntityRenderers.init();
 		BlockEntityRenderers.init();
+		ModelPredicateProviderRegistry.register(
+				ModItems.SCROLL,
+				new Identifier("spell"),
+				(stack, world, entity, seed) -> {
+					SpellType<?> spell = ScrollItem.getSpell(stack);
+					return spell == null ? 0 : spell.getNumericId();
+				}
+		);
+		ModelPredicateProviderRegistry.register(
+				ModItems.SCROLL,
+				new Identifier("gui"),
+				(stack, world, entity, seed) ->
+						entity != null ? 1.0F : 0.0F
+		);
 		ModelPredicateProviderRegistry.register(
 				ModItems.MOLOTOV,
 				new Identifier("lit"),

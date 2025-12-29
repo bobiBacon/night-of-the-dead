@@ -30,7 +30,7 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
     @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         SpellType<?> spell = ScrollItem.getSpell(stack);
-//        NightOfTheDead.LOGGER.warn("rendering scroll");
+        NightOfTheDead.LOGGER.warn("rendering scroll");
         MinecraftClient client = MinecraftClient.getInstance();
         if (mode == ModelTransformationMode.GUI){
 //            DiffuseLighting.disableGuiDepthLighting();
@@ -88,7 +88,7 @@ public class ScrollItemRenderer implements BuiltinItemRendererRegistry.DynamicIt
 //                }
             return;
         }else {
-
+            NightOfTheDeadClient.LOGGER.info("rendering scroll 3d");
             BakedModel model=client.getItemRenderer().getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d","inventory"));
             model.getTransformation()
                     .getTransformation(mode)

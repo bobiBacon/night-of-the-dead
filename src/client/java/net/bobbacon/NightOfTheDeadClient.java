@@ -48,7 +48,7 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 //			SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE
 //					.addSprite(spell.symbolTexture());
 //		});
-		ItemRenderers.init();
+//		ItemRenderers.init();
 		EntityRenderers.init();
 		BlockEntityRenderers.init();
 		ModelPredicateProviderRegistry.register(

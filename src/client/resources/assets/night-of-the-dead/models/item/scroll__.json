@@ -1,0 +1,9 @@
+{
+  "parent": "builtin/entity",
+  "overrides": [
+    {
+      "predicate": { "gui": 1 },
+      "model": "night-of-the-dead:item/scroll_base"
+    }
+  ]
+}

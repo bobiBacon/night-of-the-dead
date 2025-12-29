@@ -34,7 +34,7 @@ public class ItemRendererMixin {
 //            NightOfTheDeadClient.LOGGER.info(((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_awda_3d","inventory")).toString());
 //            return model;
 //        }
-        if (stack.isOf(ModItems.SCROLL)&&renderMode != ModelTransformationMode.GUI && renderMode != ModelTransformationMode.FIXED){
+        if (stack.isOf(ModItems.SCROLL)&&renderMode != ModelTransformationMode.GUI && renderMode != ModelTransformationMode.FIXED && renderMode != ModelTransformationMode.GROUND){
             BakedModel model = ((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d","inventory"));
             return model;
         }
@@ -44,6 +44,10 @@ public class ItemRendererMixin {
     private void renderSymbol(ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model, CallbackInfo ci){
         if (stack.isOf(ModItems.SCROLL)){
             if (renderMode == ModelTransformationMode.GUI) {
+                //TODO rien faire si empty
+                // ajouter un concepte de sort crypté. Il faut posseder une tablette de décryption pour lire un parchemin
+                // quand quelqu'un décrypte un parchemin, son id est ajouté à ceux des personnes qui peuvent le lire
+                // ne pas afficher le scroll en 3d si empty ou encrypté
                 ScrollItemRenderer.renderSpellSymbolGui(stack, matrices, vertexConsumers, overlay);
             }
         }

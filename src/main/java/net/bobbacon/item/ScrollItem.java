@@ -1,5 +1,6 @@
 package net.bobbacon.item;
 
+import com.mojang.authlib.minecraft.client.MinecraftClient;
 import net.bobbacon.NightOfTheDead;
 import net.bobbacon.registry.ModRegistries;
 import net.bobbacon.spell.Spell;
@@ -71,6 +72,9 @@ public class ScrollItem extends Item {
         }
     }
     public static boolean canRead(PlayerEntity player, ItemStack stack){
+        if (player.isCreative()||getSpell(stack).isEmpty()){
+            return true;
+        }
         for (NbtElement nbt:stack.getOrCreateNbt().getList(PLAYERS_KEY,NbtElement.STRING_TYPE)){
             NbtString nbt2= (NbtString) nbt;
             UUID uuid= UUID.fromString(nbt2.asString());
@@ -80,13 +84,24 @@ public class ScrollItem extends Item {
         }
         return false;
     }
+    public static boolean canRead(ItemStack stack){
+        if (stack.getHolder() instanceof PlayerEntity player){
+            canRead(player,stack);
+        }
+        return false;
+    }
+    public static void addReader(PlayerEntity player, ItemStack stack){
+        stack.getOrCreateNbt().getList(PLAYERS_KEY,NbtElement.STRING_TYPE).addElement(0,NbtString.of(player.getUuid().toString()));
+    }
 
     @Override
     public String getTranslationKey(ItemStack stack) {
         SpellType<?> spell = getSpell(stack);
-        if (!spell.isEmpty()){
-            return "item.night-of-the-dead.scroll.spell."+ModRegistries.SPELL_TYPES.getId(spell).getPath();
-        }
+         if (!canRead(stack)) {
+            return "item.night-og-the-dead.scroll.unknown";
+        }else if (!spell.isEmpty()){
+             return "item.night-of-the-dead.scroll.spell."+ModRegistries.SPELL_TYPES.getId(spell).getPath();
+         }
         return super.getTranslationKey(stack);
     }
 }

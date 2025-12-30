@@ -4,6 +4,7 @@ import net.bobbacon.NightOfTheDeadClient;
 import net.bobbacon.item.ModItems;
 import net.bobbacon.item.ScrollItem;
 import net.bobbacon.render.item.ScrollItemRenderer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
@@ -34,7 +35,7 @@ public class ItemRendererMixin {
 //            NightOfTheDeadClient.LOGGER.info(((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_awda_3d","inventory")).toString());
 //            return model;
 //        }
-        if (stack.isOf(ModItems.SCROLL)&&renderMode != ModelTransformationMode.GUI && renderMode != ModelTransformationMode.FIXED && renderMode != ModelTransformationMode.GROUND){
+        if (stack.isOf(ModItems.SCROLL)&&renderMode != ModelTransformationMode.GUI && renderMode != ModelTransformationMode.FIXED && renderMode != ModelTransformationMode.GROUND && ScrollItem.canRead(stack)){
             BakedModel model = ((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d","inventory"));
             return model;
         }
@@ -42,7 +43,8 @@ public class ItemRendererMixin {
     }
     @Inject(method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", at = @At("RETURN"))
     private void renderSymbol(ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model, CallbackInfo ci){
-        if (stack.isOf(ModItems.SCROLL)){
+
+        if (stack.isOf(ModItems.SCROLL)&&ScrollItem.canRead(MinecraftClient.getInstance().player,stack)){
             if (renderMode == ModelTransformationMode.GUI) {
                 //TODO rien faire si empty
                 // ajouter un concepte de sort crypté. Il faut posseder une tablette de décryption pour lire un parchemin

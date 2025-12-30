@@ -6,6 +6,7 @@ import net.bobbacon.item.ScrollItem;
 import net.bobbacon.render.item.ScrollItemRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
@@ -53,7 +54,7 @@ public class ItemRendererMixin {
                 ScrollItemRenderer.renderSpellSymbolGui(stack, matrices, vertexConsumers, overlay);
             }else if (renderMode==ModelTransformationMode.FIRST_PERSON_RIGHT_HAND||renderMode==ModelTransformationMode.FIRST_PERSON_LEFT_HAND){
                 //TODO inclure left handed
-                ScrollItemRenderer.renderSymbol(stack,matrices,vertexConsumers,light,leftHanded);
+                ScrollItemRenderer.renderSymbol(stack,matrices,vertexConsumers,light,leftHanded,renderMode,model);
             }
         }
     }

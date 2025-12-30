@@ -1,10 +1,10 @@
 package net.bobbacon.item;
 
-import com.mojang.authlib.minecraft.client.MinecraftClient;
 import net.bobbacon.NightOfTheDead;
 import net.bobbacon.registry.ModRegistries;
 import net.bobbacon.spell.Spell;
 import net.bobbacon.spell.SpellType;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -19,13 +19,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ScrollItem extends Item {
     private static final String SPELL_KEY = "spell";
+    private static final String DECRYPTED_KEY = "decrypted";
     private static final String PLAYERS_KEY = "players";
-    private static final String UUID_KEY = "player_uuid";
     public ScrollItem(Settings settings) {
         super(settings);
     }
@@ -84,24 +86,20 @@ public class ScrollItem extends Item {
         }
         return false;
     }
-    public static boolean canRead(ItemStack stack){
-        if (stack.getHolder() instanceof PlayerEntity player){
-            canRead(player,stack);
-        }
-        return false;
-    }
-    public static void addReader(PlayerEntity player, ItemStack stack){
+
+
+    public static void decrypt(PlayerEntity player,ItemStack stack){
         stack.getOrCreateNbt().getList(PLAYERS_KEY,NbtElement.STRING_TYPE).addElement(0,NbtString.of(player.getUuid().toString()));
     }
 
     @Override
     public String getTranslationKey(ItemStack stack) {
         SpellType<?> spell = getSpell(stack);
-         if (!canRead(stack)) {
-            return "item.night-og-the-dead.scroll.unknown";
-        }else if (!spell.isEmpty()){
-             return "item.night-of-the-dead.scroll.spell."+ModRegistries.SPELL_TYPES.getId(spell).getPath();
+        if (spell.isEmpty()){
+             return "item.night-of-the-dead.scroll.blank";
          }
         return super.getTranslationKey(stack);
     }
+
+
 }

@@ -10,6 +10,7 @@ import net.bobbacon.spell.SpellType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -25,6 +26,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
@@ -63,7 +65,22 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 				(stack, world, entity, seed) ->
 						stack.getOrCreateNbt().getBoolean("lit") ? 1.0F : 0.0F
 		);
+		ItemTooltipCallback.EVENT.register((stack, context, tooltip) -> {
+			if (!(stack.getItem() instanceof ScrollItem)) return;
 
+			SpellType<?> spell = ScrollItem.getSpell(stack);
+			if (spell == null||spell.isEmpty()) return;
+
+			MinecraftClient client = MinecraftClient.getInstance();
+			if (client.player == null) return;
+
+			//TODO descriptions
+			if (ScrollItem.canRead(client.player,stack)){
+//				tooltip.add(0,Text.translatable("item.night-of-the-dead.scroll.spell."+ModRegistries.SPELL_TYPES.getId(spell).getPath()));
+			} else {
+//				tooltip.add(0,Text.translatable("item.night-of-the-dead.scroll.spell.unknown"));
+			}
+		});
 		ClientPlayNetworking.registerGlobalReceiver(
 				NightOfTheDead.NIGHT_OF_THE_DEAD_PACKET,
 				(client, handler, buf, responseSender) -> {

@@ -5,9 +5,9 @@
   "client": [
     "BiomeColorsMixin",
     "ExampleClientMixin",
-    ,
     "ItemRendererAccessor",
     "ItemRendererMixin",
+    "ItemStackMixin",
     "ModelLoaderMixin"
   ],
   "injectors": {

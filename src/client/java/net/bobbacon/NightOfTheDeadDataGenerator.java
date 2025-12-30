@@ -151,6 +151,9 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			translationBuilder.add(ModItems.PURE_ALCOHOL,"Pure Alcohol");
 			translationBuilder.add(ModItems.MEAD,"Mead");
 			translationBuilder.add(ModItems.BEER,"Beer");
+			translationBuilder.add("item.night-of-the-dead.scroll","Unknown Scroll");
+			translationBuilder.add("item.night-of-the-dead.scroll.blank","Blank Scroll");
+			translationBuilder.add("item.night-of-the-dead.scroll.spell.corruption_ritual","Punishment Scroll");
 		}
 	}
 

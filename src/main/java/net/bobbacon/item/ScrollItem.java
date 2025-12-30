@@ -8,8 +8,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtByteArray;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -17,13 +19,14 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
+import java.util.UUID;
+
 public class ScrollItem extends Item {
     private static final String SPELL_KEY = "spell";
-    public final SpellType<? extends Spell> spellType;
-
-    public ScrollItem(SpellType<? extends Spell> spellType, Settings settings) {
+    private static final String PLAYERS_KEY = "players";
+    private static final String UUID_KEY = "player_uuid";
+    public ScrollItem(Settings settings) {
         super(settings);
-        this.spellType= spellType;
     }
 
     @Override
@@ -66,6 +69,16 @@ public class ScrollItem extends Item {
         }else {
             stack.getOrCreateNbt().putString(SPELL_KEY, id.toString());
         }
+    }
+    public static boolean canRead(PlayerEntity player, ItemStack stack){
+        for (NbtElement nbt:stack.getOrCreateNbt().getList(PLAYERS_KEY,NbtElement.STRING_TYPE)){
+            NbtString nbt2= (NbtString) nbt;
+            UUID uuid= UUID.fromString(nbt2.asString());
+            if (player.getUuid()==uuid){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

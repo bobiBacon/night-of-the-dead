@@ -95,16 +95,20 @@ public class ScrollItemRenderer {
         matrices.pop();
     }
 
-    private void renderSymbol(
-            SpellType<?> spell,
+    public static void renderSymbol(
+            ItemStack stack,
             MatrixStack matrices,
             VertexConsumerProvider vertices,
-            int light
+            int light,
+            boolean leftHanded
     ) {
         MinecraftClient client = MinecraftClient.getInstance();
+        SpellType<?> spell = ScrollItem.getSpell(stack);
+        if (spell == null || spell.isEmpty()) return;
+
 
         Sprite sprite = client.getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)
-                .apply(spell.symbolTextureFor2d());
+                .apply(spell.symbolTexture());
 
         VertexConsumer consumer = vertices.getBuffer(
                 RenderLayer.getEntityCutoutNoCull(sprite.getAtlasId())
@@ -112,9 +116,21 @@ public class ScrollItemRenderer {
 
         matrices.push();
 
-        matrices.translate(0.4, 0.4, 0.8);
-//        matrices.scale(1f, 1f, 1f);
-        matrices.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(90));
+
+        matrices.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(25));
+
+        if (leftHanded){
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(25));
+
+        }
+        else {
+            matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(25));
+
+        }
+        matrices.translate(0, 0.4, 0.3);
+        matrices.scale(0.4f,0.4f,0.4f);
+
+
 
         MatrixStack.Entry entry = matrices.peek();
         Matrix4f matrix = entry.getPositionMatrix();
@@ -124,7 +140,7 @@ public class ScrollItemRenderer {
 
         consumer.vertex(matrix, -0.5f, -0.5f, 0)
                 .color(255, 255, 255, 255)
-                .texture(sprite.getMinU(), sprite.getMinV())
+                .texture(sprite.getMinU(), sprite.getMaxV())
                 .overlay(overlay)
                 .light(light)
                 .normal(normal, 0, 0, 1)
@@ -132,7 +148,7 @@ public class ScrollItemRenderer {
 
         consumer.vertex(matrix, 0.5f, -0.5f, 0)
                 .color(255, 255, 255, 255)
-                .texture(sprite.getMaxU(), sprite.getMinV())
+                .texture(sprite.getMaxU(), sprite.getMaxV())
                 .overlay(overlay)
                 .light(light)
                 .normal(normal, 0, 0, 1)
@@ -140,7 +156,7 @@ public class ScrollItemRenderer {
 
         consumer.vertex(matrix, 0.5f, 0.5f, 0)
                 .color(255, 255, 255, 255)
-                .texture(sprite.getMaxU(), sprite.getMaxV())
+                .texture(sprite.getMaxU(), sprite.getMinV())
                 .overlay(overlay)
                 .light(light)
                 .normal(normal, 0, 0, 1)
@@ -148,7 +164,7 @@ public class ScrollItemRenderer {
 
         consumer.vertex(matrix, -0.5f, 0.5f, 0)
                 .color(255, 255, 255, 255)
-                .texture(sprite.getMinU(), sprite.getMaxV())
+                .texture(sprite.getMinU(), sprite.getMinV())
                 .overlay(overlay)
                 .light(light)
                 .normal(normal, 0, 0, 1)

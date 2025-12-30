@@ -49,6 +49,9 @@ public class ItemRendererMixin {
                 // quand quelqu'un décrypte un parchemin, son id est ajouté à ceux des personnes qui peuvent le lire
                 // ne pas afficher le scroll en 3d si empty ou encrypté
                 ScrollItemRenderer.renderSpellSymbolGui(stack, matrices, vertexConsumers, overlay);
+            }else if (renderMode==ModelTransformationMode.FIRST_PERSON_RIGHT_HAND||renderMode==ModelTransformationMode.FIRST_PERSON_LEFT_HAND){
+                //TODO inclure left handed
+                ScrollItemRenderer.renderSymbol(stack,matrices,vertexConsumers,light,leftHanded);
             }
         }
     }

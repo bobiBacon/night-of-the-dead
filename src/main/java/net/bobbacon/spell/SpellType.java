@@ -5,6 +5,7 @@ import net.bobbacon.api.RegistryHelper;
 import net.bobbacon.registry.ModRegistries;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class SpellType<T extends Spell> {
     private static final RegistryHelper<SpellType<?>> registryHelper= new RegistryHelper<>(ModRegistries.SPELL_TYPES, NightOfTheDead.MOD_ID);
@@ -25,20 +26,6 @@ public class SpellType<T extends Spell> {
         return factory.create(this,world);
     }
 
-    public Identifier symbolTextureFor2d() {
-        Identifier spellId= ModRegistries.SPELL_TYPES.getId(this);
-        String path;
-        String nameSpace;
-        if (spellId==null){
-            path="empty";
-            nameSpace= NightOfTheDead.MOD_ID;
-        }
-        else {
-            path= spellId.getPath();
-            nameSpace= spellId.getNamespace();
-        }
-        return Identifier.of(nameSpace,"item/spell/"+path);
-    }
     public Identifier getId(){
         return ModRegistries.SPELL_TYPES.getId(this);
     }
@@ -56,16 +43,36 @@ public class SpellType<T extends Spell> {
         }
         return Identifier.of(nameSpace,path);
     }
-    public Identifier symbolTextureFor3d(){
-        Identifier base = symbolTextureFor2d();
-        return Identifier.of(base.getNamespace(),base.getPath()+"_3d");
-    }
-
-    public float getNumericId() {
-        if (this.equals(SpellType.CORRUPTION_RITUAL)){
-            return 1.0f;
+    /**
+     * Returns id of this SpellType's texture or {{null}} if spell is empty or not registered.
+     * This texture is located at mod_id/textures/item/spell/spell_id
+     */
+    @Nullable
+    public Identifier symbolTexture() {
+        Identifier spellId= ModRegistries.SPELL_TYPES.getId(this);
+        String path;
+        String nameSpace;
+        if (spellId==null && isEmpty()){
+            path="empty";
+            nameSpace= NightOfTheDead.MOD_ID;
         }
-        return 0;
+        else {
+            path= spellId.getPath();
+            nameSpace= spellId.getNamespace();
+        }
+        return Identifier.of(nameSpace,"item/spell/"+path);
+    }
+    /**
+     * Returns id of the simplified texture of this SpellType or {{null}} if spell is empty or not registered.
+     * This texture is located at mod_id/textures/item/spell/spell_id_simple
+    */
+    @Nullable
+    public Identifier symbolTextureFor2d(){
+        Identifier base = symbolTexture();
+        if (base==null){
+            return null;
+        }
+        return Identifier.of(base.getNamespace(),base.getPath()+"_simple");
     }
     public boolean isEmpty(){
         return this.getId() == EMPTY.getId();

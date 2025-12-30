@@ -36,7 +36,7 @@ public class ModItems {
     public static final Item BLOOD_BOTTLE = registryHelper.register("blood_bottle",new Alcohol(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(ModEffects.INSANITY,300,1)));
     public static final Potion ATTRITION = potionRegistryHelper.register("attrition",new Potion(new StatusEffectInstance(ModEffects.ATTRITION,1200,1)));
     public static final Item METAL_SUPPORT = registryHelper.register("metal_support", new MetalSupportItem(ModEntities.METAL_SUPPORT, new Item.Settings()));
-    public static final Item SCROLL = registryHelper.register("scroll", new ScrollItem(SpellType.CORRUPTION_RITUAL, new Item.Settings()));
+    public static final Item SCROLL = registryHelper.register("scroll", new ScrollItem(new Item.Settings()));
     public static final Item ALTAR = registryHelper.register("altar", new BlockItem(ModBlocks.ALTAR, new FabricItemSettings()));
 
 

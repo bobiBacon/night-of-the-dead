@@ -1,16 +1,17 @@
 package net.bobbacon.ritual;
 
 import net.bobbacon.NightOfTheDead;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.village.raid.Raid;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 public class RitualManager extends PersistentState {
@@ -21,13 +22,19 @@ public class RitualManager extends PersistentState {
     public int currentTime=0;
 
     public World world;
+    private final static String ENTITY_MAPPING_KEY= "entity_mapping";
+    public final Map<UUID,UUID> entityMapping= new HashMap<>();
 
     private RitualManager(ServerWorld world) {
         this.world =world;
     }
     public void tick(){
-
-        for (Ritual ritual : this.rituals.values()) {
+        Iterator it= this.rituals.values().iterator();
+//        for (Ritual ritual : this.rituals.values()) {
+//            ritual.tick();
+//        }
+        while (it.hasNext()){
+            Ritual ritual= (Ritual) it.next();
             ritual.tick();
         }
         if (currentTime%200==0){
@@ -59,8 +66,24 @@ public class RitualManager extends PersistentState {
             Ritual ritual = new CorruptionRitual(world, nbtCompound);
             ritualManager.rituals.put(ritual.id, ritual);
         }
+        NbtCompound entities= nbt.getCompound(ENTITY_MAPPING_KEY);
+        for (String s:entities.getKeys()) {
+            try {
+                UUID entityId=UUID.fromString(s);
+                ritualManager.entityMapping.put(entityId,entities.getUuid(s));
+            }catch (Exception ignored){
 
+            }
+
+        }
         return ritualManager;
+    }
+    public void onEntityDeath(LivingEntity entity){
+        NightOfTheDead.LOGGER.info("manager onEntityDeath");
+        UUID id= entityMapping.get(entity.getUuid());
+        if (id!=null){
+            rituals.get(id).onEntityDeath();
+        }
     }
 
     @Override
@@ -73,7 +96,11 @@ public class RitualManager extends PersistentState {
             ritual.writeNbt(nbtCompound);
             nbtList.add(nbtCompound);
         }
-
+        NbtCompound entities= new NbtCompound();
+        for (Map.Entry<UUID,UUID> entry : entityMapping.entrySet()){
+            entities.putUuid(entry.getKey().toString(), entry.getValue());
+        }
+        nbt.put(ENTITY_MAPPING_KEY,entities);
         nbt.put(RITUALS_KEY, nbtList);
         return nbt;
     }

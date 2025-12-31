@@ -26,6 +26,8 @@ public abstract class Ritual {
     public int maxPhases=0;
     private static final String IS_PHASE_INIT_KEY= "is_phase_init";
     boolean isPhaseInit = false;
+    private static final String ENTITY_COUNT_KEY= "entity_count";
+    public int entityCount=0;
 
 
 
@@ -41,7 +43,7 @@ public abstract class Ritual {
         readNbt(nbt);
     }
 
-    //only evaluated on server side
+    /**only evaluated on server side*/
     protected void tick(){
         if (started){
             this.time++;
@@ -58,6 +60,7 @@ public abstract class Ritual {
         if (started){
             RitualManager ritualManager = RitualManager.get((ServerWorld) world);
             ritualManager.add(this);
+            NightOfTheDead.LOGGER.info("triggered on start");
             nextPhase();
             NightOfTheDead.LOGGER.info("Starting ritual");
         }
@@ -70,16 +73,21 @@ public abstract class Ritual {
                 phase++;
                 isPhaseInit=false;
             }else {
-                finish();
+                complete();
             }
             markDirty();
         }
     }
 
-    private void finish() {
+    protected void complete() {
         if (world.isClient){
             return;
         }
+        NightOfTheDead.LOGGER.info("finished ritual");
+        abort();
+    }
+    /**Terminates the ritual whenever complete or not*/
+    public void abort(){
         RitualManager.get((ServerWorld) world).remove(this);
     }
 
@@ -90,6 +98,7 @@ public abstract class Ritual {
         center= new BlockPos(nbt.getInt(CENTER_X_KEY),nbt.getInt(CENTER_Y_KEY),nbt.getInt(CENTER_Z_KEY));
         time= nbt.getInt(TIME_KEY);
         isPhaseInit=nbt.getBoolean(IS_PHASE_INIT_KEY);
+        entityCount=nbt.getInt(ENTITY_COUNT_KEY);
     }
 
     protected void writeNbt(NbtCompound nbt) {
@@ -101,18 +110,24 @@ public abstract class Ritual {
         nbt.putInt(CENTER_Z_KEY,center.getZ());
         nbt.putInt(TIME_KEY,time);
         nbt.putBoolean(IS_PHASE_INIT_KEY,isPhaseInit);
+        nbt.putInt(ENTITY_COUNT_KEY,entityCount);
     }
     public void markDirty(){
         if (!world.isClient){
             RitualManager.get((ServerWorld) world).markDirty();
         }
     }
-    public boolean ShouldInitPhase(){
+    public boolean shouldInitPhase(){
         if (!isPhaseInit){
             isPhaseInit =true;
             markDirty();
             return true;
         }
         return false;
+    }
+    protected void onEntityDeath(){
+        NightOfTheDead.LOGGER.info("dead entity");
+        entityCount--;
+        markDirty();
     }
 }

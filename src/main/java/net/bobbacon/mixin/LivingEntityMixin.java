@@ -1,5 +1,6 @@
 package net.bobbacon.mixin;
 
+import net.bobbacon.ritual.RitualManager;
 import net.bobbacon.status_effect.ModEffects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
@@ -12,6 +13,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -76,6 +78,12 @@ public class LivingEntityMixin extends Entity {
             value -= 0.25f*effect.getAmplifier()*value*i;
         }
         return value;
+    }
+    @Inject(method = "onDeath",at = @At("TAIL"))
+    private void onDeathInject(DamageSource damageSource, CallbackInfo ci){
+        if (!getWorld().isClient){
+            RitualManager.get((ServerWorld) getWorld()).onEntityDeath((LivingEntity) (Object) this);
+        }
     }
 
         @Override

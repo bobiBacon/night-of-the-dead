@@ -82,7 +82,7 @@ public class RitualManager extends PersistentState {
         NightOfTheDead.LOGGER.info("manager onEntityDeath");
         UUID id= entityMapping.get(entity.getUuid());
         if (id!=null){
-            rituals.get(id).onEntityDeath();
+            rituals.get(id).onEntityDeath(entity.getUuid());
         }
     }
 

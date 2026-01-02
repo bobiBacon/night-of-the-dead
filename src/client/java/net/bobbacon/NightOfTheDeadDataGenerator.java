@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.block.Block;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
@@ -39,6 +40,7 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 		public static final TagKey<Item> STRONG_ALCOHOL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "strong_alcohol"));
 		public static final TagKey<Item> ALCOHOL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "alcohol"));
 		public static final TagKey<Item> HOOKABLE = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "hookable"));
+		public static final TagKey<Block> FIRE = TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft","fire"));
 
 		public MyTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, RegistryKeys.ITEM, registriesFuture);
@@ -54,6 +56,8 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.addTag(STRONG_ALCOHOL)
 					.add(ModItems.BEER)
 					.add(ModItems.MEAD);
+//			getTagBuilder(FIRE)
+//					.
 //			getOrCreateTagBuilder(HOOKABLE)
 //					.addTag(ALCOHOL)
 //					.add(Items.POTION)

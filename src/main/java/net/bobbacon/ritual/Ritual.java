@@ -1,11 +1,19 @@
 package net.bobbacon.ritual;
 
 import net.bobbacon.NightOfTheDead;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class Ritual {
@@ -26,8 +34,13 @@ public abstract class Ritual {
     public int maxPhases=0;
     private static final String IS_PHASE_INIT_KEY= "is_phase_init";
     boolean isPhaseInit = false;
-    private static final String ENTITY_COUNT_KEY= "entity_count";
-    public int entityCount=0;
+    private static final String ENTITY_LIST_KEY = "entities";
+    public final ArrayList<UUID> entities= new ArrayList<>();
+    /**Only for optimisation.
+     * For real check, please take a look to areEntitiesAlive().*/
+    protected int entityCount=0;
+
+
 
 
 
@@ -98,7 +111,13 @@ public abstract class Ritual {
         center= new BlockPos(nbt.getInt(CENTER_X_KEY),nbt.getInt(CENTER_Y_KEY),nbt.getInt(CENTER_Z_KEY));
         time= nbt.getInt(TIME_KEY);
         isPhaseInit=nbt.getBoolean(IS_PHASE_INIT_KEY);
-        entityCount=nbt.getInt(ENTITY_COUNT_KEY);
+        NbtList list= nbt.getList(ENTITY_LIST_KEY, NbtElement.STRING_TYPE);
+        for (NbtElement e:list){
+            if (e instanceof NbtString s){
+                entities.add(UUID.fromString(s.asString()));
+            }
+        }
+        entityCount=entities.size();
     }
 
     protected void writeNbt(NbtCompound nbt) {
@@ -110,7 +129,11 @@ public abstract class Ritual {
         nbt.putInt(CENTER_Z_KEY,center.getZ());
         nbt.putInt(TIME_KEY,time);
         nbt.putBoolean(IS_PHASE_INIT_KEY,isPhaseInit);
-        nbt.putInt(ENTITY_COUNT_KEY,entityCount);
+        NbtList list= new NbtList();
+        for (UUID id: entities){
+            list.add(NbtString.of(id.toString()));
+        }
+        nbt.put(ENTITY_LIST_KEY,list);
     }
     public void markDirty(){
         if (!world.isClient){
@@ -125,9 +148,30 @@ public abstract class Ritual {
         }
         return false;
     }
-    protected void onEntityDeath(){
+    protected void onEntityDeath(UUID id){
         NightOfTheDead.LOGGER.info("dead entity");
-        entityCount--;
+        if (entities.remove(id)){
+            entityCount--;
+        }
+        markDirty();
+    }
+
+    /**returns whenever one entity or more linked to this ritual is alive*/
+    public boolean areEntitiesAlive(){
+        for (UUID id: entities){
+            Entity entity= ((ServerWorld)world).getEntity(id);
+            if (entity!=null&&entity.isAlive()){
+                return true;
+            }
+        }
+        return false;
+    }
+    protected void spawnEntity(MobEntity entity){
+        entity.setPersistent();
+        world.spawnEntity(entity);
+        RitualManager.get((ServerWorld) world).entityMapping.put(entity.getUuid(),this.id);
+        entities.add(entity.getUuid());
+        entityCount++;
         markDirty();
     }
 }

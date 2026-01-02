@@ -7,13 +7,17 @@ import net.bobbacon.entity.ModEntities;
 import net.bobbacon.entity.block_entity.AltarBE;
 import net.bobbacon.item.ModItems;
 import net.bobbacon.status_effect.ModEffects;
+import net.bobbacon.utils.Utils;
 import net.minecraft.block.AbstractFireBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -31,9 +35,11 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CorruptionRitual extends Ritual {
@@ -96,30 +102,43 @@ public class CorruptionRitual extends Ritual {
             for (int i = 0; i < 7; i++) {
                 SkeletonEntity entity= new SkeletonEntity(EntityType.SKELETON,world);
                 BlockPos pos= center.west(Math.round(world.random.nextFloat()*6f-3f)).north(Math.round(world.random.nextFloat()*6f-3f));
-                if (world.getBlockState(pos.up()).isSolidBlock(world,pos.up())){
-                    pos=pos.north();
+                while (!SpawnHelper.canSpawn(SpawnRestriction.Location.ON_GROUND,world,pos,EntityType.SKELETON)){
+                    pos= center.west(Math.round(world.random.nextFloat()*6f-3f)).north(Math.round(world.random.nextFloat()*6f-3f));
                 }
-                entity.setPos(pos.getX(),pos.getY(),pos.getZ());
+                entity.setPos(pos.getX(),pos.getY()+0.5,pos.getZ());
                 ItemStack stack= Items.NETHERITE_AXE.getDefaultStack();
                 stack.addEnchantment(Enchantments.FIRE_ASPECT,2);
                 stack.addEnchantment(Enchantments.KNOCKBACK,2);
                 entity.equipStack(EquipmentSlot.MAINHAND, stack);
+                entity.setEquipmentDropChance(EquipmentSlot.MAINHAND,0);
                 entity.equipStack(EquipmentSlot.OFFHAND, stack.copy());
+                entity.setEquipmentDropChance(EquipmentSlot.OFFHAND,0);
                 entity.equipStack(EquipmentSlot.CHEST, Items.NETHERITE_CHESTPLATE.getDefaultStack());
+                entity.setEquipmentDropChance(EquipmentSlot.CHEST,0);
+                entity.equipStack(EquipmentSlot.HEAD, Items.NETHERITE_HELMET.getDefaultStack());
+                entity.setEquipmentDropChance(EquipmentSlot.HEAD,0);
                 entity.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE,-1,0,false,false));
-//                while (world.getBlockState(pos).isSolidBlock(world,pos)){
-//
-//                }
-                world.spawnEntity(entity);
-                RitualManager.get((ServerWorld) world).entityMapping.put(entity.getUuid(),this.id);
+                entity.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED,30,1,false,false));
+                entity.targetSelector.add(
+                        1,
+                        new ActiveTargetGoal<>(
+                                entity,
+                                PlayerEntity.class,
+                                10,              // distance de recherche
+                                true,            // doit voir la cible
+                                false,           // pas besoin de reach
+                                player -> true   // filtre custom
+                        )
+                );
+                spawnEntity(entity);
             }
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
                 BlazeEntity blazeEntity=new BlazeEntity(EntityType.BLAZE,world);
                 BlockPos pos= center.west(Math.round(world.random.nextFloat()*10f-5f)).north(Math.round(world.random.nextFloat()*10f-5f));
-                if (world.getBlockState(pos.up()).isSolidBlock(world,pos.up())){
-                    pos=pos.north();
+                while (!SpawnHelper.canSpawn(SpawnRestriction.Location.ON_GROUND,world,pos,EntityType.SKELETON)){
+                    pos= center.west(Math.round(world.random.nextFloat()*10f-5f)).north(Math.round(world.random.nextFloat()*10f-5f));
                 }
-                blazeEntity.setPos(pos.getX(),pos.getY(),pos.getZ());
+                blazeEntity.setPos(pos.getX(),pos.getY()+1,pos.getZ());
                 EntityAttributeInstance maxHealth =
                         blazeEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
                 EntityAttributeInstance knockback =
@@ -132,13 +151,24 @@ public class CorruptionRitual extends Ritual {
                 if (knockback!=null){
                     knockback.setBaseValue(5f);
                 }
-                world.spawnEntity(blazeEntity);
-                RitualManager.get((ServerWorld) world).entityMapping.put(blazeEntity.getUuid(),this.id);
+                blazeEntity.targetSelector.add(
+                        1,
+                        new ActiveTargetGoal<>(
+                                blazeEntity,
+                                PlayerEntity.class,
+                                15,              // distance de recherche
+                                true,            // doit voir la cible
+                                false,           // pas besoin de reach
+                                player -> !((PlayerEntity)player).isCreative()   // filtre custom
+                        )
+                );
+                spawnEntity(blazeEntity);
+
             }
-            entityCount=10;
         }
         if (time%20==0){
-            if (entityCount<=0){
+            Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world);
+            if (entityCount<=0||!areEntitiesAlive()){
                 NightOfTheDead.LOGGER.info("triggered by killing");
                 nextPhase();
             }
@@ -162,6 +192,8 @@ public class CorruptionRitual extends Ritual {
             lightPillar(pillar2);
             lightPillar(pillar3);
             lightPillar(pillar4);
+
+            Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world);
         }
     }
     protected void lightPillar(BlockPos base){

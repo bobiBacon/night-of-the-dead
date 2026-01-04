@@ -34,8 +34,13 @@ public class RitualManager extends PersistentState {
 //            ritual.tick();
 //        }
         while (it.hasNext()){
-            Ritual ritual= (Ritual) it.next();
-            ritual.tick();
+            try {
+                Ritual ritual= (Ritual) it.next();
+                ritual.tick();
+            }catch (Exception e){
+                NightOfTheDead.LOGGER.error(e.toString());
+            }
+
         }
         if (currentTime%200==0){
             markDirty();
@@ -82,7 +87,10 @@ public class RitualManager extends PersistentState {
         NightOfTheDead.LOGGER.info("manager onEntityDeath");
         UUID id= entityMapping.get(entity.getUuid());
         if (id!=null){
-            rituals.get(id).onEntityDeath(entity.getUuid());
+            Ritual ritual=rituals.get(id);
+            if (ritual!=null){
+                ritual.onEntityDeath(entity.getUuid());
+            }
         }
     }
 

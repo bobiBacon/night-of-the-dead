@@ -53,7 +53,7 @@ public class LivingEntityMixin extends Entity {
                         amount = amount + base;
                     }
                     if (stack.getItem() instanceof AxeItem || stack.getItem() instanceof ShovelItem){
-                        amount = amount + base;
+                        amount = amount + base/3;
                     }
                 }
 

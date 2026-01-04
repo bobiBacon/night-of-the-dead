@@ -1,16 +1,26 @@
 package net.bobbacon.ritual;
 
 import net.bobbacon.NightOfTheDead;
+import net.bobbacon.status_effect.ModEffects;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +38,17 @@ public abstract class Ritual {
     private static final String STARTED_KEY = "started";
     public boolean started= false;
     private static final String PHASE_KEY = "phase";
-    byte phase= 0;
+    byte phaseCount = -1;
+    protected final ArrayList<Phase> phases = new ArrayList<>();
     private static final String TIME_KEY="time";
     public int time=0;
-    public int maxPhases=0;
     private static final String IS_PHASE_INIT_KEY= "is_phase_init";
     boolean isPhaseInit = false;
     private static final String ENTITY_LIST_KEY = "entities";
     public final ArrayList<UUID> entities= new ArrayList<>();
+    private static final String PLAYER_LIST_KEY = "players";
+
+    public final ArrayList<UUID> players= new ArrayList<>();
     /**Only for optimisation.
      * For real check, please take a look to areEntitiesAlive().*/
     protected int entityCount=0;
@@ -60,8 +73,15 @@ public abstract class Ritual {
     protected void tick(){
         if (started){
             this.time++;
-
+        }else return;
+//        try {
+        if (phases.get(phaseCount).tick(time)){
+            nextPhase();
         }
+//        }catch (Exception exception){
+//            phaseCount=0;
+//        }
+
     }
 
     public abstract boolean hasRitualSite();
@@ -71,6 +91,7 @@ public abstract class Ritual {
         }
         started = hasRitualSite();
         if (started){
+            definePlayers();
             RitualManager ritualManager = RitualManager.get((ServerWorld) world);
             ritualManager.add(this);
             NightOfTheDead.LOGGER.info("triggered on start");
@@ -79,12 +100,37 @@ public abstract class Ritual {
         }
         return started;
     }
+    protected void definePlayers(){
+        List<PlayerEntity> list= world.getEntitiesByType(EntityType.PLAYER,new Box(center.west(15).south(15).down(4), center.east(15).north(15).up(6)), entity -> !entity.isSpectator());
+        for (PlayerEntity player: list){
+            players.add(player.getUuid());
+        }
+    }
+    public List<PlayerEntity> getPlayers(){
+        ArrayList<PlayerEntity> list= new ArrayList<>();
+        for (UUID id: players){
+            PlayerEntity player= getPlayer(id);
+            if (player!=null){
+                list.add(getPlayer(id));
+            }
+        }
+        return list;
+    }
+    @Nullable
+    public PlayerEntity getPlayer(UUID id){
+        if (((ServerWorld)world).getEntity(id) instanceof PlayerEntity entity){
+            return entity;
+        }
+        return null;
+    }
+
     public void nextPhase(){
         if (started){
             NightOfTheDead.LOGGER.info("changing phase");
-            if (phase<maxPhases){
-                phase++;
-                isPhaseInit=false;
+            if (phaseCount+1<phases.size()){
+                phaseCount++;
+                phases.get(phaseCount).start();
+                time=0;
             }else {
                 complete();
             }
@@ -106,7 +152,7 @@ public abstract class Ritual {
 
     public void readNbt(NbtCompound nbt) {
         id= nbt.getUuid(ID_KEY);
-        phase= nbt.getByte(PHASE_KEY);
+        phaseCount = nbt.getByte(PHASE_KEY);
         started= nbt.getBoolean(STARTED_KEY);
         center= new BlockPos(nbt.getInt(CENTER_X_KEY),nbt.getInt(CENTER_Y_KEY),nbt.getInt(CENTER_Z_KEY));
         time= nbt.getInt(TIME_KEY);
@@ -118,11 +164,17 @@ public abstract class Ritual {
             }
         }
         entityCount=entities.size();
+        NbtList list1= nbt.getList(PLAYER_LIST_KEY, NbtElement.STRING_TYPE);
+        for (NbtElement e:list1){
+            if (e instanceof NbtString s){
+                players.add(UUID.fromString(s.asString()));
+            }
+        }
     }
 
     protected void writeNbt(NbtCompound nbt) {
         nbt.putUuid(ID_KEY,id);
-        nbt.putByte(PHASE_KEY,phase);
+        nbt.putByte(PHASE_KEY, phaseCount);
         nbt.putBoolean(STARTED_KEY,started);
         nbt.putInt(CENTER_X_KEY,center.getX());
         nbt.putInt(CENTER_Y_KEY,center.getY());
@@ -134,6 +186,11 @@ public abstract class Ritual {
             list.add(NbtString.of(id.toString()));
         }
         nbt.put(ENTITY_LIST_KEY,list);
+        NbtList list1= new NbtList();
+        for (UUID id: players){
+            list1.add(NbtString.of(id.toString()));
+        }
+        nbt.put(PLAYER_LIST_KEY,list1);
     }
     public void markDirty(){
         if (!world.isClient){
@@ -166,12 +223,35 @@ public abstract class Ritual {
         }
         return false;
     }
-    protected void spawnEntity(MobEntity entity){
-        entity.setPersistent();
+    protected void spawnEntity(LivingEntity entity){
         world.spawnEntity(entity);
         RitualManager.get((ServerWorld) world).entityMapping.put(entity.getUuid(),this.id);
         entities.add(entity.getUuid());
         entityCount++;
         markDirty();
+    }
+    protected void spawnMobInRange(MobEntity entity,float radius,int targetingDistance){
+        float diameter= 2f* radius;
+        BlockPos pos= center.west(Math.round(world.random.nextFloat()*diameter-radius)).north(Math.round(world.random.nextFloat()*diameter-radius));
+        while (!SpawnHelper.canSpawn(SpawnRestriction.Location.ON_GROUND,world,pos, EntityType.SKELETON)){
+            pos= center.west(Math.round(world.random.nextFloat()*diameter-radius)).north(Math.round(world.random.nextFloat()*diameter-radius));
+        }
+        spawnMob(entity,pos,targetingDistance);
+    }
+    protected void spawnMob(MobEntity entity, BlockPos pos, int targetingDistance){
+        entity.setPos(pos.getX(),pos.getY(),pos.getZ());
+        entity.targetSelector.add(
+                1,
+                new ActiveTargetGoal<>(
+                        entity,
+                        PlayerEntity.class,
+                        targetingDistance,              // distance de recherche
+                        false,            // doit voir la cible
+                        false,           // pas besoin de reach
+                        player -> players.contains(player.getUuid())   // filtre custom
+                )
+        );
+        entity.setPersistent();
+        spawnEntity(entity);
     }
 }

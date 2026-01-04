@@ -52,7 +52,7 @@ public class FireDrop extends ProjectileEntity {
         this.updateRotation();
         float g = 0.99F;
         float h = 0.06F;
-        if (this.getWorld().getStatesInBox(this.getBoundingBox()).noneMatch(AbstractBlock.AbstractBlockState::isAir)) {
+        if (this.getWorld().getStatesInBox(this.getBoundingBox()).noneMatch(AbstractBlock.AbstractBlockState::isAir)&&this.getWorld().getStatesInBox(this.getBoundingBox()).noneMatch((state)-> state.isOf(Blocks.FIRE))) {
             this.discard();
         } else if (this.isInsideWaterOrBubbleColumn()) {
             this.discard();
@@ -136,5 +136,10 @@ public class FireDrop extends ProjectileEntity {
     @Override
     protected void initDataTracker() {
 
+    }
+
+    @Override
+    public boolean isImmuneToExplosion() {
+        return true;
     }
 }

@@ -117,6 +117,10 @@ public class NightOfTheDead implements ModInitializer {
 				EntityType.STRAY,
 				StrayEntity.createAbstractSkeletonAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0)
 		);
+		FabricDefaultAttributeRegistry.register(
+				EntityType.WITHER_SKELETON,
+				AbstractSkeletonEntity.createAbstractSkeletonAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0)
+		);
 
 
 		ServerEntityEvents.ENTITY_LOAD.register((Entity entity, ServerWorld world) -> {

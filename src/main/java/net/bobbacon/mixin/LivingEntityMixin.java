@@ -1,5 +1,6 @@
 package net.bobbacon.mixin;
 
+import net.bobbacon.Accessors.LivingEntityAccessor;
 import net.bobbacon.ritual.RitualManager;
 import net.bobbacon.status_effect.ModEffects;
 import net.minecraft.entity.Entity;
@@ -19,15 +20,19 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin extends Entity {
+public class LivingEntityMixin extends Entity implements LivingEntityAccessor {
     @Shadow private @Nullable LivingEntity attacker;
-
+    @Unique
+    public boolean comesFromRitual= false;
+    @Unique
+    private static final String comesFromRitualKey= "comes_from_ritual";
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -44,6 +49,9 @@ public class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "damage", at = @At("HEAD"), argsOnly = true)
     private float BoostDamage(float amount, DamageSource source) {
         LivingEntity self = (LivingEntity) (Object) this;
+        if (comesFromRitual&&source.isIn(DamageTypeTags.IS_EXPLOSION)){
+            return 0;
+        }
         if (self instanceof AbstractSkeletonEntity){
             float base = amount;
             if (source.getAttacker() instanceof LivingEntity attacker){
@@ -85,6 +93,18 @@ public class LivingEntityMixin extends Entity {
             RitualManager.get((ServerWorld) getWorld()).onEntityDeath((LivingEntity) (Object) this);
         }
     }
+//    @ModifyReturnValue(method = "isFire")
+//    private boolean immuneToFire(){
+//
+//    }
+    @Inject(method = "writeCustomDataToNbt", at=@At("TAIL"))
+    private void writeNbt(NbtCompound nbt, CallbackInfo ci){
+        nbt.putBoolean(comesFromRitualKey,comesFromRitual);
+    }
+    @Inject(method = "readCustomDataFromNbt", at=@At("TAIL"))
+    private void readNbt(NbtCompound nbt, CallbackInfo ci){
+        comesFromRitual=nbt.getBoolean(comesFromRitualKey);
+    }
 
         @Override
     @Shadow
@@ -102,5 +122,15 @@ public class LivingEntityMixin extends Entity {
     @Shadow
     public void writeCustomDataToNbt(NbtCompound nbt) {
 
+    }
+
+    @Override
+    public boolean night_of_the_Dead$comesFromRitual() {
+        return comesFromRitual;
+    }
+
+    @Override
+    public void night_of_the_Dead$setComesFromRitual(boolean value) {
+        comesFromRitual= value;
     }
 }

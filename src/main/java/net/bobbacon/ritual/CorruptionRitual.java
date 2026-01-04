@@ -7,6 +7,7 @@ import net.bobbacon.entity.MetalSupport;
 import net.bobbacon.entity.ModEntities;
 import net.bobbacon.entity.block_entity.AltarBE;
 import net.bobbacon.item.ModItems;
+import net.bobbacon.Accessors.LivingEntityAccessor;
 import net.bobbacon.status_effect.ModEffects;
 import net.bobbacon.utils.Utils;
 import net.minecraft.block.AbstractFireBlock;
@@ -15,8 +16,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.BowAttackGoal;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -40,7 +39,6 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 public class CorruptionRitual extends Ritual {
     BlockPos pillar1;
@@ -175,8 +173,13 @@ public class CorruptionRitual extends Ritual {
     @Override
     protected void complete() {
         super.complete();
+        ArrayList<FireballEntity> list= new ArrayList<>();
+        world.collectEntitiesByType(EntityType.FIREBALL,new Box(center.up(40).west(25).south(26),center.up(41).east(26).north(25)),(entity)->entity.getVelocity().equals(new Vec3d(0,0,0)),list);
+        for (FireballEntity fireball: list){
+            fireball.setVelocity(0,-10,0,0.4f,0);
+            fireball.powerY=-0.1;
+        }
         getAltarBE().corrupt();
-
     }
 
     @Override
@@ -363,6 +366,7 @@ public class CorruptionRitual extends Ritual {
                 horse.setEquipmentDropChance(EquipmentSlot.CHEST,0);
                 horse.setPersistent();
                 horse.setPos(pos.getX(),pos.getY(),pos.getZ());
+                ((LivingEntityAccessor)horse).night_of_the_Dead$setComesFromRitual(true);
                 world.spawnEntity(horse);
 
                 ItemStack stack= Items.BOW.getDefaultStack();
@@ -387,7 +391,7 @@ public class CorruptionRitual extends Ritual {
 
         @Override
         public boolean tick(int time) {
-            if ((time%4)==0){
+            if ((time%10)==0){
                 if(shootFireBall()){
                     spawnFireBall();
                 }

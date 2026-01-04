@@ -57,12 +57,12 @@ public class CorruptionRitual extends Ritual {
         definePhases();
     }
     public void definePhases(){
-//        phases.add(new InsanityPhase());
-//        phases.add(new FirePhase());
-//        phases.add(new SkeletonPhase());
-//        phases.add(new InsanityPhase());
-//        phases.add(new BeatingPhase());
-//        phases.add(new BossPrePhase());
+        phases.add(new InsanityPhase());
+        phases.add(new FirePhase());
+        phases.add(new SkeletonPhase());
+        phases.add(new InsanityPhase());
+        phases.add(new BeatingPhase());
+        phases.add(new BossPrePhase());
         phases.add(new BossPhase());
     }
 

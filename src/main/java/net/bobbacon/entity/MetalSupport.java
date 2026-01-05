@@ -30,7 +30,7 @@ public class MetalSupport extends ItemFrameEntity {
 
     @Override
     public void setHeldItemStack(ItemStack value, boolean update) {
-        if (value.isIn(TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "hookable")))) {
+        if (value.isIn(TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "hookable")))||value.isEmpty()) {
             super.setHeldItemStack(value, update);
         }
     }

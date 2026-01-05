@@ -1,6 +1,6 @@
 package net.bobbacon.mixin;
 
-import net.bobbacon.Accessors.LivingEntityAccessor;
+import net.bobbacon.Accessors.EntityAccessor;
 import net.bobbacon.ritual.RitualManager;
 import net.bobbacon.status_effect.ModEffects;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -45,7 +44,7 @@ public class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "damage", at = @At("HEAD"), argsOnly = true)
     private float BoostDamage(float amount, DamageSource source) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (((LivingEntityAccessor)(this)).night_of_the_Dead$comesFromRitual()&&source.isIn(DamageTypeTags.IS_EXPLOSION)){
+        if (((EntityAccessor)(this)).night_of_the_Dead$comesFromRitual()&&source.isIn(DamageTypeTags.IS_EXPLOSION)){
             return 0;
         }
         if (self instanceof AbstractSkeletonEntity){

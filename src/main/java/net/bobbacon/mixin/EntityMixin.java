@@ -1,6 +1,6 @@
 package net.bobbacon.mixin;
 
-import net.bobbacon.Accessors.LivingEntityAccessor;
+import net.bobbacon.Accessors.EntityAccessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
-public class EntityMixin implements LivingEntityAccessor {
+public class EntityMixin implements EntityAccessor {
     @Unique
     private static final String comesFromRitualKey= "comes_from_ritual";
     @Unique
@@ -27,6 +27,12 @@ public class EntityMixin implements LivingEntityAccessor {
     @Inject(method = "isFireImmune", at=@At("HEAD"), cancellable = true)
     private void fireImmune(CallbackInfoReturnable<Boolean> cir){
         cir.setReturnValue(night_of_the_Dead$comesFromRitual());
+    }
+    @Inject(method = "setOnFireFor", at = @At("HEAD"), cancellable = true)
+    private void cancelFire(int seconds, CallbackInfo ci) {
+        if (night_of_the_Dead$comesFromRitual()) {
+            ci.cancel();
+        }
     }
     @Override
     public boolean night_of_the_Dead$comesFromRitual() {

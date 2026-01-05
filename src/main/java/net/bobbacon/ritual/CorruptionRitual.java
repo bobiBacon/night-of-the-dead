@@ -7,7 +7,7 @@ import net.bobbacon.entity.MetalSupport;
 import net.bobbacon.entity.ModEntities;
 import net.bobbacon.entity.block_entity.AltarBE;
 import net.bobbacon.item.ModItems;
-import net.bobbacon.Accessors.LivingEntityAccessor;
+import net.bobbacon.Accessors.EntityAccessor;
 import net.bobbacon.status_effect.ModEffects;
 import net.bobbacon.utils.Utils;
 import net.minecraft.block.AbstractFireBlock;
@@ -366,7 +366,7 @@ public class CorruptionRitual extends Ritual {
                 horse.setEquipmentDropChance(EquipmentSlot.CHEST,0);
                 horse.setPersistent();
                 horse.setPos(pos.getX(),pos.getY(),pos.getZ());
-                ((LivingEntityAccessor)horse).night_of_the_Dead$setComesFromRitual(true);
+                ((EntityAccessor)horse).night_of_the_Dead$setComesFromRitual(true);
                 world.spawnEntity(horse);
 
                 ItemStack stack= Items.BOW.getDefaultStack();
@@ -412,22 +412,26 @@ public class CorruptionRitual extends Ritual {
         private boolean shootFireBall(){
             Random random= new Random();
             ArrayList<FireballEntity> list= new ArrayList<>();
-            world.collectEntitiesByType(EntityType.FIREBALL,new Box(center.up(40).west(25).south(26),center.up(41).east(26).north(25)),(entity)->entity.getVelocity().equals(new Vec3d(0,0,0)),list,1);
+            world.collectEntitiesByType(EntityType.FIREBALL,new Box(center.up(40).west(25).south(26),center.up(41).east(26).north(25)),(entity)->entity.getVelocity().equals(Vec3d.ZERO),list);
             double x= random.nextGaussian();
             double y=-10;
             double z = random.nextGaussian();
             try {
-                FireballEntity fireball= list.get(0);
-                fireball.setVelocity(x,y,z,0.4f,0);
-                fireball.powerX = x * 0.01;
-                fireball.powerY = -0.1;
-                fireball.powerZ = z * 0.01;
-                return true;
+                if (!list.isEmpty()) {
+                    FireballEntity fireball =
+                    list.get(random.nextInt(list.size()));
+                    fireball.setVelocity(x,y,z,0.4f,0);
+                    fireball.powerX = x * 0.01;
+                    fireball.powerY = -0.1;
+                    fireball.powerZ = z * 0.01;
+                    return true;
+                }
+                return false;
+
             }catch (Exception e){
                 NightOfTheDead.LOGGER.error(e.toString());
                 return false;
             }
-
         }
         private static void improveFireRate(AbstractSkeletonEntity skeleton) {
 

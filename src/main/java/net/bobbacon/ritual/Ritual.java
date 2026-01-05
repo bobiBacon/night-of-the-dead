@@ -1,15 +1,12 @@
 package net.bobbacon.ritual;
 
-import net.bobbacon.Accessors.LivingEntityAccessor;
+import net.bobbacon.Accessors.EntityAccessor;
 import net.bobbacon.NightOfTheDead;
-import net.bobbacon.status_effect.ModEffects;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -252,7 +249,7 @@ public abstract class Ritual {
                         player -> players.contains(player.getUuid())   // filtre custom
                 )
         );
-        ((LivingEntityAccessor)entity).night_of_the_Dead$setComesFromRitual(true);
+        ((EntityAccessor)entity).night_of_the_Dead$setComesFromRitual(true);
         entity.setPersistent();
         spawnEntity(entity);
     }

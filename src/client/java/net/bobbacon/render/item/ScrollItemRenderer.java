@@ -119,23 +119,22 @@ public class ScrollItemRenderer {
         matrices.push();
 
 
-//        matrices.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(25));
-//
-//        if (leftHanded){
-//            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(25));
-//
-//        }
-//        else {
-//            matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(25));
-//
-//        }
-//        matrices.translate(0.2, 0.2, 0.3);
-        scrollModel.getTransformation()
-                .getTransformation(renderMode)
-                .apply(leftHanded, matrices);
 
-        matrices.scale(0.4f,0.4f,0.4f);
-        matrices.translate(0,-0.6,0);
+        matrices.scale(0.3f, 0.3f, 0.3f);
+
+
+        matrices.multiply(
+                RotationAxis.POSITIVE_Y.rotationDegrees(
+                        (MinecraftClient.getInstance().world.getTime() % 90) * 4
+                ),
+                -0.45f,0.9f,0.6f
+        );
+        matrices.translate(-0.45, 0.9, 0.6);
+
+// Revenir à l'origine
+//        matrices.translate(-0.5, 0.5, -0.5);
+
+
 
 
 
@@ -144,8 +143,9 @@ public class ScrollItemRenderer {
         Matrix3f normal = entry.getNormalMatrix();
 
         int overlay = OverlayTexture.DEFAULT_UV;
+        light=255;
 
-        consumer.vertex(matrix, -0.5f, 0, -0.5f)
+        consumer.vertex(matrix, -0.5f, -0.5f,0)
                 .color(255, 255, 255, 255)
                 .texture(sprite.getMinU(), sprite.getMaxV())
                 .overlay(overlay)
@@ -153,15 +153,15 @@ public class ScrollItemRenderer {
                 .normal(normal, 0, 0, 1)
                 .next();
 
-        consumer.vertex(matrix, 0.5f, 0,-0.5f )
+        consumer.vertex(matrix, 0.5f, -0.5f,0 )
                 .color(255, 255, 255, 255)
-                .texture(sprite.getMinU(), sprite.getMinV())
+                .texture(sprite.getMaxU(), sprite.getMaxV())
                 .overlay(overlay)
                 .light(light)
                 .normal(normal, 0, 0, 1)
                 .next();
 
-        consumer.vertex(matrix, 0.5f, 0,0.5f)
+        consumer.vertex(matrix, 0.5f, 0.5f,0)
                 .color(255, 255, 255, 255)
                 .texture(sprite.getMaxU(), sprite.getMinV())
                 .overlay(overlay)
@@ -169,9 +169,9 @@ public class ScrollItemRenderer {
                 .normal(normal, 0, 0, 1)
                 .next();
 
-        consumer.vertex(matrix, -0.5f, 0,0.5f)
+        consumer.vertex(matrix, -0.5f, 0.5f,0)
                 .color(255, 255, 255, 255)
-                .texture(sprite.getMaxU(), sprite.getMaxV())
+                .texture(sprite.getMinU(), sprite.getMinV())
                 .overlay(overlay)
                 .light(light)
                 .normal(normal, 0, 0, 1)

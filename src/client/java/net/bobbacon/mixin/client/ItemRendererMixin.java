@@ -37,7 +37,7 @@ public class ItemRendererMixin {
 //            return model;
 //        }
         if (stack.isOf(ModItems.SCROLL)&&renderMode != ModelTransformationMode.GUI && renderMode != ModelTransformationMode.FIXED && renderMode != ModelTransformationMode.GROUND ){
-            BakedModel model = ((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d","inventory"));
+            BakedModel model = ((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d_2","inventory"));
             return model;
         }
         return value;

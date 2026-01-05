@@ -27,5 +27,6 @@ public abstract class ModelLoaderMixin {
     public void addModels(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<ModelLoader.SourceTrackedData>> blockStates, CallbackInfo ci) {
         profiler.swap("items");
         this.addModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID, "scroll_3d", "inventory"));
+        this.addModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID, "scroll_3d_2", "inventory"));
     }
 }

@@ -26,7 +26,7 @@ public abstract class ServerWorldMixin {
 
         long time = world.getTimeOfDay();
 
-        if (time == 13000) {
+        if (time == 13000&&NightOfTheDead.ShouldPlayANightOfTheDead(world)) {
             NightOfTheDead.setNightOfTheDead(true,world);
             NightOfTheDead.setShouldPlayANightOfTheDead(false,world);
             wakeSleepingPlayers();

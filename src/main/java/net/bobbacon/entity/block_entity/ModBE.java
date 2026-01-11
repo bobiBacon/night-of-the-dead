@@ -20,6 +20,10 @@ public class ModBE {
             "altar",
             BlockEntityType.Builder.create(AltarBE::new, ModBlocks.ALTAR).build(null)
     );
+    public static final BlockEntityType<Refinery> REFINERY= register(
+            "refinery",
+            BlockEntityType.Builder.create(Refinery::new,ModBlocks.REFINERY).build(null)
+    );
     public static void init(){
 
     }

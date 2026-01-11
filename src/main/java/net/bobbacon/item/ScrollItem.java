@@ -35,9 +35,10 @@ public class ScrollItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         NightOfTheDead.LOGGER.info("using");
-        Spell spell= getSpell(user.getStackInHand(hand)).create(world);
-        spell.tryCast(user.getBlockPos(),world);
-        return super.use(world, user, hand);
+        ItemStack stack= user.getStackInHand(hand);
+        Spell spell= getSpell(stack).create(world);
+        user.setCurrentHand(hand);
+        return spell.canCast(user.getBlockPos(),world)? TypedActionResult.consume(stack):TypedActionResult.pass(stack);
     }
 
     @Override
@@ -45,10 +46,20 @@ public class ScrollItem extends Item {
         NightOfTheDead.LOGGER.info("finish using");
 
         Spell spell= getSpell(stack).create(world);
-        spell.tryCast(user.getBlockPos(),world);
+        if (spell.tryCast(user.getBlockPos(),world)&&spell.isSingleUse()){
+            stack.decrement(1);
+        }
         return super.finishUsing(stack, world, user);
     }
 
+
+
+    @Override
+    public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+        if (remainingUseTicks==0){
+            finishUsing(stack,world,user);
+        }
+    }
 
     @Override
     public UseAction getUseAction(ItemStack stack) {
@@ -101,5 +112,8 @@ public class ScrollItem extends Item {
         return super.getTranslationKey(stack);
     }
 
-
+    @Override
+    public int getMaxUseTime(ItemStack stack) {
+        return 80;
+    }
 }

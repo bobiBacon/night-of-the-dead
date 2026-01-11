@@ -85,32 +85,24 @@ public class CorruptionRitual extends Ritual {
 
     @Override
     public boolean hasRitualSite() {
-        NightOfTheDead.LOGGER.info("has ritual site?");
 
         boolean altar= getAltar().isOf(ModBlocks.ALTAR);
-        NightOfTheDead.LOGGER.info("altar? : "+ altar);
 
         boolean p1= isPillar(pillar1);
         boolean p2= isPillar(pillar2);
         boolean p3= isPillar(pillar3);
         boolean p4= isPillar(pillar4);
-        NightOfTheDead.LOGGER.info("pillar 1? : "+ p1);
-        NightOfTheDead.LOGGER.info("pillar 2? : "+ p2);
-        NightOfTheDead.LOGGER.info("pillar 3? : "+ p3);
-        NightOfTheDead.LOGGER.info("pillar 4? : "+ p4);
         boolean bl= true;
         for (int i = -3; i <=3; i++) {
             for (int j = -3; j <= 3; j++) {
                 BlockPos pos=center.down().east(i).south(j);
                 if (!world.getBlockState(pos).isSolidBlock(world,pos)){
-                    NightOfTheDead.LOGGER.info("Block "+pos.toString()+" is not solid");
                     bl=false;
                 }
                 if (!pos.up().equals(pillar1)&&!pos.up().equals(pillar2)&&!pos.up().equals(pillar3)&&!pos.up().equals(pillar4)&&!pos.up().equals(center)){
                     for (int k = 1; k <4; k++) {
                         BlockPos pos1=pos.up(k);
                         if (!world.getBlockState(pos1).isOf(Blocks.AIR)){
-                            NightOfTheDead.LOGGER.info("Block "+pos.toString()+" is not air");
                             bl=false;
                         }
                     }
@@ -118,18 +110,15 @@ public class CorruptionRitual extends Ritual {
 
             }
         }
-        NightOfTheDead.LOGGER.info("Air and ground: "+bl);
         return altar && p1 && p2 && p3 && p4 && hasBlood()&&bl;
     }
     public List<MetalSupport> getSupportsInArea(){
         return world.getEntitiesByType(ModEntities.METAL_SUPPORT,new Box(center.west(3).south(3),center.up(3).east(3).north(3)), entity ->true);
     }
     public boolean hasBlood(){
-        NightOfTheDead.LOGGER.info("has blood?");
 
         List<MetalSupport> list = getSupportsInArea();
         if (list.size()<8){
-            NightOfTheDead.LOGGER.info("support number : "+ list.size());
             return false;
         }
         int i=0;
@@ -138,7 +127,6 @@ public class CorruptionRitual extends Ritual {
                 i++;
             }
         }
-        NightOfTheDead.LOGGER.info("blood? : "+ (i>=8));
 
         return i>=8;
 

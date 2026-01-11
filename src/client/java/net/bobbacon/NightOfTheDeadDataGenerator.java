@@ -1,5 +1,6 @@
 package net.bobbacon;
 
+import net.bobbacon.block.ModBlocks;
 import net.bobbacon.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -104,10 +105,15 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
 							FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
 					.offerTo(consumer);
-			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.ALTAR).pattern(" w ").pattern("sgs").pattern("bbb")
-					.input('w',Items.RED_WOOL).input('s', Items.NETHERITE_SCRAP).input('g',Items.GILDED_BLACKSTONE).input('b',Items.CHISELED_POLISHED_BLACKSTONE)
-					.criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
-							FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
+			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.ALTAR).pattern("sws").pattern(" g ").pattern("bbb")
+					.input('w',Items.RED_WOOL).input('s', Items.NETHERITE_SCRAP).input('g',Items.GILDED_BLACKSTONE).input('b',Items.POLISHED_BLACKSTONE_BRICK_SLAB)
+					.criterion(FabricRecipeProvider.hasItem(Items.NETHERITE_SCRAP),
+							FabricRecipeProvider.conditionsFromItem(Items.NETHERITE_SCRAP))
+					.offerTo(consumer);
+			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.REFINERY).pattern("ggg").pattern("scs").pattern("sss")
+					.input('c',ModItems.CORRUPTED_SHARD).input('s', Items.POLISHED_BLACKSTONE_BRICKS).input('g',Items.GOLD_INGOT)
+					.criterion(FabricRecipeProvider.hasItem(ModItems.CORRUPTED_SHARD),
+							FabricRecipeProvider.conditionsFromItem(ModItems.CORRUPTED_SHARD))
 					.offerTo(consumer);
 		}
 

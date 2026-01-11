@@ -38,6 +38,7 @@ public class ModItems {
     public static final Item METAL_SUPPORT = registryHelper.register("metal_support", new MetalSupportItem(ModEntities.METAL_SUPPORT, new Item.Settings()));
     public static final Item SCROLL = registryHelper.register("scroll", new ScrollItem(new Item.Settings()));
     public static final Item ALTAR = registryHelper.register("altar", new BlockItem(ModBlocks.ALTAR, new FabricItemSettings()));
+    public static final Item REFINERY = registryHelper.register("refinery", new BlockItem(ModBlocks.REFINERY, new FabricItemSettings()));
     public static final Item CORRUPTED_SHARD = registryHelper.register("corrupted_shard",new Item(new FabricItemSettings()));
 
 

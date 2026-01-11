@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 
 public  class Spell {
     public Spell(SpellType<? extends Spell> type, World world) {
+
     }
 
     public boolean casted= false;
@@ -16,6 +17,10 @@ public  class Spell {
         return casted;
     }
     public boolean canCast(BlockPos pos, World world){
+        return false;
+    }
+
+    public boolean isSingleUse(){
         return false;
     }
 }

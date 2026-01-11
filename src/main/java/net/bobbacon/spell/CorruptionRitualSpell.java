@@ -20,10 +20,8 @@ public class CorruptionRitualSpell extends Spell {
 
     @Override
     public boolean canCast(BlockPos pos,World world) {
-        NightOfTheDead.LOGGER.info("can cast spell?");
         BlockEntity be= this.findNearestAltar(pos,world);
         if (be instanceof AltarBE altarBE){
-            NightOfTheDead.LOGGER.info("block entity: " + altarBE.toString());
 
             return altarBE.canCastRitual();
         }
@@ -72,5 +70,10 @@ public class CorruptionRitualSpell extends Spell {
             }
         }
         return b;
+    }
+
+    @Override
+    public boolean isSingleUse() {
+        return true;
     }
 }

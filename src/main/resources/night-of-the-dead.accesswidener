@@ -21,3 +21,8 @@ extendable method net/minecraft/block/FireBlock trySpreadingFire (Lnet/minecraft
 
 accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
 accessible field net/minecraft/entity/projectile/FireballEntity explosionPower I
+
+accessible method net/minecraft/recipe/ShapedRecipe createPatternMatrix ([Ljava/lang/String;Ljava/util/Map;II)Lnet/minecraft/util/collection/DefaultedList;
+accessible method net/minecraft/recipe/ShapedRecipe getPattern (Lcom/google/gson/JsonArray;)[Ljava/lang/String;
+accessible method net/minecraft/recipe/ShapedRecipe removePadding ([Ljava/lang/String;)[Ljava/lang/String;
+accessible method net/minecraft/recipe/ShapedRecipe readSymbols (Lcom/google/gson/JsonObject;)Ljava/util/Map;

@@ -6,6 +6,8 @@ import net.bobbacon.registry.ModRegistries;
 import net.bobbacon.render.blockEntity.BlockEntityRenderers;
 import net.bobbacon.render.entity.EntityRenderers;
 import net.bobbacon.render.fluids.ColoredWaterRenderHandler;
+import net.bobbacon.screen.ModScreenHandlers;
+import net.bobbacon.screen.RefiningScreen;
 import net.bobbacon.spell.SpellType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -20,6 +22,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
@@ -52,6 +55,7 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 //		ItemRenderers.init();
 		EntityRenderers.init();
 		BlockEntityRenderers.init();
+		HandledScreens.register(ModScreenHandlers.REFINERY_SCREEN_HANDLER, RefiningScreen::new);
 
 		ModelPredicateProviderRegistry.register(
 				ModItems.MOLOTOV,

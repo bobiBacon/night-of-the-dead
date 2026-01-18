@@ -165,6 +165,7 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			translationBuilder.add("item.night-of-the-dead.scroll","Unknown Scroll");
 			translationBuilder.add("item.night-of-the-dead.scroll.blank","Blank Scroll");
 			translationBuilder.add("item.night-of-the-dead.scroll.spell.corruption_ritual","Punishment Scroll");
+			translationBuilder.add("container.night-of-the-dead.refinery","Refinery");
 		}
 	}
 

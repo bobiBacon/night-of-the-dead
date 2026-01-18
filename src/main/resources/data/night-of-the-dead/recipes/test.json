@@ -1,0 +1,19 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "I",
+    "I"
+  ],
+  "result": {
+    "count": 1,
+    "item" : "minecraft:iron_sword"
+  },
+  "show_notification": false,
+  "cookingtime": 200
+
+}

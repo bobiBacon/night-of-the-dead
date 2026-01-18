@@ -26,3 +26,6 @@ accessible method net/minecraft/recipe/ShapedRecipe createPatternMatrix ([Ljava/
 accessible method net/minecraft/recipe/ShapedRecipe getPattern (Lcom/google/gson/JsonArray;)[Ljava/lang/String;
 accessible method net/minecraft/recipe/ShapedRecipe removePadding ([Ljava/lang/String;)[Ljava/lang/String;
 accessible method net/minecraft/recipe/ShapedRecipe readSymbols (Lcom/google/gson/JsonObject;)Ljava/util/Map;
+
+accessible field net/minecraft/inventory/CraftingInventory stacks Lnet/minecraft/util/collection/DefaultedList;
+accessible field net/minecraft/inventory/CraftingInventory handler Lnet/minecraft/screen/ScreenHandler;

@@ -2,6 +2,7 @@ package net.bobbacon.recipe;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import net.bobbacon.NightOfTheDead;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -31,6 +32,7 @@ public class RefiningRecipeSerializer <T extends RefiningRecipe> implements Reci
 
     @Override
     public T read(Identifier id, JsonObject json) {
+        NightOfTheDead.LOGGER.info("loading recipe: " + id);
         String group = JsonHelper.getString(json, "group", "");
         CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)CraftingRecipeCategory.CODEC
                 .byId(JsonHelper.getString(json, "category", null), CraftingRecipeCategory.MISC);
@@ -43,7 +45,7 @@ public class RefiningRecipeSerializer <T extends RefiningRecipe> implements Reci
         boolean bl = JsonHelper.getBoolean(json, "show_notification", true);
         int cookingTime= JsonHelper.getInt(json,"cookingtime",250);
         double experience= JsonHelper.getDouble(json,"experience",0.5);
-        Item recipient= getItem(JsonHelper.getObject(json,"recipient"),Items.AIR);
+        Item recipient= getItem(JsonHelper.getObject(json,"recipient",new JsonObject()),Items.AIR);
         return recipeFactory.create(id,group,craftingRecipeCategory,i,j,ingredients,output,bl,cookingTime,experience,recipient);
     }
     public static Item getItem(JsonObject json,Item defaultItem) {

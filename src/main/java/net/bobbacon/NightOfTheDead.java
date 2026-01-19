@@ -12,12 +12,14 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -130,6 +132,7 @@ public class NightOfTheDead implements ModInitializer {
 				creeper.readCustomDataFromNbt(nbt);
 			}
 		});
+//		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((BlockEntity::setWorld));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server)->{
 			ServerPlayerEntity player = handler.getPlayer();
 			ServerWorld world = player.getServerWorld();

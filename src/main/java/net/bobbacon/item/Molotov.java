@@ -142,7 +142,7 @@ public class Molotov extends Item {
         if (world.isClient){
             return;
         }
-        if (world.random.nextFloat()*5f>4f){
+        if (stack.getOrCreateNbt().getBoolean("from_refining") ? world.random.nextFloat()*10f>9f : world.random.nextFloat()*5f>4f){
             world.createExplosion(null,player.getX(),player.getY(),player.getZ(),1,true, World.ExplosionSourceType.BLOCK);
             for (int i = 0; i <6; i++) {
                 FireDrop fireDrop = new FireDrop( null, world, player.getX(),player.getY()+1.0,player.getZ());

@@ -1,0 +1,27 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "b": {
+      "item": "minecraft:blaze_rod"
+    },
+    "g": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "m": {
+      "item": "night-of-the-dead:molotov_cocktail"
+    },
+    "t": {
+      "item": "minecraft:ghast_tear"
+    }
+  },
+  "pattern": [
+    "bgb",
+    "tmt",
+    " t "
+  ],
+  "result": {
+    "item": "night-of-the-dead:fiery_cocktail"
+  },
+  "show_notification": false,
+  "cookingtime": 400
+}

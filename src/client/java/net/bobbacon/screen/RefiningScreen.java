@@ -19,14 +19,14 @@ public class RefiningScreen extends HandledScreen<RefiningScreenHandler> {
 
     public RefiningScreen(RefiningScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
-        this.backgroundHeight = 225;
+        this.backgroundHeight = 165;
     }
 
     @Override
     protected void init() {
         super.init();
-        titleY= 1000;
-        playerInventoryTitleY = 1000;
+//        titleY= y+3;
+//        playerInventoryTitleY = y+;
 
     }
 
@@ -39,19 +39,24 @@ public class RefiningScreen extends HandledScreen<RefiningScreenHandler> {
         y = (height - backgroundHeight) / 2;
         context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
         drawProgressArrow(context, x, y);
-        drawForeground(context,x,y);
+        drawFuel(context,x,y);
+//        drawForeground(context,x,y);
     }
 
 
+//    @Override
+//    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+//        context.drawText(this.textRenderer, this.title, this.titleX, this.titleY, 4210752, false);
+//    }
 
-
-    @Override
-    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-        context.drawText(this.textRenderer, this.title, this.titleX, this.titleY, 4210752, false);
-    }
     private void drawProgressArrow(DrawContext context, int x, int y) {
         if(handler.isCrafting()) {
-            context.drawTexture(TEXTURE, x + 101, y + 35, 176, 14, handler.getScaledProgress(),15 );
+            context.drawTexture(TEXTURE, x + 97, y + 34, 176, 14, handler.getScaledProgress(),15 );
+        }
+    }
+    private void drawFuel(DrawContext context, int x, int y) {
+        if(handler.isBurning()) {
+            context.drawTexture(TEXTURE, x + 28, y + 23, 176, 30, 9,handler.getFuelValue() );
         }
     }
     @Override

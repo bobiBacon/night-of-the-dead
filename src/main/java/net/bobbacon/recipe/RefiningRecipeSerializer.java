@@ -19,19 +19,18 @@ import net.minecraft.util.collection.DefaultedList;
 
 import java.util.Map;
 
-public class RefiningRecipeSerializer <T extends RefiningRecipe> implements RecipeSerializer<T> {
+public class RefiningRecipeSerializer implements RecipeSerializer<RefiningRecipe> {
+    public static final RefiningRecipeSerializer INSTANCE = new RefiningRecipeSerializer();
 
 
-    private RecipeFactory<T> recipeFactory;
 
-    public  RefiningRecipeSerializer(RecipeFactory<T> recipeFactory) {
-        this.recipeFactory=recipeFactory;
+    public  RefiningRecipeSerializer() {
     }
 
 
 
     @Override
-    public T read(Identifier id, JsonObject json) {
+    public RefiningRecipe read(Identifier id, JsonObject json) {
         NightOfTheDead.LOGGER.info("loading recipe: " + id);
         String group = JsonHelper.getString(json, "group", "");
         CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)CraftingRecipeCategory.CODEC
@@ -45,8 +44,9 @@ public class RefiningRecipeSerializer <T extends RefiningRecipe> implements Reci
         boolean bl = JsonHelper.getBoolean(json, "show_notification", true);
         int cookingTime= JsonHelper.getInt(json,"cookingtime",250);
         double experience= JsonHelper.getDouble(json,"experience",0.5);
-        Item recipient= getItem(JsonHelper.getObject(json,"recipient",new JsonObject()),Items.AIR);
-        return recipeFactory.create(id,group,craftingRecipeCategory,i,j,ingredients,output,bl,cookingTime,experience,recipient);
+//        Item recipient= getItem(JsonHelper.getObject(json,"recipient",new JsonObject()),Items.AIR);
+        Item recipient= getItem(JsonHelper.getString(json,"recipient",""),Items.AIR);
+        return new RefiningRecipe(id,group,craftingRecipeCategory,i,j,ingredients,output,bl,cookingTime,experience,recipient);
     }
     public static Item getItem(JsonObject json,Item defaultItem) {
         String string = JsonHelper.getString(json, "item","");
@@ -61,7 +61,7 @@ public class RefiningRecipeSerializer <T extends RefiningRecipe> implements Reci
     }
 
     @Override
-    public T read(Identifier id, PacketByteBuf buf) {
+    public RefiningRecipe read(Identifier id, PacketByteBuf buf) {
         int width = buf.readVarInt();
         int height = buf.readVarInt();
         String group = buf.readString();
@@ -76,19 +76,15 @@ public class RefiningRecipeSerializer <T extends RefiningRecipe> implements Reci
         int cookingTime= buf.readInt();
         double experience= buf.readDouble();
         Item recipient= getItem(buf.readString(),Items.AIR);
-        return recipeFactory.create(id, group, craftingRecipeCategory, width, height, defaultedList, itemStack, bl,cookingTime,experience,recipient);
+        return new RefiningRecipe(id, group, craftingRecipeCategory, width, height, defaultedList, itemStack, bl,cookingTime,experience,recipient);
     }
 
     @Override
-    public void write(PacketByteBuf buf, T recipe) {
+    public void write(PacketByteBuf buf, RefiningRecipe recipe) {
         new ShapedRecipe.Serializer().write(buf,recipe);
         buf.writeInt(recipe.cookingTime);
         buf.writeDouble(recipe.experience);
         buf.writeString(recipe.recipient.toString());
-    }
-    public interface RecipeFactory<T extends RefiningRecipe> {
-        //doit correspondre au constructeur de la recete
-        T create(Identifier id, String group, CraftingRecipeCategory category, int width, int height, DefaultedList<Ingredient> input, ItemStack output, boolean showNotification,int cookingTime, double experience, Item recipient);
     }
 }
 

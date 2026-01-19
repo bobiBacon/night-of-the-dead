@@ -2,18 +2,18 @@
   "type": "night-of-the-dead:refining_recipe",
   "key": {
     "I": {
-      "item": "minecraft:iron_ingot"
+      "tag": "night-of-the-dead:strong_alcohol"
     }
   },
   "pattern": [
-    "I",
     "I"
   ],
   "result": {
     "count": 1,
-    "item" : "minecraft:iron_block"
+    "item" : "night-of-the-dead:pure_alcohol"
   },
   "show_notification": false,
-  "cookingtime": 40
+  "cookingtime": 200,
+  "recipient": "minecraft:glass_bottle"
 
 }

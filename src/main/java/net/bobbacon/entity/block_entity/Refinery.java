@@ -1,6 +1,5 @@
 package net.bobbacon.entity.block_entity;
 
-import net.bobbacon.NightOfTheDead;
 import net.bobbacon.recipe.ModRecipes;
 import net.bobbacon.recipe.RefiningRecipe;
 import net.bobbacon.screen.RefiningInventory;
@@ -8,11 +7,12 @@ import net.bobbacon.screen.RefiningScreenHandler;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.RecipeInputInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory{
+public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory, ContentUpdatable{
     private static final int PROGRESS_KEY=0;
     private static final int MAX_PROGRESS_KEY=1;
     private static final int FUEL_KEY=2;
@@ -39,7 +39,7 @@ public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactor
     private int progress= 0;
     int fuelTime;
     int maxFuelTime;
-    public final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(3,ItemStack.EMPTY);
+    public final UpdateNotifyingInventory<ItemStack> inventory = UpdateNotifyingInventory.create(3,ItemStack.EMPTY,this);
     public final RefiningInventory craftingInventory= new RefiningInventory(this,3,3);
     public RefiningScreenHandler screenHandler;
     private boolean isCrafting= false;
@@ -79,6 +79,14 @@ public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactor
                 return 4;
             }
         };
+        if (world!=null){
+            Optional<RefiningRecipe> optional= getRecipe();
+            resetProgress();
+            if (optional.isPresent()&&canCraft(optional.get())){
+                startCrafting(optional.get());
+            }
+        }
+
     }
     @Override
     protected void writeNbt(NbtCompound nbt) {
@@ -153,20 +161,72 @@ public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactor
                 stack.decrement(1);
                 fuelTime=100;
                 maxFuelTime=100;
+                propertyDelegate.set(FUEL_KEY,fuelTime);
+                propertyDelegate.set(MAX_FUEL_KEY,maxFuelTime);
+
             }
             return;
         }
         fuelTime--;
+        propertyDelegate.set(FUEL_KEY,fuelTime);
     }
 
     private void decreaseProgress() {
         if (progress>0){
             progress--;
+            propertyDelegate.set(PROGRESS_KEY,progress);
         }
     }
 
     private void craft() {
+        ItemStack outputSlot= inventory.get(2);
+        Item recipient= currentRecipe.recipient;
+        ItemStack result=  currentRecipe.craft(craftingInventory,world.getRegistryManager());
+        result.getOrCreateNbt().putBoolean("from_refining",true);
+        if (outputSlot.isEmpty()){
+            inventory.set(2,result);
+        }else if (ItemStack.canCombine(outputSlot,result)&&result.getCount()+outputSlot.getCount()<=outputSlot.getMaxCount()){
+            outputSlot.increment(result.getCount());
+        }
+        useInputItems();
+        useRecipient(recipient);
+        isCrafting=false;
+        Optional<RefiningRecipe> optional= getRecipe();
+        if (optional.isPresent()){
+            if (canCraft(optional.get())){
+                startCrafting(optional.get());
+                return;
+            }
+        }
         resetProgress();
+    }
+    protected void useRecipient(Item recipient){
+        if (!recipient.equals(Items.AIR)){
+            inventory.get(1).decrement(1);
+        }
+    }
+    private void useInputItems(){
+
+        DefaultedList<ItemStack> defaultedList = world.getRecipeManager().getRemainingStacks(ModRecipes.refiningRecipe, this.craftingInventory, world);
+        for (int i = 0; i < defaultedList.size(); i++) {
+            ItemStack itemStack = this.craftingInventory.getStack(i);
+            ItemStack itemStack2 = defaultedList.get(i);
+            if (!itemStack.isEmpty()) {
+                this.craftingInventory.removeStack(i, 1);
+                itemStack = this.craftingInventory.getStack(i);
+            }
+
+            if (!itemStack2.isEmpty()) {
+                if (itemStack.isEmpty()) {
+                    this.craftingInventory.setStack(i, itemStack2);
+                } else if (ItemStack.canCombine(itemStack, itemStack2)) {
+                    itemStack2.increment(itemStack.getCount());
+                    this.craftingInventory.setStack(i, itemStack2);
+                }else {
+                    world.spawnEntity(new ItemEntity(world,pos.getX(),pos.getY()+1,pos.getZ(),itemStack2));
+                }
+            }
+        }
     }
 
     private boolean hasCraftingFinished() {
@@ -175,17 +235,24 @@ public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactor
 
     private void increaseProgress() {
         progress++;
+        propertyDelegate.set(PROGRESS_KEY,progress);
     }
 
     public void resetProgress() {
+        currentRecipe= null;
         progress=0;
         isCrafting=false;
+        propertyDelegate.set(PROGRESS_KEY,progress);
+
     }
 
     public void startCrafting(RefiningRecipe recipe) {
         progress=0;
+        maxProgress=recipe.cookingTime;
         isCrafting=true;
         currentRecipe= recipe;
+        propertyDelegate.set(PROGRESS_KEY,progress);
+        propertyDelegate.set(MAX_PROGRESS_KEY,maxProgress);
     }
 
     public boolean isCurrentlyCrafting() {
@@ -197,16 +264,20 @@ public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactor
     public boolean canCraft(RefiningRecipe recipe){
         ItemStack output= inventory.get(2);
         ItemStack recipeStack= recipe.getOutput(world.getRegistryManager());
-        return canBurn()&& (ItemStack.canCombine(inventory.get(2),recipeStack) || output.isEmpty()) && output.getCount() + recipeStack.getCount() <= output.getMaxCount() && !isCurrentlyCrafting();
+        return canBurn()&& (ItemStack.canCombine(inventory.get(2),recipeStack) || output.isEmpty()) && output.getCount() + recipeStack.getCount() <= output.getMaxCount() && hasAppropriateRecipient(recipe)&&!isCurrentlyCrafting();
+    }
+    public boolean hasAppropriateRecipient(RefiningRecipe recipe){
+        return recipe.recipient.equals(Items.AIR)||inventory.get(1).isOf(recipe.recipient);
     }
 
     public void dropExperienceForRecipesUsed(ServerPlayerEntity serverPlayerEntity) {
 
     }
     public Optional<RefiningRecipe> getRecipe() {
-        var recipes = world.getRecipeManager().listAllOfType(ModRecipes.refiningRecipe);
-        NightOfTheDead.LOGGER.info("Recettes trouvées: " + recipes.size());
-        return this.world.getRecipeManager().getFirstMatch(ModRecipes.refiningRecipe,craftingInventory,world);
+        if (world!=null){
+            return this.world.getRecipeManager().getFirstMatch(ModRecipes.refiningRecipe,craftingInventory,world);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -224,6 +295,18 @@ public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactor
             if (canCraft(optional.get())){
                 startCrafting(optional.get());
             }
+        }else if(!canCraft(optional.get())){
+            resetProgress();
+        }
+    }
+
+    @Override
+    public void setWorld(World world) {
+        super.setWorld(world);
+        Optional<RefiningRecipe> optional= getRecipe();
+        resetProgress();
+        if (optional.isPresent()&&canCraft(optional.get())){
+            startCrafting(optional.get());
         }
     }
 }

@@ -3,19 +3,16 @@ package net.bobbacon.recipe;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.recipe.*;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 public class RefiningRecipe extends ShapedRecipe implements CraftingRecipe {
-    int cookingTime;
-    double experience;
-    Item recipient;
+    public int cookingTime;
+    public double experience;
+    public Item recipient;
     public RefiningRecipe(Identifier id, String group, CraftingRecipeCategory category, int width, int height, DefaultedList<Ingredient> input, ItemStack output, boolean showNotification, int cookingTime,double experience, Item recipient) {
         super(id, group, category, width, height, input, output, showNotification);
         this.cookingTime= cookingTime;
@@ -30,6 +27,14 @@ public class RefiningRecipe extends ShapedRecipe implements CraftingRecipe {
     @Override
     public boolean matches(RecipeInputInventory recipeInputInventory, World world) {
         return super.matches(recipeInputInventory, world);
+    }
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return RefiningRecipeSerializer.INSTANCE;
+    }
+    @Override
+    public RecipeType<?> getType() {
+        return RefiningRecipe.Type.INSTANCE;
     }
 
     public static class Type implements RecipeType<RefiningRecipe> {

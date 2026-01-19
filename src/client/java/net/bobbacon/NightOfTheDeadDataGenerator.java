@@ -18,6 +18,7 @@ import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.ItemTags;
@@ -80,13 +81,8 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generate(Consumer<RecipeJsonProvider> consumer) {
-			ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, ModItems.FIERY_MOLOTOV).pattern("bgb").pattern("tmt").pattern(" t ")
-					.input('t', Items.GHAST_TEAR).input('b',Items.BLAZE_ROD).input('g',Items.GLOWSTONE_DUST).input('m',ModItems.MOLOTOV)
-					.criterion(FabricRecipeProvider.hasItem(Items.GHAST_TEAR),
-							FabricRecipeProvider.conditionsFromItem(Items.GHAST_TEAR))
-					.offerTo(consumer);
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.PURE_ALCOHOL)
-					.input(MyTagGenerator.STRONG_ALCOHOL).input(Items.BLAZE_POWDER,4)
+					.input(Ingredient.fromTag(MyTagGenerator.STRONG_ALCOHOL),4).input(Items.BLAZE_POWDER,4)
 					.criterion(FabricRecipeProvider.hasItem(Items.BLAZE_POWDER),
 							FabricRecipeProvider.conditionsFromItem(Items.BLAZE_POWDER))
 					.offerTo(consumer);

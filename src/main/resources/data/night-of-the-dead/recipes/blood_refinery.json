@@ -1,0 +1,19 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "I": {
+      "item": "night-of-the-dead:bloody_water"
+    }
+  },
+  "pattern": [
+    "II",
+    "II"
+  ],
+  "result": {
+    "count": 1,
+    "item" : "night-of-the-dead:blood_bottle"
+  },
+  "show_notification": false,
+  "cookingtime": 200,
+  "recipient": "minecraft:glass_bottle"
+}

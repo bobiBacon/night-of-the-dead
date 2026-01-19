@@ -13,7 +13,7 @@ public class ModRecipes {
                                                            AlcoholBrewingRecipeSerializer.INSTANCE);
 	public static final AlcoholBrewingRecipe.Type alcoholRecipe =  Registry.register(Registries.RECIPE_TYPE, Identifier.of(NightOfTheDead.MOD_ID, AlcoholBrewingRecipe.Type.ID), AlcoholBrewingRecipe.Type.INSTANCE);
 
-    public static final RecipeSerializer<RefiningRecipe> RECIPE_SERIALIZER = Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(NightOfTheDead.MOD_ID, RefiningRecipe.Type.ID), new RefiningRecipeSerializer<>(RefiningRecipe::new));
+    public static final RecipeSerializer<RefiningRecipe> RECIPE_SERIALIZER = Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(NightOfTheDead.MOD_ID, RefiningRecipe.Type.ID), RefiningRecipeSerializer.INSTANCE);
     public static final RefiningRecipe.Type refiningRecipe =  Registry.register(Registries.RECIPE_TYPE, Identifier.of(NightOfTheDead.MOD_ID, RefiningRecipe.Type.ID), RefiningRecipe.Type.INSTANCE);
 
     public static void init(){

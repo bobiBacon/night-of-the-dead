@@ -29,13 +29,10 @@ public class RitualManager extends PersistentState {
         this.world =world;
     }
     public void tick(){
-        Iterator it= this.rituals.values().iterator();
-//        for (Ritual ritual : this.rituals.values()) {
-//            ritual.tick();
-//        }
+        Iterator<Ritual> it= this.rituals.values().iterator();
         while (it.hasNext()){
             try {
-                Ritual ritual= (Ritual) it.next();
+                Ritual ritual= it.next();
                 ritual.tick();
             }catch (Exception e){
                 NightOfTheDead.LOGGER.error(e.toString());
@@ -84,7 +81,6 @@ public class RitualManager extends PersistentState {
         return ritualManager;
     }
     public void onEntityDeath(LivingEntity entity){
-        NightOfTheDead.LOGGER.info("manager onEntityDeath");
         UUID id= entityMapping.get(entity.getUuid());
         if (id!=null){
             Ritual ritual=rituals.get(id);

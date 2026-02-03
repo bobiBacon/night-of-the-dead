@@ -131,13 +131,6 @@ public class ScrollItemRenderer {
         );
         matrices.translate(-0.45, 0.9, 0.6);
 
-// Revenir à l'origine
-//        matrices.translate(-0.5, 0.5, -0.5);
-
-
-
-
-
         MatrixStack.Entry entry = matrices.peek();
         Matrix4f matrix = entry.getPositionMatrix();
         Matrix3f normal = entry.getNormalMatrix();

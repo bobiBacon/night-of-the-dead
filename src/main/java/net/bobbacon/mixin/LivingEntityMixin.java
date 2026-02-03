@@ -84,14 +84,10 @@ public class LivingEntityMixin extends Entity {
     }
     @Inject(method = "onDeath",at = @At("TAIL"))
     private void onDeathInject(DamageSource damageSource, CallbackInfo ci){
-        if (!getWorld().isClient){
+        if (!getWorld().isClient&&((EntityAccessor)this).night_of_the_Dead$comesFromRitual()){
             RitualManager.get((ServerWorld) getWorld()).onEntityDeath((LivingEntity) (Object) this);
         }
     }
-//    @ModifyReturnValue(method = "isFire")
-//    private boolean immuneToFire(){
-//
-//    }
 
 
         @Override

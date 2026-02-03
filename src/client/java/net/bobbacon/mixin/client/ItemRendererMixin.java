@@ -23,19 +23,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ItemRendererMixin {
     @ModifyVariable(method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V",at = @At("HEAD"),argsOnly = true)
     public BakedModel parchmentRender(BakedModel value, ItemStack stack, ModelTransformationMode renderMode){
-//        if (stack.isOf(ModItems.SCROLL)){
-//            if (renderMode == ModelTransformationMode.GUI || renderMode == ModelTransformationMode.FIXED){
-////                NightOfTheDeadClient.LOGGER.info(new ModelIdentifier(ScrollItem.getSpell(stack).symbolTextureFor2d(),"inventory").toString());
-////                NightOfTheDeadClient.LOGGER.info(((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(ScrollItem.getSpell(stack).getId(),"inventory")).toString());
-////                NightOfTheDeadClient.LOGGER.info(((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier("awdawd","awfdwaf","inventory")).toString());
-////                return ((ItemRendererAccessor) this).getModels().getModel(ModItems.Test);
-//                return value;
-//            }
-//            BakedModel model = ((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_base_3d","inventory"));
-//            NightOfTheDeadClient.LOGGER.info(model.toString());
-//            NightOfTheDeadClient.LOGGER.info(((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_awda_3d","inventory")).toString());
-//            return model;
-//        }
         if (stack.isOf(ModItems.SCROLL)&&renderMode != ModelTransformationMode.GUI && renderMode != ModelTransformationMode.FIXED && renderMode != ModelTransformationMode.GROUND ){
             BakedModel model = ((ItemRendererAccessor) this).getModels().getModelManager().getModel(new ModelIdentifier(NightOfTheDeadClient.MOD_ID,"scroll_3d_2","inventory"));
             return model;
@@ -47,13 +34,8 @@ public class ItemRendererMixin {
 
         if (stack.isOf(ModItems.SCROLL)&&ScrollItem.canRead(MinecraftClient.getInstance().player,stack)){
             if (renderMode == ModelTransformationMode.GUI) {
-                //TODO rien faire si empty
-                // ajouter un concepte de sort crypté. Il faut posseder une tablette de décryption pour lire un parchemin
-                // quand quelqu'un décrypte un parchemin, son id est ajouté à ceux des personnes qui peuvent le lire
-                // ne pas afficher le scroll en 3d si empty ou encrypté
                 ScrollItemRenderer.renderSpellSymbolGui(stack, matrices, vertexConsumers, overlay);
             }else if (renderMode==ModelTransformationMode.FIRST_PERSON_RIGHT_HAND||renderMode==ModelTransformationMode.FIRST_PERSON_LEFT_HAND){
-                //TODO inclure left handed
                 ScrollItemRenderer.renderSymbol(stack,matrices,vertexConsumers,light,leftHanded,renderMode,model);
             }
         }

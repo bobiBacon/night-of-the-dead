@@ -54,6 +54,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation("maven.modrinth:registry-helper-lib:${project.registry_version}")
+	modImplementation("maven.modrinth:the-spell-library:${project.spells_version}")
 //	modImplementation("maven.modrinth:farmers-delight-refabricated:${project.farmers_version}")
 }
 

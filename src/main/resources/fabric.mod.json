@@ -16,13 +16,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.bobbacon.NightOfTheDead"
+			"net.bobbacon2.NightOfTheDead"
 		],
 		"client": [
-			"net.bobbacon.NightOfTheDeadClient"
+			"net.bobbacon2.NightOfTheDeadClient"
 		],
 		"fabric-datagen": [
-			"net.bobbacon.NightOfTheDeadDataGenerator"
+			"net.bobbacon2.NightOfTheDeadDataGenerator"
 		]
 	},
 	"mixins": [

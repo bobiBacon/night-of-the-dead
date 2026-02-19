@@ -1,0 +1,314 @@
+package net.bobbacon2.entity.block_entity;
+
+import net.bobbacon2.recipe.ModRecipes;
+import net.bobbacon2.recipe.RefiningRecipe;
+import net.bobbacon2.screen.RefiningInventory;
+import net.bobbacon2.screen.RefiningScreenHandler;
+import net.bobbacon2.recipe.ModRecipes;
+import net.bobbacon2.recipe.RefiningRecipe;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.RecipeInputInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.RecipeManager;
+import net.minecraft.screen.PropertyDelegate;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
+
+public class Refinery extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory, ContentUpdatable{
+    private static final int PROGRESS_KEY=0;
+    private static final int MAX_PROGRESS_KEY=1;
+    private static final int FUEL_KEY=2;
+    private static final int MAX_FUEL_KEY=3;
+    protected final PropertyDelegate propertyDelegate;
+    private int maxProgress = 40;
+    private int progress= 0;
+    int fuelTime;
+    int maxFuelTime;
+    public final UpdateNotifyingInventory<ItemStack> inventory = UpdateNotifyingInventory.create(3,ItemStack.EMPTY,this);
+    public final RefiningInventory craftingInventory= new RefiningInventory(this,3,3);
+    public RefiningScreenHandler screenHandler;
+    private boolean isCrafting= false;
+    private final RecipeManager.MatchGetter<RecipeInputInventory, RefiningRecipe> matchGetter;
+    public RefiningRecipe currentRecipe=null;
+
+
+
+
+    public Refinery(BlockPos pos, BlockState state) {
+        super(ModBE.REFINERY, pos, state);
+        matchGetter=RecipeManager.createCachedMatchGetter(ModRecipes.refiningRecipe);
+        this.propertyDelegate = new PropertyDelegate() {
+            @Override
+            public int get(int index) {
+                return switch (index) {
+                    case PROGRESS_KEY -> Refinery.this.progress;
+                    case MAX_PROGRESS_KEY -> Refinery.this.maxProgress;
+                    case FUEL_KEY -> Refinery.this.fuelTime;
+                    case MAX_FUEL_KEY -> Refinery.this.maxFuelTime;
+                    default -> 0;
+                };
+            }
+
+            @Override
+            public void set(int index, int value) {
+                switch (index) {
+                    case PROGRESS_KEY -> Refinery.this.progress = value;
+                    case MAX_PROGRESS_KEY -> Refinery.this.maxProgress = value;
+                    case FUEL_KEY -> Refinery.this.fuelTime = value;
+                    case MAX_FUEL_KEY -> Refinery.this.maxFuelTime = value;
+                }
+            }
+
+            @Override
+            public int size() {
+                return 4;
+            }
+        };
+        if (world!=null){
+            Optional<RefiningRecipe> optional= getRecipe();
+            resetProgress();
+            if (optional.isPresent()&&canCraft(optional.get())){
+                startCrafting(optional.get());
+            }
+        }
+
+    }
+    @Override
+    protected void writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+        DefaultedList<ItemStack> items= DefaultedList.ofSize(12,ItemStack.EMPTY);
+        for (int i = 0; i < 3; i++) {
+            items.set(i,inventory.get(i));
+        }
+        for (int i = 0; i < 9; i++) {
+            items.set(i+3,craftingInventory.getStack(i));
+        }
+
+        Inventories.writeNbt(nbt, items);
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        DefaultedList<ItemStack> items= DefaultedList.ofSize(12,ItemStack.EMPTY);
+        Inventories.readNbt(nbt, items);
+        for (int i = 0; i < 3; i++) {
+            inventory.set(i,items.get(i));
+        }
+        for (int i = 0; i < 9; i++) {
+            craftingInventory.setStack(i,items.get(i+3));
+        }
+    }
+
+    @Override
+    public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
+        packetByteBuf.writeBlockPos(this.pos);
+    }
+
+
+    @Override
+    public DefaultedList<ItemStack> getItems() {
+        return inventory;
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return Text.translatable("container.night-of-the-dead.refinery");
+    }
+
+    @Nullable
+    @Override
+    public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+        screenHandler= new RefiningScreenHandler(syncId,playerInventory,this,this.propertyDelegate);
+        return screenHandler;
+    }
+    public static void tick(World world, BlockPos pos, BlockState state, Refinery blockEntity) {
+        if (world.isClient){
+            return;
+        }
+        if (blockEntity.isCurrentlyCrafting()&& blockEntity.canBurn()){
+            blockEntity.increaseProgress();
+            if (blockEntity.hasCraftingFinished()){
+                blockEntity.craft();
+            }
+        }else {
+            blockEntity.decreaseProgress();
+        }
+        blockEntity.burn();
+        blockEntity.markDirty();
+
+    }
+
+    private void burn() {
+        if (fuelTime<=0&&isCurrentlyCrafting()){
+            ItemStack stack= inventory.get(0);
+            if (stack.isOf(Items.BLAZE_POWDER)&&!stack.isEmpty()){
+                stack.decrement(1);
+                fuelTime=100;
+                maxFuelTime=100;
+                propertyDelegate.set(FUEL_KEY,fuelTime);
+                propertyDelegate.set(MAX_FUEL_KEY,maxFuelTime);
+
+            }
+            return;
+        }
+        fuelTime--;
+        propertyDelegate.set(FUEL_KEY,fuelTime);
+    }
+
+    private void decreaseProgress() {
+        if (progress>0){
+            progress--;
+            propertyDelegate.set(PROGRESS_KEY,progress);
+        }
+    }
+
+    private void craft() {
+        ItemStack outputSlot= inventory.get(2);
+        Item recipient= currentRecipe.recipient;
+        ItemStack result=  currentRecipe.craft(craftingInventory,world.getRegistryManager());
+        result.getOrCreateNbt().putBoolean("from_refining",true);
+        if (outputSlot.isEmpty()){
+            inventory.set(2,result);
+        }else if (ItemStack.canCombine(outputSlot,result)&&result.getCount()+outputSlot.getCount()<=outputSlot.getMaxCount()){
+            outputSlot.increment(result.getCount());
+        }
+        useInputItems();
+        useRecipient(recipient);
+        isCrafting=false;
+        Optional<RefiningRecipe> optional= getRecipe();
+        if (optional.isPresent()){
+            if (canCraft(optional.get())){
+                startCrafting(optional.get());
+                return;
+            }
+        }
+        resetProgress();
+    }
+    protected void useRecipient(Item recipient){
+        if (!recipient.equals(Items.AIR)){
+            inventory.get(1).decrement(1);
+        }
+    }
+    private void useInputItems(){
+
+        DefaultedList<ItemStack> defaultedList = world.getRecipeManager().getRemainingStacks(ModRecipes.refiningRecipe, this.craftingInventory, world);
+        for (int i = 0; i < defaultedList.size(); i++) {
+            ItemStack itemStack = this.craftingInventory.getStack(i);
+            ItemStack itemStack2 = defaultedList.get(i);
+            if (!itemStack.isEmpty()) {
+                this.craftingInventory.removeStack(i, 1);
+                itemStack = this.craftingInventory.getStack(i);
+            }
+
+            if (!itemStack2.isEmpty()) {
+                if (itemStack.isEmpty()) {
+                    this.craftingInventory.setStack(i, itemStack2);
+                } else if (ItemStack.canCombine(itemStack, itemStack2)) {
+                    itemStack2.increment(itemStack.getCount());
+                    this.craftingInventory.setStack(i, itemStack2);
+                }else {
+                    world.spawnEntity(new ItemEntity(world,pos.getX(),pos.getY()+1,pos.getZ(),itemStack2));
+                }
+            }
+        }
+    }
+
+    private boolean hasCraftingFinished() {
+        return progress>=maxProgress;
+    }
+
+    private void increaseProgress() {
+        progress++;
+        propertyDelegate.set(PROGRESS_KEY,progress);
+    }
+
+    public void resetProgress() {
+        currentRecipe= null;
+        progress=0;
+        isCrafting=false;
+        propertyDelegate.set(PROGRESS_KEY,progress);
+
+    }
+
+    public void startCrafting(RefiningRecipe recipe) {
+        progress=0;
+        maxProgress=recipe.cookingTime;
+        isCrafting=true;
+        currentRecipe= recipe;
+        propertyDelegate.set(PROGRESS_KEY,progress);
+        propertyDelegate.set(MAX_PROGRESS_KEY,maxProgress);
+    }
+
+    public boolean isCurrentlyCrafting() {
+        return isCrafting;
+    }
+    public boolean canBurn(){
+        return fuelTime>0||!inventory.get(0).isEmpty();
+    }
+    public boolean canCraft(RefiningRecipe recipe){
+        ItemStack output= inventory.get(2);
+        ItemStack recipeStack= recipe.getOutput(world.getRegistryManager());
+        return canBurn()&& (ItemStack.canCombine(inventory.get(2),recipeStack) || output.isEmpty()) && output.getCount() + recipeStack.getCount() <= output.getMaxCount() && hasAppropriateRecipient(recipe)&&!isCurrentlyCrafting();
+    }
+    public boolean hasAppropriateRecipient(RefiningRecipe recipe){
+        return recipe.recipient.equals(Items.AIR)||inventory.get(1).isOf(recipe.recipient);
+    }
+
+    public void dropExperienceForRecipesUsed(ServerPlayerEntity serverPlayerEntity) {
+
+    }
+    public Optional<RefiningRecipe> getRecipe() {
+        if (world!=null){
+            return this.world.getRecipeManager().getFirstMatch(ModRecipes.refiningRecipe,craftingInventory,world);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void onContentChanged() {
+        if (world==null){
+            return;
+        }
+        Optional<RefiningRecipe> optional= getRecipe();
+        if (optional.isEmpty()){
+            resetProgress();
+            return;
+        }
+        if (!optional.get().equals(currentRecipe)){
+            resetProgress();
+            if (canCraft(optional.get())){
+                startCrafting(optional.get());
+            }
+        }else if(!canCraft(optional.get())){
+            resetProgress();
+        }
+    }
+
+    @Override
+    public void setWorld(World world) {
+        super.setWorld(world);
+        Optional<RefiningRecipe> optional= getRecipe();
+        resetProgress();
+        if (optional.isPresent()&&canCraft(optional.get())){
+            startCrafting(optional.get());
+        }
+    }
+}

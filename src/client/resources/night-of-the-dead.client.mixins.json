@@ -1,14 +1,10 @@
 {
   "required": true,
-  "package": "net.bobbacon.mixin.client",
+  "package": "net.bobbacon2.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "BiomeColorsMixin",
     "ExampleClientMixin",
-    "ItemRendererAccessor",
-    "ItemRendererMixin",
-    "ItemStackMixin",
-    "ModelLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

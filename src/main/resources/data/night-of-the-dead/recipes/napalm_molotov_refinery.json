@@ -1,0 +1,24 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "b": {
+      "item": "minecraft:blaze_powder"
+    },
+    "m": {
+      "item": "night-of-the-dead:fiery_cocktail"
+    },
+    "c": {
+      "item": "minecraft:magma_cream"
+    }
+  },
+  "pattern": [
+    "ccc",
+    "bmb",
+    "ccc"
+  ],
+  "result": {
+    "item": "night-of-the-dead:napalm_cocktail"
+  },
+  "show_notification": false,
+  "cookingtime": 400
+}

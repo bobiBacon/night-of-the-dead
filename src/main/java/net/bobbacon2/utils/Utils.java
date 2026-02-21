@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,34 +57,28 @@ public class Utils {
         }
         return outer;
     }
-    public static void lightOnFire(List<BlockPos> blocks, ServerWorld world){
-        boolean eternal= false;
+    public static void lightOnFire(List<BlockPos> blocks, ServerWorld world, boolean eternal){
         for (int i = 0; i < blocks.toArray().length; i++) {
             BlockPos pos= blocks.get(i);
             if (world.getBlockState(pos).isReplaceable()) {
                 BlockPos under = new BlockPos(pos.getX(), pos.getY() -1, pos.getZ());
                 if (world.getBlockState(under).isReplaceable()){
-                    if (eternal){
-                        world.setBlockState(under, net.bobbacon2.block.ModBlocks.ETERNAL_FIRE.getDefaultState(), Block.NOTIFY_ALL);
-                    }else {
-                        world.setBlockState(under, Blocks.FIRE.getDefaultState(), Block.NOTIFY_ALL);
-                    }
+                    lightOnFire(under,world,eternal);
                 }
-                if (eternal){
-                    world.setBlockState(pos, net.bobbacon2.block.ModBlocks.ETERNAL_FIRE.getDefaultState(), Block.NOTIFY_ALL);
-                }else {
-                    world.setBlockState(pos, Blocks.FIRE.getDefaultState(), Block.NOTIFY_ALL);
-                }
+                lightOnFire(pos,world,eternal);
             } else  {
                 BlockPos over = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
                 if (world.getBlockState(over).isReplaceable()){
-                    if (eternal){
-                        world.setBlockState(over, ModBlocks.ETERNAL_FIRE.getDefaultState(), Block.NOTIFY_ALL);
-                    }else {
-                        world.setBlockState(over, Blocks.FIRE.getDefaultState(), Block.NOTIFY_ALL);
-                    }
+                    lightOnFire(over,world,eternal);
                 }
             }
+        }
+    }
+    public static void lightOnFire(BlockPos pos, World world, boolean eternal){
+        if (eternal){
+            world.setBlockState(pos, ModBlocks.ETERNAL_FIRE.getDefaultState(), Block.NOTIFY_ALL);
+        }else {
+            world.setBlockState(pos, Blocks.FIRE.getDefaultState(), Block.NOTIFY_ALL);
         }
     }
 }

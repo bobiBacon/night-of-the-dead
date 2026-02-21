@@ -70,7 +70,6 @@ public class ZombieMixin extends HostileEntity {
                     double z = self.getZ()+ getWorld().random.nextFloat()*2-1;
                     ServerWorld server= (ServerWorld) getWorld();
                     server.spawnParticles(ParticleTypes.LARGE_SMOKE,x,y+0.1,z,1,0.5,0.5,0.5,0.02);
-                    NightOfTheDead.LOGGER.info("heal");
                     heal(1.0F);
                 }
             }

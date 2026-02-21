@@ -1,6 +1,7 @@
 package net.bobbacon2.entity;
 
 import net.bobbacon2.NightOfTheDead;
+import net.bobbacon2.utils.Utils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -22,15 +23,22 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class FireDrop extends ProjectileEntity {
+    public boolean eternal= false;
 
 
     public FireDrop(EntityType<? extends ProjectileEntity> entityType, World world) {
         super(entityType, world);
     }
-    public FireDrop(LivingEntity owner, World world, double x, double y, double z) {
+    public FireDrop(LivingEntity owner, World world, double x, double y, double z, boolean eternal) {
         super(ModEntities.FIRE_DROP, world);
         this.setPosition(x, y, z);
         this.setOwner(owner);
+        setEternal(eternal);
+
+    }
+
+    public void setEternal(boolean eternal) {
+        this.eternal = eternal;
     }
 
     @Override
@@ -70,7 +78,7 @@ public class FireDrop extends ProjectileEntity {
     protected void onEntityHit(EntityHitResult entityHitResult) {
         super.onEntityHit(entityHitResult);
         if (!this.isFireImmune()) {
-            entityHitResult.getEntity().setOnFireFor(15);
+            entityHitResult.getEntity().setOnFireFor(eternal? 50:15);
         }
         this.discard();
     }
@@ -121,13 +129,14 @@ public class FireDrop extends ProjectileEntity {
             if (world.getBlockState(pos).isReplaceable()) { // Vérifie si le bloc peut être remplacé
                 BlockPos under = new BlockPos(pos.getX(), pos.getY() -1, pos.getZ());
                 if (world.getBlockState(under).isReplaceable()){
-                    world.setBlockState(under, Blocks.FIRE.getDefaultState(), Block.NOTIFY_ALL);
+                    Utils.lightOnFire(under,world,eternal);
                 }
-                world.setBlockState(pos, Blocks.FIRE.getDefaultState(), Block.NOTIFY_ALL);
+                Utils.lightOnFire(pos,world,eternal);
+
             } else{
                 BlockPos over = pos.up();
                 if (world.getBlockState(over).isReplaceable()){
-                    world.setBlockState(over, Blocks.FIRE.getDefaultState(), Block.NOTIFY_ALL);
+                    Utils.lightOnFire(over,world,eternal);
                 }
             }
         }

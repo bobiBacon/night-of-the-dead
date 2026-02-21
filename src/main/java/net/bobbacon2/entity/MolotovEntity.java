@@ -3,7 +3,6 @@ package net.bobbacon2.entity;
 import net.bobbacon2.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FlyingItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -100,21 +99,9 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
                 }
             }
         }
-        int count = explosionRadius*explosionRadius*2;
-        for (int i = 0; i <count; i++) {
-            FireDrop fireDrop = new FireDrop((LivingEntity) this.getOwner(),world,colx,coly+1,colz);
-            Random rand = new Random();
-            int angle = (int) (rand.nextFloat()*360);
-            fireDrop.setVelocity(Math.cos(Math.toRadians(angle))+(0.5F*this.getVelocity().getX()), 1.5, Math.sin(Math.toRadians(angle))+(0.5F*this.getVelocity().getZ()), 0.4F*rand.nextFloat()+0.3f, 2.0F);
-            world.spawnEntity(fireDrop);
+        spawnExplosionParticles(world,colx,coly,colz,false);
 
-            world.addParticle(ParticleTypes.ASH,this.getX(),this.getY(),this.getZ(),0.3f*this.getVelocity().getX()+(rand.nextFloat()-0.5f)*2f,3,0.3f*this.getVelocity().getZ()+(rand.nextFloat()-0.5f)*2f);
-
-        }
-
-      world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS,0.5F, world.getRandom().nextFloat() * 0.4F + 1.2F);
-      world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS,1.2F, world.getRandom().nextFloat() * 0.4F + 1.2F);
-      world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS,1.2F, world.getRandom().nextFloat() * 0.4F + 0.8F);
+      playBreakingSounds(world);
 
 
 
@@ -123,8 +110,35 @@ public class MolotovEntity extends ThrownItemEntity implements FlyingItemEntity 
 
     }
 
+    public void spawnExplosionParticles(World world, double colx, double coly, double colz,boolean eternal) {
+        int count = explosionRadius*explosionRadius*2;
+        double half_x=0.5*this.getVelocity().getX();
+        double half_z= 0.5F*this.getVelocity().getZ();
+        float speedMultiplier= 0.4f*(float) explosionRadius/3f;
+        for (int i = 0; i <count; i++) {
+            FireDrop fireDrop = new FireDrop((LivingEntity) this.getOwner(),world,colx,coly+1,colz,eternal);
+            Random rand = new Random();
+            int angle = (int) (rand.nextFloat()*360);
+            fireDrop.setVelocity(Math.cos(Math.toRadians(angle))+half_x, 1.5, Math.sin(Math.toRadians(angle))+half_z, speedMultiplier*rand.nextFloat()+0.3f, 2.0F);
+            world.spawnEntity(fireDrop);
+
+            world.addParticle(ParticleTypes.ASH,this.getX(),this.getY(),this.getZ(),0.3f*this.getVelocity().getX()+(rand.nextFloat()-0.5f)*2f,3,0.3f*this.getVelocity().getZ()+(rand.nextFloat()-0.5f)*2f);
+
+        }
+    }
+
+    public void playBreakingSounds(World world){
+        world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS,0.5F, world.getRandom().nextFloat() * 0.4F + 1.2F);
+        world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS,1.2F, world.getRandom().nextFloat() * 0.4F + 1.2F);
+        world.playSound(null,this.getX(),this.getY(),this.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS,1.2F, world.getRandom().nextFloat() * 0.4F + 0.8F);
+    }
+
     @Override
     protected Item getDefaultItem() {
         return ModItems.MOLOTOV;
+    }
+
+    public void setExplosionRadius(int explosionRadius) {
+        this.explosionRadius = explosionRadius;
     }
 }

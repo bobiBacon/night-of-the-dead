@@ -2,6 +2,7 @@ package net.bobbacon2.mixin;
 
 import net.bobbacon.Accessors.EntityAccessor;
 import net.bobbacon.ritual.RitualManager;
+import net.bobbacon2.NightOfTheDead;
 import net.bobbacon2.status_effect.ModEffects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
@@ -10,6 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.AbstractSkeletonEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
@@ -82,6 +84,7 @@ public class LivingEntityMixin extends Entity {
         }
         return value;
     }
+
 
 
 

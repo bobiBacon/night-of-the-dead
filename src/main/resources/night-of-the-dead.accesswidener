@@ -29,3 +29,6 @@ accessible method net/minecraft/recipe/ShapedRecipe readSymbols (Lcom/google/gso
 
 accessible field net/minecraft/inventory/CraftingInventory stacks Lnet/minecraft/util/collection/DefaultedList;
 accessible field net/minecraft/inventory/CraftingInventory handler Lnet/minecraft/screen/ScreenHandler;
+
+accessible field net/minecraft/block/AbstractFireBlock damage F
+accessible method net/minecraft/block/FireBlock getSpreadChance (Lnet/minecraft/block/BlockState;)I

@@ -5,7 +5,9 @@ import net.bobbacon.api.RegistryHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.BlockSoundGroup;
@@ -16,7 +18,14 @@ public class ModBlocks {
     public static final Block ALTAR = registryHelper.register("altar",new Altar(FabricBlockSettings.create().sounds(BlockSoundGroup.STONE).instrument(Instrument.BASS).strength(2.5F).resistance(1200.0F)));
     public static final Block REFINERY = registryHelper.register("refinery",new RefineryBlock(FabricBlockSettings.create().sounds(BlockSoundGroup.STONE).instrument(Instrument.BASS).strength(2.5F)));
     public static final Block METAL_SUPPORT = registryHelper.register("metal_support",new Block(FabricBlockSettings.create()));
-    public static final Block ETERNAL_FIRE = registryHelper.register("eternal_fire",new EternalFireBlock(FabricBlockSettings.create()));
+    public static final Block ETERNAL_FIRE = registryHelper.register("eternal_fire",new EternalFireBlock(FabricBlockSettings.create().mapColor(MapColor.LIGHT_BLUE)
+            .replaceable()
+            .noCollision()
+            .breakInstantly()
+            .luminance(state -> 10)
+            .sounds(BlockSoundGroup.WOOL)
+            .pistonBehavior(PistonBehavior.DESTROY)
+            .ticksRandomly()));
 
     public static void init(){
 

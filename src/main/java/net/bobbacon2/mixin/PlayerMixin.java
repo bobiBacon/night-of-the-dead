@@ -18,15 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
 public class PlayerMixin  {
-    @Inject(method = "onDeath", at= @At("HEAD"),require = 1,order = 2000)
-    private void onDeath(DamageSource damageSource, CallbackInfo ci){
-        NightOfTheDead.LOGGER.info("i am dead");
-        PlayerEntity self = (PlayerEntity) (Object) this;
-        if (self.getWorld().isClient) {
-            return;
-        }
-        NightOfTheDead.setShouldPlayANightOfTheDead(true,(ServerWorld) self.getWorld());
-    }
+
 
     @Inject(method = "tick", at= @At("TAIL"))
     private void injectTick(CallbackInfo ci){

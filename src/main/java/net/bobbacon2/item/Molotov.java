@@ -23,12 +23,14 @@ public class Molotov extends Item {
     private static final String TIME_KEY = "REMAINING_TIME_KEY";
     private static final int DefaultTime = 160;
     public int explosionRadius = 3;
+    protected final EntityType<? extends MolotovEntity> entityType;
 
-    public Molotov(Settings settings) {
+    public Molotov(Settings settings, EntityType<? extends MolotovEntity> entityType) {
         super(settings);
+        this.entityType = entityType;
     }
-    public Molotov(Settings settings, int explosionRadius) {
-        this(settings);
+    public Molotov(Settings settings, int explosionRadius, EntityType<? extends MolotovEntity> entityType) {
+        this(settings, entityType);
         this.explosionRadius = explosionRadius;
     }
 
@@ -37,9 +39,13 @@ public class Molotov extends Item {
         ItemStack itemStack = user.getStackInHand(hand);
         if (isLit(itemStack)) {
             if (!world.isClient) {
-                MolotovEntity molotovEntity = new MolotovEntity(user, world,explosionRadius);
+                MolotovEntity molotovEntity = entityType.create(world);
+                molotovEntity.setPos(user.getX(),user.getEyeY(),user.getZ());
+                molotovEntity.setExplosionRadius(explosionRadius);
+                molotovEntity.setOwner(user);
                 molotovEntity.setItem(itemStack);
-                molotovEntity.setVelocity(user, user.getPitch(), user.getYaw(), -20.0F, explosionRadius/2f-0.5f, 1.0F);
+                //TODO à vérifier pour la vitesse
+                molotovEntity.setVelocity(user, user.getPitch(), user.getYaw(), -20.0F, 1f, 1.0F);
                 world.spawnEntity(molotovEntity);
             }
 
@@ -147,7 +153,7 @@ public class Molotov extends Item {
         if (stack.getOrCreateNbt().getBoolean("from_refining") ? world.random.nextFloat()*10f>9f : world.random.nextFloat()*5f>4f){
             world.createExplosion(null,player.getX(),player.getY(),player.getZ(),1,true, World.ExplosionSourceType.BLOCK);
             for (int i = 0; i <6; i++) {
-                FireDrop fireDrop = new FireDrop( null, world, player.getX(),player.getY()+1.0,player.getZ());
+                FireDrop fireDrop = new FireDrop( null, world, player.getX(),player.getY()+1.0,player.getZ(),false);
 
                 int angle = (int) (world.random.nextFloat() * 2 * Math.PI);
                 fireDrop.setVelocity(Math.cos(angle), 1.5, Math.sin(angle), 0.4F * world.random.nextFloat() + 0.3f, 2.0F);

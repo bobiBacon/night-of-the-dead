@@ -1,5 +1,6 @@
 package net.bobbacon2;
 
+import net.bobbacon2.block.ModBlocks;
 import net.bobbacon2.item.ModItems;
 import net.bobbacon2.registry.ModRegistries;
 import net.bobbacon2.render.entity.EntityRenderers;
@@ -14,6 +15,7 @@ import net.bobbacon2.screen.RefiningScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -26,6 +28,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -52,6 +55,8 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 		BlockEntityRenderers.init();
 		HandledScreens.register(ModScreenHandlers.REFINERY_SCREEN_HANDLER, RefiningScreen::new);
 
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ETERNAL_FIRE, RenderLayer.getCutout());
+
 		ModelPredicateProviderRegistry.register(
 				ModItems.MOLOTOV,
 				new Identifier("lit"),
@@ -60,6 +65,12 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 		);
 		ModelPredicateProviderRegistry.register(
 				ModItems.FIERY_MOLOTOV,
+				new Identifier("lit"),
+				(stack, world, entity, seed) ->
+						stack.getOrCreateNbt().getBoolean("lit") ? 1.0F : 0.0F
+		);
+		ModelPredicateProviderRegistry.register(
+				ModItems.NAPALM_MOLOTOV,
 				new Identifier("lit"),
 				(stack, world, entity, seed) ->
 						stack.getOrCreateNbt().getBoolean("lit") ? 1.0F : 0.0F

@@ -1,5 +1,8 @@
 package net.bobbacon2.item;
 
+import net.bobbacon.item.ScrollItem;
+import net.bobbacon.spell.SpellDef;
+import net.bobbacon.spell.SpellRegistry;
 import net.bobbacon2.NightOfTheDead;
 import net.bobbacon.api.RegistryHelper;
 import net.bobbacon2.entity.ModEntities;
@@ -19,8 +22,9 @@ import net.minecraft.registry.Registries;
 public class ModItems {
     private static final RegistryHelper<Item> registryHelper=new RegistryHelper<>(Registries.ITEM, NightOfTheDead.MOD_ID);
     private static final RegistryHelper<Potion> potionRegistryHelper=new RegistryHelper<>(Registries.POTION, NightOfTheDead.MOD_ID);
-    public static final Item MOLOTOV= registryHelper.register("molotov_cocktail",new Molotov(new Item.Settings().maxCount(1)));
-    public static final Item FIERY_MOLOTOV= registryHelper.register("fiery_cocktail",new Molotov(new Item.Settings().maxCount(1),5));
+    public static final Item MOLOTOV= registryHelper.register("molotov_cocktail",new Molotov(new Item.Settings().maxCount(1),ModEntities.MOLOTOV));
+    public static final Item FIERY_MOLOTOV= registryHelper.register("fiery_cocktail",new Molotov(new Item.Settings().maxCount(1),5,ModEntities.MOLOTOV));
+    public static final Item NAPALM_MOLOTOV= registryHelper.register("napalm_cocktail",new Molotov(new Item.Settings().maxCount(1),4,ModEntities.NAPALM_MOLOTOV));
 
     public static final Item VODKA = registryHelper.register("vodka",new Alcohol(new Item.Settings(),new StatusEffectInstance(StatusEffects.NAUSEA,300),new StatusEffectInstance(StatusEffects.RESISTANCE,300)));
     public static final Item MEAD = registryHelper.register("mead",new Alcohol(new Item.Settings(),new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE,300),new StatusEffectInstance(StatusEffects.RESISTANCE,300)));
@@ -44,6 +48,11 @@ public class ModItems {
 
 
     public static void init(){
-
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT)
+                .register(entries -> {
+                    entries.add(MOLOTOV);
+                    entries.add(FIERY_MOLOTOV);
+                    entries.add(NAPALM_MOLOTOV);
+                });
     }
 }

@@ -1,0 +1,15 @@
+{
+
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "night-of-the-dead:item/molotov"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "lit": 1.0
+      },
+      "model": "night-of-the-dead:item/napalm_cocktail_lit"
+    }
+  ]
+}

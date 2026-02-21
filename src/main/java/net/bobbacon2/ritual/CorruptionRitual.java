@@ -208,7 +208,7 @@ public class CorruptionRitual extends Ritual {
             lightPillar(pillar3);
             lightPillar(pillar4);
 
-            Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world);
+            Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world,false);
         }
 
         @Override
@@ -263,7 +263,7 @@ public class CorruptionRitual extends Ritual {
         @Override
         public boolean tick(int time) {
             if (time%20==0){
-                Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world);
+                Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world,false);
                 return entityCount <= 0 || !areEntitiesAlive();
             }
             return false;
@@ -330,7 +330,7 @@ public class CorruptionRitual extends Ritual {
                 Random rand = new Random();
 
                 for (BlockPos pos: bossesPos){
-                    FireDrop fireDrop = new FireDrop(null,world,pos.getX(),pos.getY()+0.2,pos.getZ());
+                    FireDrop fireDrop = new FireDrop(null,world,pos.getX(),pos.getY()+0.2,pos.getZ(),true);
                     fireDrop.setVelocity(0, 4, 0, 0.4F*rand.nextFloat()+0.3f, 1.5F);
                     world.spawnEntity(fireDrop);
                 }

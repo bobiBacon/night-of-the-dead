@@ -1,0 +1,18 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "b": {
+      "item": "night-of-the-dead:fermented_water"
+    }
+  },
+  "pattern": [
+    "bbb",
+    "bbb",
+    "bbb"
+  ],
+  "result": {
+    "item": "night-of-the-dead:sobriety_potion"
+  },
+  "show_notification": false,
+  "cookingtime": 200
+}

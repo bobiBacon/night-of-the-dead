@@ -137,7 +137,8 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(ModItems.BLOOD_BOTTLE, Models.GENERATED);
 			itemModelGenerator.register(ModItems.METAL_SUPPORT, Models.GENERATED);
 			itemModelGenerator.register(ModItems.CORRUPTED_SHARD, Models.GENERATED);
-
+			itemModelGenerator.register(ModItems.FERMENTED_WATER,Models.GENERATED);
+			itemModelGenerator.register(ModItems.SOBRIETY_POTION,Models.GENERATED);
 
 
 		}

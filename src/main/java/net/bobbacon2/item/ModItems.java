@@ -39,6 +39,8 @@ public class ModItems {
     public static final Item BLOODY_WATER = registryHelper.register("bloody_water",new Item(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE)));
     //TODO faire en sorte que ce soit un alcool qui donne de la vie quand on est un vampire
     public static final Item BLOOD_BOTTLE = registryHelper.register("blood_bottle",new Alcohol(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(ModEffects.INSANITY,300,1)));
+    public static final Item FERMENTED_WATER = registryHelper.register("fermented_water",new Alcohol(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(StatusEffects.HUNGER,200,0)));
+    public static final Item SOBRIETY_POTION = registryHelper.register("sobriety_potion",new Alcohol(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(ModEffects.SOBRIETY,1200,0)));
     public static final Potion ATTRITION = potionRegistryHelper.register("attrition",new Potion(new StatusEffectInstance(ModEffects.ATTRITION,1200,1)));
     public static final Item METAL_SUPPORT = registryHelper.register("metal_support", new MetalSupportItem(ModEntities.METAL_SUPPORT, new Item.Settings()));
     public static final Item ALTAR = registryHelper.register("altar", new BlockItem(net.bobbacon2.block.ModBlocks.ALTAR, new FabricItemSettings()));

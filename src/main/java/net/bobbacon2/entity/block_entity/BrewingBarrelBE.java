@@ -1,6 +1,5 @@
 package net.bobbacon2.entity.block_entity;
 
-import net.bobbacon2.NightOfTheDead;
 import net.bobbacon2.item.ModItems;
 import net.bobbacon2.recipe.AlcoholBrewingRecipe;
 import net.bobbacon2.recipe.ModRecipes;
@@ -14,8 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
@@ -32,7 +30,7 @@ public class BrewingBarrelBE extends BlockEntity{
     private final static String TIME_KEY = "nether_warts_amount";
     private final static String IS_EXPIRED_KEY = "is_expired";
 
-    private final int brewingTime = 36000;
+    private final int brewingTime = 36;
     private final int expirationTime = 48000;
     protected int time= 0;
     protected int netherWartsAmount= 0;
@@ -97,7 +95,6 @@ public class BrewingBarrelBE extends BlockEntity{
     }
     //not to be called on client
     protected boolean isBrewing(){
-//        RecipeManager matchGetter = world.getServer().getRecipeManager();
         return hasEnoughWater() && hasEnoughWarts() && getRecipeFor(items.get(0)).isPresent()&&items.get(0).getCount()>=64;
     }
     protected void reset(){
@@ -115,7 +112,6 @@ public class BrewingBarrelBE extends BlockEntity{
             if (stack.isOf(Items.GLASS_BOTTLE)){
                 player.giveItemStack(getProduct());
                 stack.decrement(1);
-                this.productAmount--;
                 if (productAmount<=0){
                     reset();
                 }
@@ -124,7 +120,6 @@ public class BrewingBarrelBE extends BlockEntity{
         } else {
             if (stack.isOf(Items.WATER_BUCKET)&&!hasEnoughWater()){
                 player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.BUCKET)));
-                productAmount=4;
                 markDirty();
                 return ActionResult.SUCCESS;
 
@@ -137,6 +132,9 @@ public class BrewingBarrelBE extends BlockEntity{
             }
 
             if (getRecipeFor(stack).isPresent()&&items.get(0).getCount()<64) {
+                if (!stack.getRecipeRemainder().isEmpty()){
+                    player.giveItemStack(stack.getRecipeRemainder().split(1));
+                }
                 if (ItemStack.canCombine(stack,items.get(0))){
                     ItemStack stack1= items.get(0);
                     stack1.increment(1);
@@ -144,9 +142,7 @@ public class BrewingBarrelBE extends BlockEntity{
                 } else if (items.get(0).isEmpty()) {
                     items.set(0,stack.split(1));
                 }
-                if (!stack.getRecipeRemainder().isEmpty()){
-                    player.giveItemStack(stack.getRecipeRemainder().split(1));
-                }
+
                 stack.decrement(1);
 
                 markDirty();
@@ -167,9 +163,20 @@ public class BrewingBarrelBE extends BlockEntity{
         if (this.world.isClient){
             return ItemStack.EMPTY;
         }
+        AlcoholBrewingRecipe recipe=getRecipeFor(items.get(0)).get();
+        ItemStack stack=recipe.getOutput().copy();
+        if (productAmount==0){
+            productAmount=stack.getCount();
+        }else {
+            productAmount--;
+        }
+
         if (time>=brewingTime&&time<=expirationTime){
-            return getRecipeFor(items.get(0)).get().getOutput().copy();
+
+
+            return stack.split(1);
         }else if(this.isExpired){
+            reset();
             return ModItems.VINEGAR.getDefaultStack();
         }
         return Items.POTION.getDefaultStack();

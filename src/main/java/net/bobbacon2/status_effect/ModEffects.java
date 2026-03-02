@@ -12,6 +12,7 @@ public class ModEffects {
     private static final RegistryHelper<StatusEffect> registryHelper=new RegistryHelper<>(Registries.STATUS_EFFECT, NightOfTheDead.MOD_ID);
     public static final StatusEffect ATTRITION = registryHelper.register("attrition",new Attrition(StatusEffectCategory.HARMFUL, 0xb31010));
     public static final StatusEffect INSANITY = registryHelper.register("insanity",new Insanity(StatusEffectCategory.HARMFUL, 0x70076d));
+    public static final StatusEffect SOBRIETY = registryHelper.register("sobriety",new Sobriety(StatusEffectCategory.BENEFICIAL, 0x0033FF));
 
     public static void init(){
 

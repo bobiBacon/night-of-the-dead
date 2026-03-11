@@ -14,7 +14,7 @@ public class BiomeColorsMixin {
     @Inject(method = "getWaterColor",at= @At("HEAD"), cancellable = true)
     private static void changeColor(BlockRenderView world, BlockPos pos, CallbackInfoReturnable<Integer> cir){
         if (NightOfTheDeadClientManager.isNightOfTheDead){
-            cir.setReturnValue(0xFF3300);
+            cir.setReturnValue(0x850606);
         }
     }
 }

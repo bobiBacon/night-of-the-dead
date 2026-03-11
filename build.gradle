@@ -55,9 +55,18 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation("maven.modrinth:registry-helper-lib:${project.registry_version}")
 	modImplementation("maven.modrinth:the-spell-library:${project.spells_version}")
+	modImplementation("maven.modrinth:sodium:${project.sodium_version}")
+	implementation(platform("org.lwjgl:lwjgl-bom:3.3.1"))
 //	modImplementation("maven.modrinth:farmers-delight-refabricated:${project.farmers_version}")
 }
-
+configurations.all {
+	resolutionStrategy {
+		force "org.lwjgl:lwjgl:3.3.1"
+		force "org.lwjgl:lwjgl-glfw:3.3.1"
+		force "org.lwjgl:lwjgl-opengl:3.3.1"
+		force "org.lwjgl:lwjgl-stb:3.3.1"
+	}
+}
 
 processResources {
 	inputs.property "version", project.version

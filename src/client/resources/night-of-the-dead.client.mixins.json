@@ -2,11 +2,15 @@
   "required": true,
   "package": "net.bobbacon2.mixin.client",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "net.bobbacon2.OptionalMixinPlugin",
   "client": [
     "BiomeColorsMixin",
-    "ExampleClientMixin",
+    "ExampleClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-	}
+  },
+  "mixins": [
+    "sodium.WaterColorMixin"
+  ]
 }

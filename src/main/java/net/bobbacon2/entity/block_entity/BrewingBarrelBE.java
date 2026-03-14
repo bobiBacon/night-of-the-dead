@@ -29,11 +29,13 @@ public class BrewingBarrelBE extends BlockEntity{
     private final static String NETHER_WARTS_AMOUNT_KEY = "nether_warts_amount";
     private final static String TIME_KEY = "nether_warts_amount";
     private final static String IS_EXPIRED_KEY = "is_expired";
+    private static final String PRODUCT_AMOUNT_KEY = "product_amount";
 
     private final int brewingTime = 36;
     private final int expirationTime = 48000;
     protected int time= 0;
     protected int netherWartsAmount= 0;
+    protected boolean hasWater=false;
     protected int productAmount = 0;
     protected boolean isExpired = false;
 
@@ -53,8 +55,9 @@ public class BrewingBarrelBE extends BlockEntity{
         Inventories.readNbt(nbt,items);
         time = nbt.getInt(TIME_KEY);
         netherWartsAmount= nbt.getInt(NETHER_WARTS_AMOUNT_KEY);
-        productAmount = nbt.getInt(HAS_WATER_KEY);
+        productAmount = nbt.getInt(PRODUCT_AMOUNT_KEY);
         isExpired= nbt.getBoolean(IS_EXPIRED_KEY);
+        hasWater= nbt.getBoolean(HAS_WATER_KEY);
     }
 
     @Override
@@ -63,7 +66,8 @@ public class BrewingBarrelBE extends BlockEntity{
         Inventories.writeNbt(nbt, this.items, true);
         nbt.putInt(TIME_KEY,time);
         nbt.putInt(NETHER_WARTS_AMOUNT_KEY,netherWartsAmount);
-        nbt.putInt(HAS_WATER_KEY, productAmount);
+        nbt.putInt(PRODUCT_AMOUNT_KEY, productAmount);
+        nbt.putBoolean(HAS_WATER_KEY,hasWater);
         nbt.putBoolean(IS_EXPIRED_KEY, isExpired);
     }
 
@@ -91,7 +95,7 @@ public class BrewingBarrelBE extends BlockEntity{
         return this.netherWartsAmount>=5;
     }
     protected boolean hasEnoughWater(){
-        return this.productAmount>0;
+        return hasWater;
     }
     //not to be called on client
     protected boolean isBrewing(){
@@ -103,6 +107,7 @@ public class BrewingBarrelBE extends BlockEntity{
         productAmount=0;
         isExpired=false;
         items.set(0,ItemStack.EMPTY);
+        hasWater=false;
         markDirty();
     }
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
@@ -120,6 +125,7 @@ public class BrewingBarrelBE extends BlockEntity{
         } else {
             if (stack.isOf(Items.WATER_BUCKET)&&!hasEnoughWater()){
                 player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.BUCKET)));
+                hasWater=true;
                 markDirty();
                 return ActionResult.SUCCESS;
 
@@ -165,15 +171,13 @@ public class BrewingBarrelBE extends BlockEntity{
         }
         AlcoholBrewingRecipe recipe=getRecipeFor(items.get(0)).get();
         ItemStack stack=recipe.getOutput().copy();
-        if (productAmount==0){
+        if (productAmount<=0){
             productAmount=stack.getCount();
-        }else {
-            productAmount--;
         }
 
         if (time>=brewingTime&&time<=expirationTime){
 
-
+            productAmount--;
             return stack.split(1);
         }else if(this.isExpired){
             reset();

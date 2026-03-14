@@ -14,5 +14,6 @@
     "item": "night-of-the-dead:sobriety_potion"
   },
   "show_notification": false,
-  "cookingtime": 200
+  "cookingtime": 200,
+  "recipient": "minecraft:glass_bottle"
 }

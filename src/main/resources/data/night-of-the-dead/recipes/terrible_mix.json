@@ -1,0 +1,27 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "r": {
+      "item": "night-of-the-dead:rum"
+    },
+    "v": {
+      "item": "night-of-the-dead:vodka"
+    },
+    "m": {
+      "item": "night-of-the-dead:mead"
+    },
+    "i": {
+      "item": "night-of-the-dead:vinegar"
+    }
+  },
+  "pattern": [
+    "rv",
+    "mi"
+  ],
+  "result": {
+    "item": "night-of-the-dead:terrible_mix"
+  },
+  "show_notification": false,
+  "cookingtime": 200,
+  "recipient": "minecraft:glass_bottle"
+}

@@ -1,0 +1,25 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "r": {
+      "item": "minecraft:wither_rose"
+    },
+    "s": {
+      "item": "night-of-the-dead:corrupted_shard"
+    },
+    "t": {
+      "item": "night-of-the-dead:terrible_mix"
+    }
+  },
+  "pattern": [
+    "rsr",
+    "rtr",
+    " r "
+  ],
+  "result": {
+    "item": "night-of-the-dead:withers_drink"
+  },
+  "show_notification": false,
+  "cookingtime": 200,
+  "recipient": "minecraft:glass_bottle"
+}

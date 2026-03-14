@@ -1,8 +1,10 @@
 package net.bobbacon2.item;
 
+import net.bobbacon2.status_effect.ModEffects;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,12 +27,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Alcohol extends Item {
-    private static final int MAX_USE_TIME = 32;
+    protected static final int MAX_USE_TIME = 32;
+    protected final boolean single_use;
     public ArrayList<StatusEffectInstance> effects= new ArrayList<>();
 
-    public Alcohol(Settings settings, StatusEffectInstance... effects) {
-        super(settings.maxDamage(4).recipeRemainder(Items.GLASS_BOTTLE));
+    public Alcohol(Settings settings,int usages, StatusEffectInstance... effects) {
+        super(usages==1?settings.recipeRemainder(Items.GLASS_BOTTLE):settings.maxDamage(usages).recipeRemainder(Items.GLASS_BOTTLE));
+        single_use=usages==1;
         this.effects= new ArrayList<>(List.of(effects));
+    }
+    public Alcohol(Settings settings, StatusEffectInstance... effects) {
+       this(settings,1,effects);
     }
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
@@ -41,6 +48,9 @@ public class Alcohol extends Item {
 
         if (!world.isClient) {
             for (StatusEffectInstance statusEffectInstance : ((Alcohol)stack.getItem()).effects) {
+                if (statusEffectInstance.getEffectType().getCategory()== StatusEffectCategory.HARMFUL&&user.hasStatusEffect(ModEffects.SOBRIETY)){
+                    continue;
+                }
                 if (statusEffectInstance.getEffectType().isInstant()) {
                     statusEffectInstance.getEffectType().applyInstantEffect(playerEntity, playerEntity, user, statusEffectInstance.getAmplifier(), 1.0);
                 } else {
@@ -58,7 +68,12 @@ public class Alcohol extends Item {
         user.emitGameEvent(GameEvent.DRINK);
         return stack;
     }
-    public static ItemStack decrement(ItemStack stack,ServerPlayerEntity player){
+    public ItemStack decrement(ItemStack stack,ServerPlayerEntity player){
+        if (single_use){
+            player.giveItemStack(stack.copy().split(1).getRecipeRemainder());
+            stack.decrement(1);
+            return stack;
+        }
         if (stack.damage(1, Random.create(),player)){
             return stack.getRecipeRemainder();
         }

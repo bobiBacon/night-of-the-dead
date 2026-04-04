@@ -77,7 +77,6 @@ public class CorruptionRitual extends Ritual {
 
     protected void lightPillar(BlockPos base){
         BlockPos pos = base.up(3);
-        NightOfTheDead.LOGGER.info("trying to light: " + pos);
         if (world.getBlockState(pos).isReplaceable()){
             world.setBlockState(pos, AbstractFireBlock.getState(world, pos));
             world.playSound(null,pos, SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.HOSTILE,1f,0.8f+world.random.nextFloat()*0.4f);

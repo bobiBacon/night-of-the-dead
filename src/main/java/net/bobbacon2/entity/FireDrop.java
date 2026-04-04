@@ -85,8 +85,7 @@ public class FireDrop extends ProjectileEntity {
 
     @Override
     protected void onBlockHit(BlockHitResult blockHitResult) {
-        NightOfTheDead.LOGGER.info("onBlockHit");
-        
+
     }
 
     @Override

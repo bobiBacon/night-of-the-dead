@@ -31,7 +31,6 @@ public class RefiningRecipeSerializer implements RecipeSerializer<RefiningRecipe
 
     @Override
     public RefiningRecipe read(Identifier id, JsonObject json) {
-        NightOfTheDead.LOGGER.info("loading recipe: " + id);
         String group = JsonHelper.getString(json, "group", "");
         CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)CraftingRecipeCategory.CODEC
                 .byId(JsonHelper.getString(json, "category", null), CraftingRecipeCategory.MISC);

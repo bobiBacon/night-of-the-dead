@@ -28,7 +28,6 @@ public class ColoredWaterRenderHandler extends SimpleFluidRenderHandler {
 
     @Override
     public int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
-        NightOfTheDeadClient.LOGGER.warn("getFluidColor");
         if (NightOfTheDeadClientManager.isNightOfTheDead){
             return 0xFF3300;
         }

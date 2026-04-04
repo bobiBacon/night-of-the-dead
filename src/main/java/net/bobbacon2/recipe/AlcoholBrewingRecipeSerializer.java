@@ -18,7 +18,6 @@ public class AlcoholBrewingRecipeSerializer implements RecipeSerializer<AlcoholB
     public static final Identifier ID = Identifier.of(NightOfTheDead.MOD_ID,"alcohol_brewing");
     @Override
     public AlcoholBrewingRecipe read(Identifier id, JsonObject json) {
-        NightOfTheDead.LOGGER.info("loading recipe: " + id);
         AlcoholBrewingRecipe.JsonFormat recipeJson = new Gson().fromJson(json, AlcoholBrewingRecipe.JsonFormat.class);
 
         if (recipeJson.input == null || recipeJson.outputItem == null) {

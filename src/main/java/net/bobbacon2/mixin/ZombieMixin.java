@@ -2,6 +2,7 @@
 package net.bobbacon2.mixin;
 
 import net.bobbacon2.NightOfTheDead;
+import net.bobbacon2.damage.ModDamageTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
@@ -91,6 +92,9 @@ public class ZombieMixin extends HostileEntity {
             } else {
                 amount = amount + base * 4;
             }
+        }
+        if (source.isOf(ModDamageTypes.Holy)){
+            amount = amount + base*6;
         }
         if (source.getAttacker()!=null && source.getAttacker() instanceof LivingEntity){
             ItemStack stack = ((LivingEntity) Objects.requireNonNull(source.getAttacker())).getStackInHand(Hand.MAIN_HAND);

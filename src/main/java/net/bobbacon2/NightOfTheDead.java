@@ -1,5 +1,6 @@
 package net.bobbacon2;
 
+import net.bobbacon2.damage.ModDamageTypes;
 import net.bobbacon2.entity.ModEntities;
 import net.bobbacon2.entity.block_entity.ModBE;
 import net.bobbacon2.recipe.ModRecipes;
@@ -97,7 +98,7 @@ public class NightOfTheDead implements ModInitializer {
 		ModRecipes.init();
 		ModEffects.init();
 		ModSpells.init();
-
+		ModDamageTypes.init();
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,

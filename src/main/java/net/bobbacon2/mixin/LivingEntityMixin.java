@@ -3,6 +3,7 @@ package net.bobbacon2.mixin;
 import net.bobbacon.Accessors.EntityAccessor;
 import net.bobbacon.ritual.RitualManager;
 import net.bobbacon2.NightOfTheDead;
+import net.bobbacon2.damage.ModDamageTypes;
 import net.bobbacon2.status_effect.ModEffects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
@@ -68,6 +69,9 @@ public class LivingEntityMixin extends Entity {
             }
             if (source.isIn(DamageTypeTags.IS_FIRE)){
                 amount = amount + base;
+            }
+            if (source.isOf(ModDamageTypes.Holy)){
+                amount = amount + base*5;
             }
 
         }

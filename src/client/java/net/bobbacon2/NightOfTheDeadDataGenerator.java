@@ -35,7 +35,7 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(MyRecipeGenerator::new);
 		pack.addProvider(MyTagGenerator::new);
 		pack.addProvider(ModModelGenerator::new);
-		pack.addProvider(ModEnglishLangProvider::new);
+//		pack.addProvider(ModEnglishLangProvider::new);
 
 	}
 	private static class MyTagGenerator extends FabricTagProvider<Item> {

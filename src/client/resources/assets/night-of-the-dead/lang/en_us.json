@@ -1,0 +1,20 @@
+{
+  "block.night-of-the-dead.brewing_barrel": "Brewing Barrel",
+  "container.night-of-the-dead.refinery": "Refinery",
+  "item.night-of-the-dead.beer": "Beer",
+  "item.night-of-the-dead.fiery_cocktail": "Fiery Cocktail",
+  "item.night-of-the-dead.mead": "Mead",
+  "item.night-of-the-dead.molotov_cocktail": "Molotov Cocktail",
+  "item.night-of-the-dead.pure_alcohol": "Pure Alcohol",
+  "item.night-of-the-dead.rum": "Rum",
+  "item.night-of-the-dead.scroll": "Unknown Scroll",
+  "item.night-of-the-dead.scroll.blank": "Blank Scroll",
+  "item.night-of-the-dead.scroll.spell.corruption_ritual": "Punishment Scroll",
+  "item.night-of-the-dead.vinegar": "Vinegar",
+  "item.night-of-the-dead.vodka": "Vodka",
+  "item.night-of-the-dead.whiskey": "Whiskey",
+  "item.the-spell-library.scroll.spell.punishment": "Punishment",
+  "item.the-spell-library.scroll.spell.exorcism": "Exorcism",
+
+  "death.attack.holy": "%1$s was exorcised!"
+}

@@ -5,6 +5,7 @@ import net.bobbacon2.item.ModItems;
 import net.bobbacon2.registry.ModRegistries;
 import net.bobbacon2.render.entity.EntityRenderers;
 import net.bobbacon2.render.fluids.ColoredWaterRenderHandler;
+import net.bobbacon2.render.spell.ModSpellRenderers;
 import net.bobbacon2.screen.ModScreenHandlers;
 import net.bobbacon2.screen.RefiningScreen;
 import net.bobbacon2.render.blockEntity.BlockEntityRenderers;
@@ -53,6 +54,7 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		EntityRenderers.init();
 		BlockEntityRenderers.init();
+		ModSpellRenderers.init();
 		HandledScreens.register(ModScreenHandlers.REFINERY_SCREEN_HANDLER, RefiningScreen::new);
 
 		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ETERNAL_FIRE, RenderLayer.getCutout());

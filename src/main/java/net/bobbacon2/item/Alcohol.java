@@ -47,16 +47,7 @@ public class Alcohol extends Item {
         }
 
         if (!world.isClient) {
-            for (StatusEffectInstance statusEffectInstance : ((Alcohol)stack.getItem()).effects) {
-                if (statusEffectInstance.getEffectType().getCategory()== StatusEffectCategory.HARMFUL&&user.hasStatusEffect(ModEffects.SOBRIETY)){
-                    continue;
-                }
-                if (statusEffectInstance.getEffectType().isInstant()) {
-                    statusEffectInstance.getEffectType().applyInstantEffect(playerEntity, playerEntity, user, statusEffectInstance.getAmplifier(), 1.0);
-                } else {
-                    user.addStatusEffect(new StatusEffectInstance(statusEffectInstance));
-                }
-            }
+            applyEffects(((Alcohol)stack.getItem()).effects,user);
             if (playerEntity instanceof ServerPlayerEntity serverPlayerEntity) {
                 playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
                 if (!playerEntity.getAbilities().creativeMode) {
@@ -67,6 +58,19 @@ public class Alcohol extends Item {
 
         user.emitGameEvent(GameEvent.DRINK);
         return stack;
+    }
+    protected void applyEffects(List<StatusEffectInstance> effects,LivingEntity user){
+        PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity)user : null;
+        for (StatusEffectInstance statusEffectInstance : effects) {
+            if (statusEffectInstance.getEffectType().getCategory()== StatusEffectCategory.HARMFUL&&user.hasStatusEffect(ModEffects.SOBRIETY)){
+                continue;
+            }
+            if (statusEffectInstance.getEffectType().isInstant()) {
+                statusEffectInstance.getEffectType().applyInstantEffect(playerEntity, playerEntity, user, statusEffectInstance.getAmplifier(), 1.0);
+            } else {
+                user.addStatusEffect(new StatusEffectInstance(statusEffectInstance));
+            }
+        }
     }
     public ItemStack decrement(ItemStack stack,ServerPlayerEntity player){
         if (single_use){

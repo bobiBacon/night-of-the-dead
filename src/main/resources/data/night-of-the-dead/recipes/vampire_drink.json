@@ -1,0 +1,28 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "r": {
+      "item": "night-of-the-dead:blood_bottle"
+    },
+    "s": {
+      "item": "night-of-the-dead:cursed_blood_bottle"
+    },
+    "t": {
+      "item": "night-of-the-dead:terrible_mix"
+    },
+    "g": {
+      "item": "minecraft:sugar"
+    }
+  },
+  "pattern": [
+    "gsg",
+    "rtr",
+    " r "
+  ],
+  "result": {
+    "item": "night-of-the-dead:vampires_drink"
+  },
+  "show_notification": false,
+  "cookingtime": 200,
+  "recipient": "minecraft:glass_bottle"
+}

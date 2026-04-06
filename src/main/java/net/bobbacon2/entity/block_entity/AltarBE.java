@@ -41,7 +41,7 @@ public class AltarBE extends BlockEntity {
 
     public boolean tryCastRitual(){
         CorruptionRitual ritual= new CorruptionRitual(pos,world);
-        if (getStack().isOf(Items.ECHO_SHARD)&&ritual.tryStart()){
+        if (getStack().isOf(Items.ECHO_SHARD)||getStack().isOf(ModItems.BLOOD_BOTTLE)&&ritual.tryStart()){
             ritualId=ritual.id;
             markDirty();
             return true;
@@ -77,7 +77,7 @@ public class AltarBE extends BlockEntity {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack playerStack= player.getStackInHand(hand);
         ItemStack stack= this.getStack();
-        if (stack.isEmpty()&&playerStack.isOf(Items.ECHO_SHARD)){
+        if (stack.isEmpty()&&(playerStack.isOf(Items.ECHO_SHARD)||playerStack.isOf(ModItems.BLOOD_BOTTLE))){
             this.setStack(playerStack.split(1));
             markDirtyAndSync();
             return ActionResult.SUCCESS;
@@ -112,7 +112,14 @@ public class AltarBE extends BlockEntity {
         }
     }
     public void corrupt(){
-        setStack(new ItemStack(ModItems.CORRUPTED_SHARD));
+        if (getStack().isOf(ModItems.BLOOD_BOTTLE)){
+            setStack(new ItemStack(ModItems.CURSED_BLOOD_BOTTLE));
+
+        }
+        if (getStack().isOf(Items.ECHO_SHARD)){
+            setStack(new ItemStack(ModItems.CORRUPTED_SHARD));
+        }
+
         markDirtyAndSync();
     }
 

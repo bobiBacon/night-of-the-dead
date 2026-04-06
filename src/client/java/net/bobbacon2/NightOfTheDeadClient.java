@@ -77,6 +77,12 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 				(stack, world, entity, seed) ->
 						stack.getOrCreateNbt().getBoolean("lit") ? 1.0F : 0.0F
 		);
+		ModelPredicateProviderRegistry.register(
+				ModItems.EXPLOSIVE_COCKTAIL,
+				new Identifier("lit"),
+				(stack, world, entity, seed) ->
+						stack.getOrCreateNbt().getBoolean("lit") ? 1.0F : 0.0F
+		);
 
 		ClientPlayNetworking.registerGlobalReceiver(
 				NightOfTheDead.NIGHT_OF_THE_DEAD_PACKET,

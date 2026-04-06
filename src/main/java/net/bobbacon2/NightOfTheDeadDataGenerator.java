@@ -111,6 +111,11 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.criterion(FabricRecipeProvider.hasItem(ModItems.CORRUPTED_SHARD),
 							FabricRecipeProvider.conditionsFromItem(ModItems.CORRUPTED_SHARD))
 					.offerTo(consumer);
+			ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, ModItems.SACRIFICIAL_DAGGER).pattern(" v").pattern("s ")
+					.input('v',ModItems.VAMPIRITE).input('s', Items.STICK)
+					.criterion(FabricRecipeProvider.hasItem(ModItems.BLOOD_BOTTLE),
+							FabricRecipeProvider.conditionsFromItem(ModItems.BLOOD_BOTTLE))
+					.offerTo(consumer);
 		}
 
 
@@ -141,6 +146,11 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(ModItems.SOBRIETY_POTION,Models.GENERATED);
 			itemModelGenerator.register(ModItems.WITHERS_DRINK,Models.GENERATED);
 			itemModelGenerator.register(ModItems.TERRIBLE_MIX,Models.GENERATED);
+			itemModelGenerator.register(ModItems.CURSED_BLOOD_BOTTLE,Models.GENERATED);
+			itemModelGenerator.register(ModItems.VAMPIRES_DRINK,Models.GENERATED);
+			itemModelGenerator.register(ModItems.ARTIFICIAL_MANA,Models.GENERATED);
+			itemModelGenerator.register(ModItems.VAMPIRITE,Models.GENERATED);
+			itemModelGenerator.register(ModItems.SACRIFICIAL_DAGGER,Models.HANDHELD);
 
 		}
 	}

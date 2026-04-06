@@ -48,7 +48,6 @@ public class CorruptionRitual extends Ritual {
     BlockPos pillar3;
     BlockPos pillar4;
     public List<ArrayList<FireballEntity>> fireballQueue= List.of(new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
-//    public ArrayList<FireballEntity> fireballQueue= new ArrayList<>();
     public CorruptionRitual(BlockPos center, World world) {
         super(center,world);
         definePillars(center);
@@ -208,6 +207,12 @@ public class CorruptionRitual extends Ritual {
             lightPillar(pillar4);
 
             Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world,false);
+
+            getSupportsInArea().forEach(metalSupport -> {
+                if (metalSupport.getHeldItemStack().isOf(ModItems.BLOOD_BOTTLE)){
+                    metalSupport.setHeldItemStack(Items.GLASS_BOTTLE.getDefaultStack(),true);
+                }
+            });
         }
 
         @Override

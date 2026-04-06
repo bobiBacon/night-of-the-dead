@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -23,6 +23,10 @@ repositories {
 			includeGroup 'maven.modrinth'
 		}
 	}
+	maven {
+		name = "Ladysnake Mods"
+		url = 'https://maven.ladysnake.org/releases'
+	}
 }
 
 loom {
@@ -41,7 +45,6 @@ loom {
 
 fabricApi {
 	configureDataGeneration {
-		client = true
 	}
 }
 
@@ -60,7 +63,8 @@ dependencies {
 	modImplementation("maven.modrinth:the-spell-library:${project.spells_version}")
 	modImplementation("maven.modrinth:sodium:${project.sodium_version}")
 	implementation(platform("org.lwjgl:lwjgl-bom:3.3.1"))
-//	modImplementation("maven.modrinth:farmers-delight-refabricated:${project.farmers_version}")
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.3"
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.3"
 }
 configurations.all {
 	resolutionStrategy {

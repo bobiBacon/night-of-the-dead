@@ -11,6 +11,7 @@ public class EntityRenderers {
     public static void init() {
         EntityRendererRegistry.register(ModEntities.MOLOTOV, MolotovRenderer::new);
         EntityRendererRegistry.register(ModEntities.NAPALM_MOLOTOV, MolotovRenderer::new);
+        EntityRendererRegistry.register(ModEntities.EXPLOSIVE_MOLOTOV, MolotovRenderer::new);
         EntityRendererRegistry.register(ModEntities.FIRE_DROP,FireDropRenderer::new);
         EntityRendererRegistry.register(ModEntities.METAL_SUPPORT, MetalSupportRenderer::new);
     }

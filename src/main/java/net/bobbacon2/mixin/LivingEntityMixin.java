@@ -1,8 +1,10 @@
 package net.bobbacon2.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.bobbacon.Accessors.EntityAccessor;
 import net.bobbacon.ritual.RitualManager;
 import net.bobbacon2.NightOfTheDead;
+import net.bobbacon2.accessors.PlayerAccessor;
 import net.bobbacon2.damage.ModDamageTypes;
 import net.bobbacon2.status_effect.ModEffects;
 import net.minecraft.entity.Entity;
@@ -47,6 +49,11 @@ public class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "damage", at = @At("HEAD"), argsOnly = true)
     private float BoostDamage(float amount, DamageSource source) {
         LivingEntity self = (LivingEntity) (Object) this;
+        if (self.getGroup()==EntityGroup.UNDEAD){
+            if (source.isOf(ModDamageTypes.Holy)){
+                return amount*7;
+            }
+        }
         if (((EntityAccessor)(this)).the_spell_library$comesFromRitual()&&source.isIn(DamageTypeTags.IS_EXPLOSION)){
             return 0;
         }
@@ -70,9 +77,7 @@ public class LivingEntityMixin extends Entity {
             if (source.isIn(DamageTypeTags.IS_FIRE)){
                 amount = amount + base;
             }
-            if (source.isOf(ModDamageTypes.Holy)){
-                amount = amount + base*5;
-            }
+
 
         }
         return amount;
@@ -88,7 +93,14 @@ public class LivingEntityMixin extends Entity {
         }
         return value;
     }
-
+    @ModifyReturnValue(method = "getGroup",at=@At("RETURN"))
+    private EntityGroup makeUndead(EntityGroup original){
+        LivingEntity self= (LivingEntity) (Object) this;
+        if (self instanceof PlayerEntity player){
+            return ((PlayerAccessor)player).isVampire()? EntityGroup.UNDEAD:EntityGroup.DEFAULT;
+        }
+        return original;
+    }
 
 
 

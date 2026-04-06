@@ -1,0 +1,22 @@
+{
+  "type": "night-of-the-dead:refining_recipe",
+  "key": {
+    "b": {
+      "item": "night-of-the-dead:blood_bottle"
+    },
+    "d": {
+      "item": "the-spell-library:crying_diamond"
+    }
+  },
+  "pattern": [
+    " b ",
+    "bdb",
+    " b "
+  ],
+  "result": {
+    "item": "night-of-the-dead:artificial_mana"
+  },
+  "show_notification": false,
+  "cookingtime": 200,
+  "recipient": "minecraft:glass_bottle"
+}

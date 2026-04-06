@@ -13,6 +13,9 @@ public class ModEffects {
     public static final StatusEffect ATTRITION = registryHelper.register("attrition",new Attrition(StatusEffectCategory.HARMFUL, 0xb31010));
     public static final StatusEffect INSANITY = registryHelper.register("insanity",new Insanity(StatusEffectCategory.HARMFUL, 0x70076d));
     public static final StatusEffect SOBRIETY = registryHelper.register("sobriety",new Sobriety(StatusEffectCategory.BENEFICIAL, 0x0033FF));
+    public static final StatusEffect Vampiring = registryHelper.register("vampiring",new Vampiring(StatusEffectCategory.NEUTRAL, 0x7D002C));
+    public static final StatusEffect ARTIFICIAL_MANA_BOOST = registryHelper.register("artificial_mana_boost",new ArtificialManaBoost(StatusEffectCategory.BENEFICIAL, 0x450044));
+    public static final StatusEffect INSTANT_ARTIFICIAL_MANA = registryHelper.register("instant_artificial_mana",new InstantArtificialMana(StatusEffectCategory.BENEFICIAL, 0x450044));
 
     public static void init(){
 

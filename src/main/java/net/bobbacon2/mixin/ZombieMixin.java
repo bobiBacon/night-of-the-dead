@@ -93,9 +93,7 @@ public class ZombieMixin extends HostileEntity {
                 amount = amount + base * 4;
             }
         }
-        if (source.isOf(ModDamageTypes.Holy)){
-            amount = amount + base*6;
-        }
+
         if (source.getAttacker()!=null && source.getAttacker() instanceof LivingEntity){
             ItemStack stack = ((LivingEntity) Objects.requireNonNull(source.getAttacker())).getStackInHand(Hand.MAIN_HAND);
             if (stack.hasEnchantments() && EnchantmentHelper.getLevel(Enchantments.SMITE, stack) > 0) {

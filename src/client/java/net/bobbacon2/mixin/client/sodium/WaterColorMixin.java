@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(DefaultColorProviders.WaterColorProvider.class)
 public class WaterColorMixin {
-    @Inject(method = "getColor",at= @At("HEAD"), cancellable = true)
+    @Inject(method = "getColor",at= @At("HEAD"), cancellable = true,remap = false)
     private void changeColor(WorldSlice world, int x, int y, int z, CallbackInfoReturnable<Integer> cir){
         if (NightOfTheDeadClientManager.isNightOfTheDead){
             cir.setReturnValue(0x850606);

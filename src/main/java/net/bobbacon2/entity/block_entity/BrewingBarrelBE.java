@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 
 import java.util.Optional;
 
-public class BrewingBarrelBE extends BlockEntity{
+public class BrewingBarrelBE extends BlockEntity implements ImplementedInventory{
     private DefaultedList<ItemStack> items= DefaultedList.ofSize(1,ItemStack.EMPTY);
     private final static String HAS_WATER_KEY = "has_water";
     private final static String NETHER_WARTS_AMOUNT_KEY = "nether_warts_amount";
@@ -34,7 +34,7 @@ public class BrewingBarrelBE extends BlockEntity{
     private final int brewingTime = 36;
     private final int expirationTime = 48000;
     protected int time= 0;
-    protected int netherWartsAmount= 0;
+    public int netherWartsAmount= 0;
     protected boolean hasWater=false;
     protected int productAmount = 0;
     protected boolean isExpired = false;
@@ -186,4 +186,8 @@ public class BrewingBarrelBE extends BlockEntity{
         return Items.POTION.getDefaultStack();
     }
 
+    @Override
+    public DefaultedList<ItemStack> getItems() {
+        return items;
+    }
 }

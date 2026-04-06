@@ -1,6 +1,7 @@
 package net.bobbacon2.block;
 
 import net.bobbacon2.entity.block_entity.BrewingBarrelBE;
+import net.bobbacon2.entity.block_entity.ImplementedInventory;
 import net.bobbacon2.entity.block_entity.ModBE;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -12,10 +13,13 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -60,5 +64,16 @@ public class BrewingBarrel extends BlockWithEntity {
         }
         return ActionResult.PASS;
     }
-
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (state.getBlock() != newState.getBlock()) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof BrewingBarrelBE brewingBarrelBE) {
+                ItemScatterer.spawn(world, pos, brewingBarrelBE);
+                ItemScatterer.spawn(world, pos, (ImplementedInventory) () -> DefaultedList.ofSize(1,new ItemStack(Items.NETHER_WART,brewingBarrelBE.netherWartsAmount)));
+                world.updateComparators(pos,this);
+            }
+            super.onStateReplaced(state, world, pos, newState, moved);
+        }
+    }
 }

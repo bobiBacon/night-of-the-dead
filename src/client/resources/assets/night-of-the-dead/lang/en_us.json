@@ -5,6 +5,7 @@
   "item.night-of-the-dead.fiery_cocktail": "Fiery Cocktail",
   "item.night-of-the-dead.mead": "Mead",
   "item.night-of-the-dead.molotov_cocktail": "Molotov Cocktail",
+  "item.night-of-the-dead.explosive_cocktail": "Explosive Cocktail",
   "item.night-of-the-dead.pure_alcohol": "Pure Alcohol",
   "item.night-of-the-dead.rum": "Rum",
   "item.night-of-the-dead.scroll": "Unknown Scroll",
@@ -13,8 +14,14 @@
   "item.night-of-the-dead.vinegar": "Vinegar",
   "item.night-of-the-dead.vodka": "Vodka",
   "item.night-of-the-dead.whiskey": "Whiskey",
+  "item.night-of-the-dead.sacrificial_dagger": "Sacrificial Dagger",
+  "item.night-of-the-dead.artificial_mana": "Artificial Mana",
   "item.the-spell-library.scroll.spell.punishment": "Punishment",
   "item.the-spell-library.scroll.spell.exorcism": "Exorcism",
+  "effect.night-of-the-dead.insanity": "Insanity",
+  "effect.night-of-the-dead.sobriety": "Sobriety",
+  "effect.night-of-the-dead.attrition": "Attrition",
+  "effect.night-of-the-dead.Vampiring": "Vampiring",
 
   "death.attack.holy": "%1$s was exorcised!"
 }

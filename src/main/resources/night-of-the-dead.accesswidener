@@ -32,3 +32,5 @@ accessible field net/minecraft/inventory/CraftingInventory handler Lnet/minecraf
 
 accessible field net/minecraft/block/AbstractFireBlock damage F
 accessible method net/minecraft/block/FireBlock getSpreadChance (Lnet/minecraft/block/BlockState;)I
+
+accessible method net/minecraft/loot/function/ConditionalLootFunction builder (Ljava/util/function/Function;)Lnet/minecraft/loot/function/ConditionalLootFunction$Builder;

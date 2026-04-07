@@ -9,6 +9,7 @@ import net.minecraft.server.PlayerManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,14 +27,14 @@ public abstract class ServerWorldMixin {
 
         long time = world.getTimeOfDay();
 
-        if (time == 13000&&NightOfTheDead.ShouldPlayANightOfTheDead(world)) {
+        if (time == 13000&&NightOfTheDead.ShouldPlayANightOfTheDead(world)&&!NightOfTheDead.isNightOfTheDead(world)) {
             NightOfTheDead.setNightOfTheDead(true,world);
             NightOfTheDead.setShouldPlayANightOfTheDead(false,world);
             wakeSleepingPlayers();
 
             world.getServer().getPlayerManager().broadcast(Text.of("All death must be punished."),false);
-        }
-        if (world.isDay()&& NightOfTheDead.isNightOfTheDead(world)) {
+        }else
+        if (time<13000&& NightOfTheDead.isNightOfTheDead(world)) {
             NightOfTheDead.setNightOfTheDead(false,world);
         }
         RitualManager.get(world).tick();

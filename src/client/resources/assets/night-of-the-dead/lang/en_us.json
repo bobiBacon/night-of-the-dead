@@ -1,5 +1,8 @@
 {
   "block.night-of-the-dead.brewing_barrel": "Brewing Barrel",
+  "block.night-of-the-dead.altar": "Ritual Altar",
+  "block.night-of-the-dead.blood_pool": "Blood Pool",
+  "block.night-of-the-dead.refinery": "Refinery",
   "container.night-of-the-dead.refinery": "Refinery",
   "item.night-of-the-dead.beer": "Beer",
   "item.night-of-the-dead.fiery_cocktail": "Fiery Cocktail",
@@ -10,10 +13,16 @@
   "item.night-of-the-dead.rum": "Rum",
   "item.night-of-the-dead.scroll": "Unknown Scroll",
   "item.night-of-the-dead.scroll.blank": "Blank Scroll",
-  "item.night-of-the-dead.scroll.spell.corruption_ritual": "Punishment Scroll",
+  "item.the-spell-library.scroll.spell.corruption_ritual": "Punishment Scroll",
+  "item.the-spell-library.scroll.spell.simple_blood_ritual": "Bloody Scroll",
   "item.night-of-the-dead.vinegar": "Vinegar",
   "item.night-of-the-dead.vodka": "Vodka",
   "item.night-of-the-dead.whiskey": "Whiskey",
+  "item.night-of-the-dead.terrible_mix": "Terrible Mix",
+  "item.night-of-the-dead.sobriety_potion": "Sobriety Potion",
+  "item.night-of-the-dead.blood_bottle": "Blood Bottle",
+  "item.night-of-the-dead.cursed_blood_bottle": "Cursed Blood Bottle",
+  "item.night-of-the-dead.vampires_drink": "Vampire's Drink",
   "item.night-of-the-dead.sacrificial_dagger": "Sacrificial Dagger",
   "item.night-of-the-dead.artificial_mana": "Artificial Mana",
   "item.the-spell-library.scroll.spell.punishment": "Punishment",
@@ -21,7 +30,9 @@
   "effect.night-of-the-dead.insanity": "Insanity",
   "effect.night-of-the-dead.sobriety": "Sobriety",
   "effect.night-of-the-dead.attrition": "Attrition",
-  "effect.night-of-the-dead.Vampiring": "Vampiring",
+  "effect.night-of-the-dead.vampiring": "Vampiring",
+  "enchantment.night-of-the-dead.vampire": "Vampire",
+  "enchantment.night-of-the-dead.blood_steal": "Blood Steal",
 
   "death.attack.holy": "%1$s was exorcised!"
 }

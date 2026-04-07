@@ -1,14 +1,11 @@
 package net.bobbacon2;
 
-import net.bobbacon.block.ModBlocks;
+import net.bobbacon2.block.ModBlocks;
 import net.bobbacon2.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.*;
 import net.minecraft.block.Block;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
@@ -35,12 +32,32 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(MyRecipeGenerator::new);
 		pack.addProvider(MyTagGenerator::new);
 		pack.addProvider(ModModelGenerator::new);
+		pack.addProvider(ModBlockLootTableProvider::new);
 //		pack.addProvider(ModEnglishLangProvider::new);
 
 	}
-	private static class MyTagGenerator extends FabricTagProvider<Item> {
+	public static class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
+
+
+		protected ModBlockLootTableProvider(FabricDataOutput dataOutput) {
+			super(dataOutput);
+		}
+
+		@Override
+		public void generate() {
+			addDrop(ModBlocks.ALTAR);
+			addDrop(ModBlocks.REFINERY);
+			addDrop(ModBlocks.BLOOD_POOL);
+			addDrop(ModBlocks.BREWING_BARREL);
+		}
+	}
+	public static class MyTagGenerator extends FabricTagProvider<Item> {
 		public static final TagKey<Item> STRONG_ALCOHOL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "strong_alcohol"));
 		public static final TagKey<Item> ALCOHOL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "alcohol"));
+		public static final TagKey<Item> ALTAR_PLACEABLE = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "altar_placeable"));
+		public static final TagKey<Item> CORRUPTIBLE = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "corruptible"));
+		public static final TagKey<Item> CAN_USE_IN_BLOOD_RITUAL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "can_blood_ritual"));
+//		public static final TagKey<Item> CAN_USE_IN_COMPLEX_BLOOD_RITUAL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "can_complex_blood_ritual"));
 		public static final TagKey<Item> HOOKABLE = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "hookable"));
 		public static final TagKey<Block> FIRE = TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft","fire"));
 
@@ -58,6 +75,15 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.addTag(STRONG_ALCOHOL)
 					.add(ModItems.BEER)
 					.add(ModItems.MEAD);
+			getOrCreateTagBuilder(CAN_USE_IN_BLOOD_RITUAL)
+					.add(Items.NETHERITE_INGOT);
+			getOrCreateTagBuilder(CORRUPTIBLE)
+					.add(ModItems.BLOOD_BOTTLE)
+					.add(Items.ECHO_SHARD)
+					.add(Items.HEART_OF_THE_SEA);
+			getOrCreateTagBuilder(ALTAR_PLACEABLE)
+					.addTag(CAN_USE_IN_BLOOD_RITUAL)
+					.addTag(CORRUPTIBLE);
 //			getTagBuilder(FIRE)
 //					.
 //			getOrCreateTagBuilder(HOOKABLE)
@@ -113,6 +139,11 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.offerTo(consumer);
 			ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, ModItems.SACRIFICIAL_DAGGER).pattern(" v").pattern("s ")
 					.input('v',ModItems.VAMPIRITE).input('s', Items.STICK)
+					.criterion(FabricRecipeProvider.hasItem(ModItems.BLOOD_BOTTLE),
+							FabricRecipeProvider.conditionsFromItem(ModItems.BLOOD_BOTTLE))
+					.offerTo(consumer);
+			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.BLOOD_POOL).pattern("i i").pattern("ini")
+					.input('i',Items.IRON_INGOT).input('n', Items.NETHERITE_SCRAP)
 					.criterion(FabricRecipeProvider.hasItem(ModItems.BLOOD_BOTTLE),
 							FabricRecipeProvider.conditionsFromItem(ModItems.BLOOD_BOTTLE))
 					.offerTo(consumer);

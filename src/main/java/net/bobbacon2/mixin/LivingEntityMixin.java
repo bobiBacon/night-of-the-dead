@@ -6,7 +6,9 @@ import net.bobbacon.ritual.RitualManager;
 import net.bobbacon2.NightOfTheDead;
 import net.bobbacon2.accessors.PlayerAccessor;
 import net.bobbacon2.damage.ModDamageTypes;
+import net.bobbacon2.enchants.ModEnchantments;
 import net.bobbacon2.status_effect.ModEffects;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
@@ -79,6 +81,25 @@ public class LivingEntityMixin extends Entity {
             }
 
 
+        }
+        return amount;
+    }
+    @ModifyVariable(
+            method = "applyDamage",
+            at = @At(
+                    value = "INVOKE_ASSIGN",
+                    target = "Lnet/minecraft/entity/LivingEntity;modifyAppliedDamage(Lnet/minecraft/entity/damage/DamageSource;F)F"
+            ),
+            ordinal = 0
+    )
+    private float modifyDamageAfterArmor(float amount, DamageSource source) {
+        Entity entity =source.getAttacker();
+        if (entity instanceof LivingEntity livingEntity&& EnchantmentHelper.getLevel(ModEnchantments.Vampire,livingEntity.getMainHandStack())>0){
+            float multiplicator= 0.15f;
+            if (livingEntity instanceof PlayerEntity player&&((PlayerAccessor)player).isVampire()){
+                multiplicator=0.35f;
+            }
+            livingEntity.heal(amount*multiplicator);
         }
         return amount;
     }

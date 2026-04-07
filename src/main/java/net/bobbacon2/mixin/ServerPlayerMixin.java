@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ServerPlayerMixin {
     @Inject(method = "onDeath", at= @At("HEAD"),require = 1)
     private void injectOnDeath(DamageSource damageSource, CallbackInfo ci){
-        LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.getWorld().isClient&&self instanceof PlayerEntity){
+        ServerPlayerEntity self = (ServerPlayerEntity) (Object) this;
+        if (!self.getWorld().isClient){
             NightOfTheDead.setShouldPlayANightOfTheDead(true,(ServerWorld) self.getWorld());
         }
 

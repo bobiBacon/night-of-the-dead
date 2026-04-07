@@ -24,6 +24,10 @@ public class ModBE {
             "refinery",
             BlockEntityType.Builder.create(Refinery::new, ModBlocks.REFINERY).build(null)
     );
+    public static final BlockEntityType<BloodPool> BLOOD_POOL= register(
+            "blood_pool",
+            BlockEntityType.Builder.create(BloodPool::new, ModBlocks.BLOOD_POOL).build(null)
+    );
     public static void init(){
 
     }

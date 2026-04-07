@@ -1,12 +1,19 @@
 package net.bobbacon2.entity.block_entity;
 
+import net.bobbacon.TheSpellLibraryDataGenerator;
+import net.bobbacon.ritual.Ritual;
+import net.bobbacon2.NightOfTheDeadDataGenerator;
+import net.bobbacon2.enchants.ModEnchantments;
 import net.bobbacon2.ritual.CorruptionRitual;
 import net.bobbacon.ritual.RitualManager;
 import net.bobbacon2.item.ModItems;
 import net.bobbacon2.ritual.CorruptionRitual;
+import net.bobbacon2.spell.ItemAffectingRitual;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.damage.DamageTypes;
@@ -14,6 +21,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.ToolItem;
+import net.minecraft.item.ToolMaterials;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
@@ -39,17 +48,15 @@ public class AltarBE extends BlockEntity {
         super(ModBE.ALTAR_BE, pos, state);
     }
 
-    public boolean tryCastRitual(){
-        CorruptionRitual ritual= new CorruptionRitual(pos,world);
-        if (getStack().isOf(Items.ECHO_SHARD)||getStack().isOf(ModItems.BLOOD_BOTTLE)&&ritual.tryStart()){
+    public boolean tryCastRitual(ItemAffectingRitual itemAffectingRitual){
+        if (itemAffectingRitual instanceof Ritual ritual && itemAffectingRitual.canAffect(getStack()) &&ritual.tryStart()){
             ritualId=ritual.id;
             markDirty();
             return true;
         }
         return false;
     }
-    public boolean canCastRitual(){
-        CorruptionRitual ritual= new CorruptionRitual(pos,world);
+    public boolean canCastRitual(Ritual ritual){
         return ritual.hasRitualSite();
     }
 
@@ -71,13 +78,18 @@ public class AltarBE extends BlockEntity {
     }
     public void setStack(ItemStack stack){
         items.set(0,stack);
+        markDirtyAndSync();
     }
 
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack playerStack= player.getStackInHand(hand);
         ItemStack stack= this.getStack();
-        if (stack.isEmpty()&&(playerStack.isOf(Items.ECHO_SHARD)||playerStack.isOf(ModItems.BLOOD_BOTTLE))){
+        boolean b=false;
+        if (playerStack.getItem() instanceof ToolItem toolItem){
+            b= toolItem.getMaterial()== ToolMaterials.NETHERITE&& EnchantmentHelper.getLevel(ModEnchantments.BLOOD_STEAL,playerStack)>0;
+        }
+        if (stack.isEmpty()&&(playerStack.isIn(NightOfTheDeadDataGenerator.MyTagGenerator.ALTAR_PLACEABLE)||b)){
             this.setStack(playerStack.split(1));
             markDirtyAndSync();
             return ActionResult.SUCCESS;
@@ -110,17 +122,6 @@ public class AltarBE extends BlockEntity {
         if (world != null && !world.isClient) {
             world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
         }
-    }
-    public void corrupt(){
-        if (getStack().isOf(ModItems.BLOOD_BOTTLE)){
-            setStack(new ItemStack(ModItems.CURSED_BLOOD_BOTTLE));
-
-        }
-        if (getStack().isOf(Items.ECHO_SHARD)){
-            setStack(new ItemStack(ModItems.CORRUPTED_SHARD));
-        }
-
-        markDirtyAndSync();
     }
 
     public void removeRitual() {

@@ -2,6 +2,7 @@ package net.bobbacon2.ritual;
 
 import net.bobbacon.Accessors.EntityAccessor;
 import net.bobbacon2.NightOfTheDead;
+import net.bobbacon2.NightOfTheDeadDataGenerator;
 import net.bobbacon2.block.ModBlocks;
 import net.bobbacon2.entity.FireDrop;
 import net.bobbacon2.entity.MetalSupport;
@@ -10,6 +11,8 @@ import net.bobbacon2.entity.block_entity.AltarBE;
 import net.bobbacon2.item.ModItems;
 import net.bobbacon.ritual.Phase;
 import net.bobbacon.ritual.Ritual;
+import net.bobbacon2.spell.AltarRitualSpell;
+import net.bobbacon2.spell.ItemAffectingRitual;
 import net.bobbacon2.status_effect.ModEffects;
 import net.bobbacon2.utils.Utils;
 import net.minecraft.block.AbstractFireBlock;
@@ -26,6 +29,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FireballEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -42,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CorruptionRitual extends Ritual {
+public class CorruptionRitual extends AltarRitual implements ItemAffectingRitual {
     BlockPos pillar1;
     BlockPos pillar2;
     BlockPos pillar3;
@@ -51,11 +55,9 @@ public class CorruptionRitual extends Ritual {
     public CorruptionRitual(BlockPos center, World world) {
         super(center,world);
         definePillars(center);
-        definePhases();
     }
     public CorruptionRitual(World world, NbtCompound nbt) {
         super(world,nbt);
-        definePhases();
     }
 
     @Override
@@ -119,17 +121,15 @@ public class CorruptionRitual extends Ritual {
         }
         return altar && p1 && p2 && p3 && p4 && hasBlood()&&bl;
     }
-    public List<MetalSupport> getSupportsInArea(){
-        return world.getEntitiesByType(ModEntities.METAL_SUPPORT,new Box(center.west(3).south(3),center.up(3).east(3).north(3)), entity ->true);
-    }
+
     public boolean hasBlood(){
 
-        List<MetalSupport> list = getSupportsInArea();
+        List<MetalSupport> list = RitualUtils.getSupportsInArea(world,center,6);
         if (list.size()<8){
             return false;
         }
         int i=0;
-        for (MetalSupport support: getSupportsInArea()){
+        for (MetalSupport support: list){
             if (support.getHeldItemStack().isOf(ModItems.BLOOD_BOTTLE)){
                 i++;
             }
@@ -139,9 +139,6 @@ public class CorruptionRitual extends Ritual {
 
     }
     public boolean isPillar(BlockPos base){
-//        NightOfTheDead.LOGGER.info("block 1 : "+ world.getBlockState(base));
-//        NightOfTheDead.LOGGER.info("block 2 : "+ world.getBlockState(base.up()));
-//        NightOfTheDead.LOGGER.info("block 3 : "+ world.getBlockState(base.up(2)));
 
 
         return world.getBlockState(base).isOf(Blocks.POLISHED_BLACKSTONE_BRICKS) &&
@@ -155,15 +152,8 @@ public class CorruptionRitual extends Ritual {
         definePillars(this.center);
     }
 
-    public BlockState getAltar(){
-        return world.getBlockState(center);
-    }
-    public AltarBE getAltarBE(){
-        if (world.getBlockEntity(center) instanceof AltarBE be){
-            return be;
-        }
-        return null;
-    }
+
+
 
     @Override
     protected void complete() {
@@ -174,13 +164,25 @@ public class CorruptionRitual extends Ritual {
             fireball.setVelocity(0,-10,0,0.4f,0);
             fireball.powerY=-0.1;
         }
-        getAltarBE().corrupt();
+
+    }
+
+
+
+    @Override
+    public boolean canAffect(ItemStack stack) {
+        return stack.isIn(NightOfTheDeadDataGenerator.MyTagGenerator.CORRUPTIBLE);
     }
 
     @Override
-    public void abort() {
-        getAltarBE().removeRitual();
-        super.abort();
+    public ItemStack applyEffect(ItemStack stack) {
+        if (stack.isOf(Items.ECHO_SHARD)){
+            return ModItems.CORRUPTED_SHARD.getDefaultStack();
+        }
+        if (stack.isOf(ModItems.BLOOD_BOTTLE)){
+            return ModItems.CURSED_BLOOD_BOTTLE.getDefaultStack();
+        }
+        return ItemStack.EMPTY;
     }
 
     public class InsanityPhase implements Phase {
@@ -208,7 +210,7 @@ public class CorruptionRitual extends Ritual {
 
             Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world,false);
 
-            getSupportsInArea().forEach(metalSupport -> {
+            RitualUtils.getSupportsInArea(world,center,6).forEach(metalSupport -> {
                 if (metalSupport.getHeldItemStack().isOf(ModItems.BLOOD_BOTTLE)){
                     metalSupport.setHeldItemStack(Items.GLASS_BOTTLE.getDefaultStack(),true);
                 }

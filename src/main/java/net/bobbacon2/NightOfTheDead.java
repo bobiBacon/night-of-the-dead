@@ -1,8 +1,17 @@
 package net.bobbacon2;
 
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import net.bobbacon.TheSpellLibrary;
+import net.bobbacon.loot.Predicates;
+import net.bobbacon.loot.RandomSpellLootFunction;
+import net.bobbacon.spell.SpellSchools;
 import net.bobbacon2.damage.ModDamageTypes;
+import net.bobbacon2.enchants.ModEnchantments;
 import net.bobbacon2.entity.ModEntities;
 import net.bobbacon2.entity.block_entity.ModBE;
+import net.bobbacon2.loot.ModLoot;
+import net.bobbacon2.loot.RandomRitualSpellLootFunction;
 import net.bobbacon2.recipe.ModRecipes;
 import net.bobbacon2.registry.ModRegistries;
 import net.bobbacon2.spell.ModSpells;
@@ -15,11 +24,13 @@ import net.bobbacon2.recipe.ModRecipes;
 import net.bobbacon2.status_effect.ModEffects;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -33,6 +44,10 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.StrayEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.condition.RandomChanceLootCondition;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -43,6 +58,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static net.minecraft.server.command.CommandManager.*;
 
 public class NightOfTheDead implements ModInitializer {
 	public static final String MOD_ID = "night-of-the-dead";
@@ -57,6 +74,7 @@ public class NightOfTheDead implements ModInitializer {
 	public static boolean isNightOfTheDead = false;
 
 	public static void setShouldPlayANightOfTheDead(boolean shouldPlayANightOfTheDead, ServerWorld world) {
+		
 		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
 		data.setShouldPlayANightOfTheDead(shouldPlayANightOfTheDead);
 	}
@@ -99,6 +117,8 @@ public class NightOfTheDead implements ModInitializer {
 		ModEffects.init();
 		ModSpells.init();
 		ModDamageTypes.init();
+		ModLoot.init();
+		ModEnchantments.init();
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,
@@ -137,6 +157,16 @@ public class NightOfTheDead implements ModInitializer {
 				creeper.readCustomDataFromNbt(nbt);
 			}
 		});
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("nightOfTheDead")
+				.then(argument("value", BoolArgumentType.bool())
+						.executes(context -> {
+							final boolean value = BoolArgumentType.getBool(context, "value");
+							ServerWorld world=context.getSource().getWorld();
+							setShouldPlayANightOfTheDead(value,world);
+							context.getSource().sendFeedback(() -> Text.literal("set should play a night of the dead to %b".formatted(value)), true);
+							return 1;
+						}))));
 //		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((BlockEntity::setWorld));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server)->{
 			ServerPlayerEntity player = handler.getPlayer();
@@ -158,5 +188,23 @@ public class NightOfTheDead implements ModInitializer {
 			}
             return ActionResult.PASS;
         });
+		LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+			if (id.equals(new Identifier("minecraft", "entities/villager"))) {
+
+                LootPool.Builder poolBuilder = null;
+                try {
+                    poolBuilder = LootPool.builder()
+                            .rolls(ConstantLootNumberProvider.create(1))
+                            .conditionally(RandomChanceLootCondition.builder(1f/50f))
+                            .with(ItemEntry.builder(net.bobbacon.item.ModItems.SCROLL))
+                            .apply(RandomRitualSpellLootFunction.builder(Predicates.isClericLoot));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+
+
+				tableBuilder.pool(poolBuilder);
+		}});
 	}
 }

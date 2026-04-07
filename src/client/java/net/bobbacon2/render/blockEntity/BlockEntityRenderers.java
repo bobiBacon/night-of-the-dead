@@ -10,5 +10,9 @@ public class BlockEntityRenderers {
                 ModBE.ALTAR_BE,
                 AltarRenderer::new
         );
+        BlockEntityRendererFactories.register(
+                ModBE.BLOOD_POOL,
+                BloodPoolRenderer::new
+        );
     }
 }

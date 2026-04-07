@@ -50,6 +50,7 @@ public class ModItems {
     public static final Potion ATTRITION = potionRegistryHelper.register("attrition",new Potion(new StatusEffectInstance(ModEffects.ATTRITION,1200,1)));
     public static final Item METAL_SUPPORT = registryHelper.register("metal_support", new MetalSupportItem(ModEntities.METAL_SUPPORT, new Item.Settings()));
     public static final Item ALTAR = registryHelper.register("altar", new BlockItem(net.bobbacon2.block.ModBlocks.ALTAR, new FabricItemSettings()));
+    public static final Item BLOOD_POOL = registryHelper.register("blood_pool", new BlockItem(ModBlocks.BLOOD_POOL, new FabricItemSettings()));
     public static final Item REFINERY = registryHelper.register("refinery", new BlockItem(ModBlocks.REFINERY, new FabricItemSettings()));
     public static final Item CORRUPTED_SHARD = registryHelper.register("corrupted_shard",new Item(new FabricItemSettings()));
     public static final Item VAMPIRITE = registryHelper.register("vampirite",new Item(new FabricItemSettings()));

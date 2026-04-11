@@ -36,6 +36,7 @@ public class ModItems {
     public static final Item VINEGAR = registryHelper.register("vinegar",new Alcohol(new Item.Settings(),new StatusEffectInstance(StatusEffects.INSTANT_DAMAGE)));
 
     public static final Item BREWING_BARREL = registryHelper.register("brewing_barrel", new BlockItem(net.bobbacon2.block.ModBlocks.BREWING_BARREL, new FabricItemSettings()));
+    public static final Item ANCIENT_PEDESTAL = registryHelper.register("ancient_pedestal", new BlockItem(ModBlocks.ANCIENT_PEDESTAL, new FabricItemSettings()));
 
     public static final Item BLOODY_WATER = registryHelper.register("bloody_water",new Item(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE)));
     //TODO faire en sorte que ce soit un alcool qui donne de la vie quand on est un vampire

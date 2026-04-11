@@ -43,7 +43,7 @@ public class RandomRitualSpellLootFunction extends ConditionalLootFunction {
 
 
 
-        SpellDef<?>[] list= {ModSpells.CORRUPTION_RITUAL_SPELL,ModSpells.SIMPLE_BLOOD_RITUAL_SPELL};
+        SpellDef<?>[] list= {ModSpells.CORRUPTION_RITUAL_SPELL,ModSpells.SIMPLE_BLOOD_RITUAL_SPELL, ModSpells.COMPLEX_BLOOD_RITUAL_SPELL};
         Map<SpellDef<?>,Integer> pool = new HashMap<>();
         for (SpellDef<?> def:list){
             pool.put(def,10000);

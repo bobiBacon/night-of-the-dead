@@ -3,6 +3,7 @@
   "block.night-of-the-dead.altar": "Ritual Altar",
   "block.night-of-the-dead.blood_pool": "Blood Pool",
   "block.night-of-the-dead.refinery": "Refinery",
+  "block.night-of-the-dead.ancient_pedestal": "Ancient Pedestal",
   "container.night-of-the-dead.refinery": "Refinery",
   "item.night-of-the-dead.beer": "Beer",
   "item.night-of-the-dead.fiery_cocktail": "Fiery Cocktail",
@@ -33,6 +34,7 @@
   "effect.night-of-the-dead.vampiring": "Vampiring",
   "enchantment.night-of-the-dead.vampire": "Vampire",
   "enchantment.night-of-the-dead.blood_steal": "Blood Steal",
+  "entity.night-of-the-dead.metal_support": "Metal Support",
 
   "death.attack.holy": "%1$s was exorcised!"
 }

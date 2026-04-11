@@ -39,7 +39,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class AltarBE extends BlockEntity {
-    private DefaultedList<ItemStack> items= DefaultedList.ofSize(1,ItemStack.EMPTY);
+//    private DefaultedList<ItemStack> items= DefaultedList.ofSize(1,ItemStack.EMPTY);
+    ItemStack stack= ItemStack.EMPTY;
     protected static final UUID NULL_ID= UUID.fromString("00000000-0000-0000-0000-000000000000");
     private static final String RITUAL_KEY = "ritual";
     public UUID ritualId= NULL_ID;
@@ -63,26 +64,36 @@ public class AltarBE extends BlockEntity {
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        Inventories.readNbt(nbt,items);
         ritualId = nbt.getUuid(RITUAL_KEY);
+//        Inventories.readNbt(nbt,items);
+        stack=ItemStack.fromNbt(nbt.getCompound("Item"));
+
     }
 
     @Override
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-        Inventories.writeNbt(nbt, this.items, true);
+//        Inventories.writeNbt(nbt, this.items, true);
         nbt.putUuid(RITUAL_KEY,ritualId);
+        nbt.put("Item", stack.writeNbt(new NbtCompound()));
     }
     public ItemStack getStack() {
-        return items.get(0);
+//        return items.get(0);
+        return stack;
     }
     public void setStack(ItemStack stack){
-        items.set(0,stack);
+//        items.set(0,stack);
+        this.stack=stack;
         markDirtyAndSync();
     }
 
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (world.isClient()){
+            markDirtyAndSync();
+
+            return ActionResult.SUCCESS;
+        }
         ItemStack playerStack= player.getStackInHand(hand);
         ItemStack stack= this.getStack();
         boolean b=false;
@@ -93,14 +104,13 @@ public class AltarBE extends BlockEntity {
             this.setStack(playerStack.split(1));
             markDirtyAndSync();
             return ActionResult.SUCCESS;
-        } else if (playerStack.isEmpty() || ItemStack.canCombine(playerStack, stack)) {
+        } else if ((playerStack.isEmpty() || ItemStack.canCombine(playerStack, stack))) {
             if (hasRitual()){
                 player.damage(world.getDamageSources().create(DamageTypes.MAGIC),3f);
                 return ActionResult.SUCCESS;
             }
-            player.giveItemStack(stack);
-            stack.decrement(1);
-            setStack(stack);
+            player.giveItemStack(stack.copy());
+            this.setStack(Items.AIR.getDefaultStack());
             markDirtyAndSync();
             return ActionResult.SUCCESS;
         }
@@ -112,6 +122,7 @@ public class AltarBE extends BlockEntity {
         return BlockEntityUpdateS2CPacket.create(this);
     }
 
+
     @Override
     public NbtCompound toInitialChunkDataNbt() {
         return createNbt();
@@ -120,8 +131,12 @@ public class AltarBE extends BlockEntity {
         markDirty();
 
         if (world != null && !world.isClient) {
-            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
+//            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
+            if (world instanceof ServerWorld serverWorld) {
+                serverWorld.getChunkManager().markForUpdate(pos);
+            }
         }
+
     }
 
     public void removeRitual() {

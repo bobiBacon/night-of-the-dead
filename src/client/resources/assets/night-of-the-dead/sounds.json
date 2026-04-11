@@ -1,0 +1,10 @@
+{
+  "block.ancient_pedestal_charge": {
+    "subtitle": "block.ancient_pedestal_charge",
+    "sounds": ["night-of-the-dead:ancient_pedestal_charge"]
+  },
+  "block.ancient_pedestal_final_charge": {
+    "subtitle": "block.ancient_pedestal_charge",
+    "sounds": ["night-of-the-dead:ancient_pedestal_final_charge"]
+  }
+}

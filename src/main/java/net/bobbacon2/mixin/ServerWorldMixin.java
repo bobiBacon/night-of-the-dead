@@ -24,18 +24,20 @@ public abstract class ServerWorldMixin {
     private void onWorldTick(CallbackInfo ci) {
 
         ServerWorld world = (ServerWorld) (Object) this;
-
+        if (!world.getRegistryKey().equals(World.OVERWORLD)){
+            return;
+        }
         long time = world.getTimeOfDay();
 
         if (time == 13000&&NightOfTheDead.ShouldPlayANightOfTheDead(world)&&!NightOfTheDead.isNightOfTheDead(world)) {
-            NightOfTheDead.setNightOfTheDead(true,world);
-            NightOfTheDead.setShouldPlayANightOfTheDead(false,world);
+            NightOfTheDead.setNightOfTheDead(true,world.getServer());
+            NightOfTheDead.setShouldPlayANightOfTheDead(false,world.getServer());
             wakeSleepingPlayers();
 
-            world.getServer().getPlayerManager().broadcast(Text.of("All death must be punished."),false);
+            world.getServer().getPlayerManager().broadcast(Text.of("All deaths must be punished."),false);
         }else
         if (time<13000&& NightOfTheDead.isNightOfTheDead(world)) {
-            NightOfTheDead.setNightOfTheDead(false,world);
+            NightOfTheDead.setNightOfTheDead(false,world.getServer());
         }
         RitualManager.get(world).tick();
 

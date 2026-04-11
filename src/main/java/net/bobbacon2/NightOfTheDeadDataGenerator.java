@@ -147,6 +147,11 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.criterion(FabricRecipeProvider.hasItem(ModItems.BLOOD_BOTTLE),
 							FabricRecipeProvider.conditionsFromItem(ModItems.BLOOD_BOTTLE))
 					.offerTo(consumer);
+			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.ANCIENT_PEDESTAL).pattern("ici").pattern("sss")
+					.input('i',Items.GOLD_INGOT).input('c', Items.SCULK_CATALYST).input('s',Items.SMOOTH_STONE)
+					.criterion(FabricRecipeProvider.hasItem(Items.SCULK_CATALYST),
+							FabricRecipeProvider.conditionsFromItem(Items.SCULK_CATALYST))
+					.offerTo(consumer);
 		}
 
 

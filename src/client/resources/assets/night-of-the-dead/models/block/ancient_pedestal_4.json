@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "night-of-the-dead:block/ancient_pedestal",
+    "side": "night-of-the-dead:block/ancient_pedestal",
+    "top": "night-of-the-dead:block/ancient_pedestal_top_4"
+  }
+}

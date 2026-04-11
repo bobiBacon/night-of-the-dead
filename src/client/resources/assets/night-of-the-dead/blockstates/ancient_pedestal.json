@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "charge=0": {
+      "model": "night-of-the-dead:block/ancient_pedestal_0"
+    },
+    "charge=1": {
+      "model": "night-of-the-dead:block/ancient_pedestal_1"
+    },
+    "charge=2": {
+      "model": "night-of-the-dead:block/ancient_pedestal_2"
+    },
+    "charge=3": {
+      "model": "night-of-the-dead:block/ancient_pedestal_3"
+    },
+    "charge=4": {
+      "model": "night-of-the-dead:block/ancient_pedestal_4"
+    },
+    "charge=5": {
+      "model": "night-of-the-dead:block/ancient_pedestal_5"
+    }
+
+  }
+}

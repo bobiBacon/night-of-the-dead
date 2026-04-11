@@ -14,6 +14,7 @@ import net.bobbacon2.loot.ModLoot;
 import net.bobbacon2.loot.RandomRitualSpellLootFunction;
 import net.bobbacon2.recipe.ModRecipes;
 import net.bobbacon2.registry.ModRegistries;
+import net.bobbacon2.sound.ModSounds;
 import net.bobbacon2.spell.ModSpells;
 import net.bobbacon2.status_effect.ModEffects;
 import net.bobbacon2.block.ModBlocks;
@@ -30,6 +31,8 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -46,15 +49,19 @@ import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.condition.RandomChanceLootCondition;
+import net.minecraft.loot.condition.RandomChanceWithLootingLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,13 +80,15 @@ public class NightOfTheDead implements ModInitializer {
 
 	public static boolean isNightOfTheDead = false;
 
-	public static void setShouldPlayANightOfTheDead(boolean shouldPlayANightOfTheDead, ServerWorld world) {
-		
+	public static void setShouldPlayANightOfTheDead(boolean shouldPlayANightOfTheDead,MinecraftServer server) {
+		ServerWorld world= server.getWorld(World.OVERWORLD);
 		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
 		data.setShouldPlayANightOfTheDead(shouldPlayANightOfTheDead);
+		resetDeathCount(server);
 	}
 
-	public static void setNightOfTheDead(boolean nightOfTheDead, ServerWorld world) {
+	public static void setNightOfTheDead(boolean nightOfTheDead, MinecraftServer server) {
+		ServerWorld world= server.getWorld(World.OVERWORLD);
 		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
 		data.setNightOfTheDead(nightOfTheDead);
 		PacketByteBuf buf = PacketByteBufs.create();
@@ -88,19 +97,41 @@ public class NightOfTheDead implements ModInitializer {
 		for (ServerPlayerEntity player : world.getPlayers()){
 			ServerPlayNetworking.send(player, NIGHT_OF_THE_DEAD_PACKET, buf);
 		}
+		resetDeathCount(server);
+	}
+	public static void addDeathToCount(MinecraftServer server){
+		ServerWorld world= server.getWorld(World.OVERWORLD);
+		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
+		data.addDeath();
+		if (data.getDeathsSinceLastNOTD()>=world.getGameRules().getInt(REQUIRED_DEATHS)){
+			setShouldPlayANightOfTheDead(true,server);
+		}
 	}
 
+	public static void resetDeathCount(MinecraftServer server){
+		ServerWorld world= server.getWorld(World.OVERWORLD);
+		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
+		data.resetDeathCount();
+	}
+
+
 	public static boolean ShouldPlayANightOfTheDead( ServerWorld world) {
+		if (!world.getRegistryKey().equals(World.OVERWORLD)){
+			return false;
+		}
 		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
 		return data.ShouldPlayANightOfTheDead();
 	}
 
 	public static boolean isNightOfTheDead( ServerWorld world) {
+		if (!world.getRegistryKey().equals(World.OVERWORLD)){
+			return false;
+		}
 		NightOfTheDeadManager data = NightOfTheDeadManager.get(world);
 		return data.isNightOfTheDead();
 	}
-
-
+	public  static final GameRules.Key<GameRules.IntRule> REQUIRED_DEATHS =
+			GameRuleRegistry.register("required_deaths_for_night_of_the_dead", GameRules.Category.PLAYER, GameRuleFactory.createIntRule(1));
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -119,6 +150,7 @@ public class NightOfTheDead implements ModInitializer {
 		ModDamageTypes.init();
 		ModLoot.init();
 		ModEnchantments.init();
+		ModSounds.init();
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,
@@ -163,11 +195,11 @@ public class NightOfTheDead implements ModInitializer {
 						.executes(context -> {
 							final boolean value = BoolArgumentType.getBool(context, "value");
 							ServerWorld world=context.getSource().getWorld();
-							setShouldPlayANightOfTheDead(value,world);
+
+							setShouldPlayANightOfTheDead(value,world.getServer());
 							context.getSource().sendFeedback(() -> Text.literal("set should play a night of the dead to %b".formatted(value)), true);
 							return 1;
 						}))));
-//		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((BlockEntity::setWorld));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server)->{
 			ServerPlayerEntity player = handler.getPlayer();
 			ServerWorld world = player.getServerWorld();
@@ -195,7 +227,7 @@ public class NightOfTheDead implements ModInitializer {
                 try {
                     poolBuilder = LootPool.builder()
                             .rolls(ConstantLootNumberProvider.create(1))
-                            .conditionally(RandomChanceLootCondition.builder(1f/50f))
+							.conditionally(RandomChanceWithLootingLootCondition.builder(0.02f,0.02f))
                             .with(ItemEntry.builder(net.bobbacon.item.ModItems.SCROLL))
                             .apply(RandomRitualSpellLootFunction.builder(Predicates.isClericLoot));
                 } catch (Exception e) {

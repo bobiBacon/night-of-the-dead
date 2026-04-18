@@ -1,6 +1,6 @@
 package net.bobbacon2.entity;
 
-import net.bobbacon2.utils.Utils;
+import net.bobbacon2.utils.GeometryUtils;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -24,7 +24,7 @@ public class NapalmMolotovEntity extends MolotovEntity{
     public void explode(double colx, double coly, double colz) {
         World world= getWorld();
         if (world instanceof ServerWorld serverWorld){
-            Utils.lightOnFire(Utils.getCircle(new BlockPos((int) colx, (int) coly, (int) colz),explosionRadius),serverWorld,true);
+            GeometryUtils.lightOnFire(GeometryUtils.getCircle(new BlockPos((int) colx, (int) coly, (int) colz),explosionRadius),serverWorld,true);
         }
         spawnExplosionParticles(world,colx,coly,colz,true);
         playBreakingSounds(world);

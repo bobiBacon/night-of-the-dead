@@ -1,5 +1,6 @@
 package net.bobbacon2.status_effect;
 
+import net.bobbacon.components.FloatWithModifiers;
 import net.bobbacon.spell.Mana;
 import net.bobbacon.spell.SpellSchools;
 import net.minecraft.entity.LivingEntity;
@@ -23,7 +24,7 @@ public class ArtificialManaBoost extends StatusEffect {
         super.onApplied(entity, attributes, amplifier);
         if (entity instanceof PlayerEntity player){
             Mana mana = Mana.getSchoolsMana(player).get(SpellSchools.Necromancy);
-            mana.addMaxModifier(modifier_id,20);
+            mana.addMaxModifier(modifier_id,20, FloatWithModifiers.OperationType.ADDITION);
             mana.addMana(20);
         }
     }

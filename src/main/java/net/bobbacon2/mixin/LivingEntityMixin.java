@@ -2,13 +2,12 @@ package net.bobbacon2.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.bobbacon.Accessors.EntityAccessor;
-import net.bobbacon.ritual.RitualManager;
-import net.bobbacon2.NightOfTheDead;
 import net.bobbacon2.accessors.PlayerAccessor;
-import net.bobbacon2.block.AncienPedestal;
 import net.bobbacon2.block.DeathReceptorBlock;
+import net.bobbacon2.components.EvolutionApi;
 import net.bobbacon2.damage.ModDamageTypes;
 import net.bobbacon2.enchants.ModEnchantments;
+import net.bobbacon2.enchants.VampireEnchant;
 import net.bobbacon2.status_effect.ModEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -23,13 +22,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -102,22 +97,12 @@ public class LivingEntityMixin extends Entity {
     private float modifyDamageAfterArmor(float amount, DamageSource source) {
         Entity entity =source.getAttacker();
         if (entity instanceof LivingEntity livingEntity&& EnchantmentHelper.getLevel(ModEnchantments.Vampire,livingEntity.getMainHandStack())>0){
-            LivingEntity self= (LivingEntity)(Object)this;
-            for (int i = 0; i < 20; i++) {
-                World world = livingEntity.getWorld();
-                Vec3d targetPos= new Vec3d(self.getParticleX(0.7),self.getRandomBodyY(),self.getParticleZ(0.7));
-                Random random = world.getRandom();
-                Vec3d toAttacker= livingEntity.getEyePos().add(random.nextFloat()*0.4f-0.2f,random.nextFloat()*0.4f-0.2f,random.nextFloat()*0.4f-0.2f).subtract(targetPos).normalize();
-                ((ServerWorld) world).spawnParticles(new DustParticleEffect(Vec3d.unpackRgb(0x880808).toVector3f(),1),targetPos.getX() ,targetPos.getY(),targetPos.getZ(),1,toAttacker.getX(),toAttacker.getY(),toAttacker.getZ(),0);
-            }
-            float multiplicator= 0.15f;
-            if (livingEntity instanceof PlayerEntity player&&((PlayerAccessor)player).isVampire()){
-                multiplicator=0.35f;
-            }
-            livingEntity.heal(amount*multiplicator);
+            VampireEnchant.onEntityHit(amount, livingEntity,(LivingEntity)(Object)this,source);
         }
         return amount;
     }
+
+
 
     @ModifyVariable(method = "heal", at = @At("HEAD"), argsOnly = true)
     private float modifyHeal(float value){
@@ -133,7 +118,7 @@ public class LivingEntityMixin extends Entity {
     private EntityGroup makeUndead(EntityGroup original){
         LivingEntity self= (LivingEntity) (Object) this;
         if (self instanceof PlayerEntity player){
-            return ((PlayerAccessor)player).isVampire()? EntityGroup.UNDEAD:EntityGroup.DEFAULT;
+            return self.hasStatusEffect(ModEffects.Vampiring) ? EntityGroup.UNDEAD:EvolutionApi.getEvolution(player).getGroup();
         }
         return original;
     }

@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Utils {
+public class GeometryUtils {
     public static List<BlockPos> getCircle(BlockPos center, int radius){
         int x= center.getX();
         int y= center.getY();

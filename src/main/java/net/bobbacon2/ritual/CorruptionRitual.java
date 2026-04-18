@@ -6,17 +6,13 @@ import net.bobbacon2.NightOfTheDeadDataGenerator;
 import net.bobbacon2.block.ModBlocks;
 import net.bobbacon2.entity.FireDrop;
 import net.bobbacon2.entity.MetalSupport;
-import net.bobbacon2.entity.ModEntities;
-import net.bobbacon2.entity.block_entity.AltarBE;
 import net.bobbacon2.item.ModItems;
 import net.bobbacon.ritual.Phase;
 import net.bobbacon.ritual.Ritual;
-import net.bobbacon2.spell.AltarRitualSpell;
 import net.bobbacon2.spell.ItemAffectingRitual;
 import net.bobbacon2.status_effect.ModEffects;
-import net.bobbacon2.utils.Utils;
+import net.bobbacon2.utils.GeometryUtils;
 import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
@@ -29,7 +25,6 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -208,7 +203,7 @@ public class CorruptionRitual extends AltarRitual implements ItemAffectingRitual
             lightPillar(pillar3);
             lightPillar(pillar4);
 
-            Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world,false);
+            GeometryUtils.lightOnFire(GeometryUtils.getRingForm(center,8,11),(ServerWorld) world,false);
 
             RitualUtils.getSupportsInArea(world,center,6).forEach(metalSupport -> {
                 if (metalSupport.getHeldItemStack().isOf(ModItems.BLOOD_BOTTLE)){
@@ -269,7 +264,7 @@ public class CorruptionRitual extends AltarRitual implements ItemAffectingRitual
         @Override
         public boolean tick(int time) {
             if (time%20==0){
-                Utils.lightOnFire(Utils.getRingForm(center,8,11),(ServerWorld) world,false);
+                GeometryUtils.lightOnFire(GeometryUtils.getRingForm(center,8,11),(ServerWorld) world,false);
                 return entityCount <= 0 || !areEntitiesAlive();
             }
             return false;

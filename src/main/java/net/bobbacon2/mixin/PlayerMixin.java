@@ -4,6 +4,8 @@ import net.bobbacon.spell.Mana;
 import net.bobbacon.spell.SpellSchools;
 import net.bobbacon2.NightOfTheDead;
 import net.bobbacon2.accessors.PlayerAccessor;
+import net.bobbacon2.components.EvolutionApi;
+import net.bobbacon2.evolution.ModEvolutions;
 import net.bobbacon2.status_effect.ModEffects;
 import net.bobbacon2.status_effect.Vampiring;
 import net.minecraft.entity.EquipmentSlot;
@@ -29,25 +31,21 @@ import java.util.UUID;
 public class PlayerMixin  implements PlayerAccessor {
     @Unique
     private boolean isVampire=false;
-    private static UUID VampireMana= UUID.fromString("a8af138b-7520-4ed9-b677-1a8a0f7b6cad");
     @Inject(method = "tick", at= @At("TAIL"))
     private void injectTick(CallbackInfo ci){
         PlayerEntity self= (PlayerEntity) (Object) this;
 
         if (!self.getWorld().isClient()&&(self.age&15)==0) {
-            if (self.isTouchingWater()&&NightOfTheDead.isNightOfTheDead((ServerWorld) self.getWorld())){
+            if (self.isSubmergedInWater()&&NightOfTheDead.isNightOfTheDead((ServerWorld) self.getWorld())){
                 self.addStatusEffect(new StatusEffectInstance(ModEffects.INSANITY,200,0));
             }
-        }
-        if (!self.getWorld().isClient&&((PlayerAccessor)self).isVampire()){
-            self.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION,10,0,false,false));
         }
     }
     @Inject(method = "tickMovement", at= @At("TAIL"))
     private void burnTick(CallbackInfo ci){
         PlayerEntity self= (PlayerEntity) (Object) this;
 
-        if (self.isAlive()&&((PlayerAccessor)self).isVampire()) {
+        if (self.isAlive()&& (EvolutionApi.getEvolution(self).burnsInDaylight()||self.hasStatusEffect(ModEffects.Vampiring))) {
             boolean bl = this.isAffectedByDaylight();
             if (bl) {
                 ItemStack itemStack = self.getEquippedStack(EquipmentSlot.HEAD);
@@ -88,19 +86,8 @@ public class PlayerMixin  implements PlayerAccessor {
     @Override
     public boolean isVampire() {
         PlayerEntity self= (PlayerEntity) (Object) this;
-        return self.hasStatusEffect(ModEffects.Vampiring)||isVampire;
+        return self.hasStatusEffect(ModEffects.Vampiring)||EvolutionApi.getEvolution(self)== ModEvolutions.VAMPIRE;
     }
 
-    @Override
-    public void setVampire(boolean b) {
-        PlayerEntity self= (PlayerEntity) (Object) this;
 
-        isVampire=b;
-        if (b){
-            Mana.getSchoolsMana(self).get(SpellSchools.Necromancy).addMaxModifier(VampireMana,40);
-        }else {
-            Mana.getSchoolsMana(self).get(SpellSchools.Necromancy).removeMaxModifier(VampireMana);
-        }
-
-    }
 }

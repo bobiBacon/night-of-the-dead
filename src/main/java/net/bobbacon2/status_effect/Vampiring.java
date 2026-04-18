@@ -1,5 +1,6 @@
 package net.bobbacon2.status_effect;
 
+import net.bobbacon.components.FloatWithModifiers;
 import net.bobbacon.components.ManaComponent;
 import net.bobbacon.components.ModComponents;
 import net.bobbacon.spell.Mana;
@@ -28,7 +29,7 @@ public class Vampiring extends StatusEffect {
         super.onApplied(entity, attributes, amplifier);
         if (entity instanceof PlayerEntity player){
             Map<SpellSchool, Mana> manaMap = Mana.getSchoolsMana(player);
-            manaMap.get(SpellSchools.Necromancy).addMaxModifier(id,20);
+            manaMap.get(SpellSchools.Necromancy).addMaxModifier(id,20, FloatWithModifiers.OperationType.ADDITION);
         }
 
     }

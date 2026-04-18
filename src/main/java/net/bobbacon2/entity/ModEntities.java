@@ -27,6 +27,9 @@ public class ModEntities {
     public static final EntityType<FireDrop> FIRE_DROP = register(
             "fire_drop_entity", FabricEntityTypeBuilder.<FireDrop>create( SpawnGroup.MISC, FireDrop::new).dimensions(new EntityDimensions(0.2f,0.2f,true))
     );
+    public static final EntityType<SoulWorm> SOUL_WORN = register(
+            "soul_worm_entity", FabricEntityTypeBuilder.<SoulWorm>create( SpawnGroup.MONSTER, SoulWorm::new).dimensions(new EntityDimensions(1f,0.4f,false))
+    );
     public static final EntityType<MetalSupport> METAL_SUPPORT = register(
             "metal_support", FabricEntityTypeBuilder.<MetalSupport>create( SpawnGroup.MISC, MetalSupport::new).dimensions(new EntityDimensions(0.2f,0.4f,true))
     );

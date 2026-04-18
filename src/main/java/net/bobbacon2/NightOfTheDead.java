@@ -6,10 +6,14 @@ import net.bobbacon.TheSpellLibrary;
 import net.bobbacon.loot.Predicates;
 import net.bobbacon.loot.RandomSpellLootFunction;
 import net.bobbacon.spell.SpellSchools;
+import net.bobbacon2.components.EvolutionApi;
+import net.bobbacon2.components.ModComponents;
 import net.bobbacon2.damage.ModDamageTypes;
 import net.bobbacon2.enchants.ModEnchantments;
 import net.bobbacon2.entity.ModEntities;
 import net.bobbacon2.entity.block_entity.ModBE;
+import net.bobbacon2.evolution.Evolution;
+import net.bobbacon2.evolution.ModEvolutions;
 import net.bobbacon2.loot.ModLoot;
 import net.bobbacon2.loot.RandomRitualSpellLootFunction;
 import net.bobbacon2.recipe.ModRecipes;
@@ -39,6 +43,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -151,6 +157,7 @@ public class NightOfTheDead implements ModInitializer {
 		ModLoot.init();
 		ModEnchantments.init();
 		ModSounds.init();
+		ModEvolutions.init();
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,
@@ -200,6 +207,57 @@ public class NightOfTheDead implements ModInitializer {
 							context.getSource().sendFeedback(() -> Text.literal("set should play a night of the dead to %b".formatted(value)), true);
 							return 1;
 						}))));
+//		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("evolution")
+//						.then(argument("player", EntityArgumentType.player()))
+//				.then(argument("value", IdentifierArgumentType.identifier())
+//						.executes(context -> {
+//							PlayerEntity player= EntityArgumentType.getPlayer(context,"player");
+//							Identifier id= IdentifierArgumentType.getIdentifier(context,"value");
+//							Evolution evolution =EvolutionApi.getOrEmpty(id);
+//							EvolutionApi.setEvolution(player,evolution);
+//
+//							context.getSource().sendFeedback(() -> Text.literal("set evolution to %s".formatted(evolution.getClass())), true);
+//							return 1;
+//						}))));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(
+					literal("evolution")
+							.then(argument("player", EntityArgumentType.player())
+									.then(argument("value", IdentifierArgumentType.identifier())
+											.executes(context -> {
+												PlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												Identifier id = IdentifierArgumentType.getIdentifier(context, "value");
+
+												Evolution evolution = EvolutionApi.getOrEmpty(id);
+
+												if (evolution == null) {
+													context.getSource().sendError(
+															Text.literal("Unknown evolution: " + id)
+													);
+													return 0;
+												}
+
+												EvolutionApi.setEvolution(player, evolution);
+
+												context.getSource().sendFeedback(
+														() -> Text.literal(
+																"Set evolution of " +
+																		player.getName().getString() +
+																		" to " +
+																		id
+														),
+														true
+												);
+
+												return 1;
+											})
+									)
+							)
+			);
+		});
+		ServerPlayerEvents.AFTER_RESPAWN.register((player,player2,bool)->{
+			ModComponents.EVOLUTION_COMPONENT.get(player2).onPlayerRespawn();
+		});
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server)->{
 			ServerPlayerEntity player = handler.getPlayer();
 			ServerWorld world = player.getServerWorld();

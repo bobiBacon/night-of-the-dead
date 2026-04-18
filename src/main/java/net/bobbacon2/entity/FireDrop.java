@@ -1,17 +1,12 @@
 package net.bobbacon2.entity;
 
-import net.bobbacon2.NightOfTheDead;
-import net.bobbacon2.utils.Utils;
+import net.bobbacon2.utils.GeometryUtils;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.AbstractFireballEntity;
-import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.FireChargeItem;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -128,14 +123,14 @@ public class FireDrop extends ProjectileEntity {
             if (world.getBlockState(pos).isReplaceable()) { // Vérifie si le bloc peut être remplacé
                 BlockPos under = new BlockPos(pos.getX(), pos.getY() -1, pos.getZ());
                 if (world.getBlockState(under).isReplaceable()){
-                    Utils.lightOnFire(under,world,eternal);
+                    GeometryUtils.lightOnFire(under,world,eternal);
                 }
-                Utils.lightOnFire(pos,world,eternal);
+                GeometryUtils.lightOnFire(pos,world,eternal);
 
             } else{
                 BlockPos over = pos.up();
                 if (world.getBlockState(over).isReplaceable()){
-                    Utils.lightOnFire(over,world,eternal);
+                    GeometryUtils.lightOnFire(over,world,eternal);
                 }
             }
         }

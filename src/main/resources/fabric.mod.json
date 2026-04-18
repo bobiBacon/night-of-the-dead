@@ -2,6 +2,11 @@
 	"schemaVersion": 1,
 	"id": "night-of-the-dead",
 	"version": "${version}",
+	"custom": {
+		"cardinal-components": [
+			"night-of-the-dead:evolution"
+		]
+	},
 	"name": "Night of the Dead",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
@@ -20,6 +25,9 @@
 		],
 		"client": [
 			"net.bobbacon2.NightOfTheDeadClient"
+		],
+		"cardinal-components": [
+			"net.bobbacon2.components.ModComponents"
 		],
 		"fabric-datagen": [
 			"net.bobbacon2.NightOfTheDeadDataGenerator"

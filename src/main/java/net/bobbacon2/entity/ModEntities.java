@@ -1,15 +1,13 @@
 package net.bobbacon2.entity;
 
 import net.bobbacon2.NightOfTheDead;
-import net.bobbacon.api.RegistryHelper;
-import net.bobbacon2.item.Molotov;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.mob.SpiderEntity;
-import net.minecraft.item.Item;
+import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -27,8 +25,11 @@ public class ModEntities {
     public static final EntityType<FireDrop> FIRE_DROP = register(
             "fire_drop_entity", FabricEntityTypeBuilder.<FireDrop>create( SpawnGroup.MISC, FireDrop::new).dimensions(new EntityDimensions(0.2f,0.2f,true))
     );
-    public static final EntityType<SoulWorm> SOUL_WORN = register(
-            "soul_worm_entity", FabricEntityTypeBuilder.<SoulWorm>create( SpawnGroup.MONSTER, SoulWorm::new).dimensions(new EntityDimensions(1f,0.4f,false))
+    public static final EntityType<SoulWorm> SOUL_WORM = register(
+            "soul_worm", FabricEntityTypeBuilder.<SoulWorm>create( SpawnGroup.MONSTER, SoulWorm::new).dimensions(new EntityDimensions(0,0,true))
+    );
+    public static final EntityType<SoulWormPart> SOUL_WORM_PART = register(
+            "soul_worm_part", FabricEntityTypeBuilder.<SoulWormPart>create( SpawnGroup.MONSTER, SoulWormPart::new).dimensions(new EntityDimensions(1f,0.4f,false))
     );
     public static final EntityType<MetalSupport> METAL_SUPPORT = register(
             "metal_support", FabricEntityTypeBuilder.<MetalSupport>create( SpawnGroup.MISC, MetalSupport::new).dimensions(new EntityDimensions(0.2f,0.4f,true))
@@ -38,6 +39,7 @@ public class ModEntities {
         return Registry.register(Registries.ENTITY_TYPE, Identifier.of(NightOfTheDead.MOD_ID,id), type.build());
     }
     public static void init(){
-
+        FabricDefaultAttributeRegistry.register(SOUL_WORM, PathAwareEntity.createMobAttributes());
+        FabricDefaultAttributeRegistry.register(SOUL_WORM_PART, PathAwareEntity.createMobAttributes());
     }
 }

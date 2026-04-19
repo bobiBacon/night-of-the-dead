@@ -1,22 +1,33 @@
 package net.bobbacon2.render.entity;
 
+import net.bobbacon2.NightOfTheDead;
 import net.bobbacon2.entity.SoulWorm;
+import net.bobbacon2.entity.SoulWormPart;
+import net.bobbacon2.render.model.SoulWormModel;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EnderDragonEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
+
+import java.util.List;
 
 public class SoulWormRenderer extends EntityRenderer<SoulWorm> {
+    private final SoulWormModel model;
+
     protected SoulWormRenderer(EntityRendererFactory.Context ctx) {
         super(ctx);
+        model= new SoulWormModel(ctx.getPart(EntityRenderers.SOUL_WORM));
     }
 
     @Override
     public Identifier getTexture(SoulWorm entity) {
-        return null;
+        return new Identifier(NightOfTheDead.MOD_ID,"textures/entity/soul_worm.png");
     }
     @Override
     public void render(
@@ -28,32 +39,31 @@ public class SoulWormRenderer extends EntityRenderer<SoulWorm> {
             int light
     ) {
         super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
-
-        EntityRendererFactory.Context context = this.;
-        WormSegmentModel segmentModel = new WormSegmentModel(context.getPart(ModModelLayers.WORM_SEGMENT));
+        matrices.push();
+        matrices.translate(-entity.getX(),-entity.getY(),-entity.getZ());
 
         List<SoulWormPart> parts = entity.getParts();
 
         for (SoulWormPart part : parts) {
             matrices.push();
 
-            double x = MathHelper.lerp(tickDelta, part.prevX, part.getX()) - entityRenderDispatcher.camera.getPos().x;
-            double y = MathHelper.lerp(tickDelta, part.prevY, part.getY()) - entityRenderDispatcher.camera.getPos().y;
-            double z = MathHelper.lerp(tickDelta, part.prevZ, part.getZ()) - entityRenderDispatcher.camera.getPos().z;
+            double x = MathHelper.lerp(tickDelta, part.prevX, part.getX());
+            double y = MathHelper.lerp(tickDelta, part.prevY, part.getY());
+            double z = MathHelper.lerp(tickDelta, part.prevZ, part.getZ());
 
-            matrices.translate(x, y, z);
+            matrices.translate(part.getX(), part.getY(), part.getZ());
 
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(
-                    MathHelper.lerp(tickDelta, part.prevYaw, part.getYaw())
-            ));
+//            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(
+//                    MathHelper.lerp(tickDelta, part.prevYaw, part.getYaw())
+//            ));
 
             float scale = part.getScale();
             matrices.scale(scale, scale, scale);
 
-            VertexConsumer consumer = vertexConsumers.getBuffer(segmentModel.getLayer(getTexture(entity)));
+            VertexConsumer consumer = vertexConsumers.getBuffer(model.getLayer(getTexture(entity)));
 
-            segmentModel.setAngles(part, 0, 0, entity.age + tickDelta, 0, 0);
-            segmentModel.render(
+            model.setAngles(part, 0, 0, entity.age + tickDelta, 0, 0);
+            model.render(
                     matrices,
                     consumer,
                     light,
@@ -63,5 +73,6 @@ public class SoulWormRenderer extends EntityRenderer<SoulWorm> {
 
             matrices.pop();
         }
+        matrices.pop();
     }
 }

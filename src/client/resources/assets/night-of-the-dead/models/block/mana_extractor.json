@@ -1,0 +1,37 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"0": "night-of-the-dead:block/mana_extractor",
+		"particle": "night-of-the-dead:block/mana_extractor"
+	},
+	"elements": [
+		{
+			"from": [2, 11, 6],
+			"to": [9, 16, 11],
+			"rotation": {"angle": -22.5, "axis": "z", "origin": [2, 11, 6]},
+			"faces": {
+				"north": {"uv": [0, 0, 7, 5], "texture": "#0"},
+				"east": {"uv": [0, 10, 5, 15], "texture": "#0"},
+				"south": {"uv": [0, 0, 7, 5], "texture": "#0"},
+				"west": {"uv": [5, 10, 10, 15], "texture": "#0"},
+				"up": {"uv": [7, 5, 0, 0], "texture": "#0"},
+				"down": {"uv": [7, 0, 0, 5], "texture": "#0"}
+			}
+		},
+		{
+			"from": [1, 4, 7],
+			"to": [8, 7, 10],
+			"rotation": {"angle": 45, "axis": "z", "origin": [1, 4, 7]},
+			"faces": {
+				"north": {"uv": [0, 5, 7, 8], "texture": "#0"},
+				"east": {"uv": [10, 9, 13, 12], "texture": "#0"},
+				"south": {"uv": [7, 0, 14, 3], "texture": "#0"},
+				"west": {"uv": [10, 12, 13, 15], "texture": "#0"},
+				"up": {"uv": [14, 6, 7, 3], "texture": "#0"},
+				"down": {"uv": [14, 6, 7, 9], "texture": "#0"}
+			}
+		}
+	]
+}

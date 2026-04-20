@@ -58,6 +58,8 @@ public class NightOfTheDeadClient implements ClientModInitializer {
 		ModSpellRenderers.init();
 		ModEntityModelLayers.init();
 		HandledScreens.register(ModScreenHandlers.REFINERY_SCREEN_HANDLER, RefiningScreen::new);
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.SOUL_WORM_TUMOR, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ManaExtractor, RenderLayer.getCutout());
 
 		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ETERNAL_FIRE, RenderLayer.getCutout());
 

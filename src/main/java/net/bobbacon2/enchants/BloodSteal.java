@@ -30,7 +30,8 @@ public class BloodSteal extends Enchantment {
             ItemStack stack=user.getOffHandStack();
             if (user instanceof PlayerEntity player&&stack.isOf(Items.GLASS_BOTTLE)){
                 stack.decrement(1);
-                player.giveItemStack(ModItems.BLOOD_BOTTLE.getDefaultStack());
+                ItemStack itemToGive= user.getMainHandStack().isOf(ModItems.SACRIFICIAL_DAGGER)?ModItems.SOUL_BOTTLE.getDefaultStack():ModItems.BLOOD_BOTTLE.getDefaultStack();
+                player.giveItemStack(itemToGive.copy());
             }
         }
         super.onTargetDamaged(user, target, level);

@@ -28,6 +28,10 @@ public class ModBE {
             "blood_pool",
             BlockEntityType.Builder.create(BloodPool::new, ModBlocks.BLOOD_POOL).build(null)
     );
+    public static final BlockEntityType<ManaExtractor> MANA_EXTRACTOR= register(
+            "mana_extractor",
+            BlockEntityType.Builder.create(ManaExtractor::new, ModBlocks.ManaExtractor).build(null)
+    );
     public static void init(){
 
     }

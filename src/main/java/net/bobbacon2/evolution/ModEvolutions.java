@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 
 public class ModEvolutions {
     private static final RegistryKey<Registry<Evolution>> EVOLUTION_KEY =
-            RegistryKey.ofRegistry(new Identifier(TheSpellLibrary.MOD_ID, "evolution"));
+            RegistryKey.ofRegistry(new Identifier(NightOfTheDead.MOD_ID, "evolution"));
     public static final SimpleRegistry<Evolution> EVOLUTIONS = FabricRegistryBuilder.createSimple(EVOLUTION_KEY)
             .attribute(RegistryAttribute.SYNCED)
             .buildAndRegister();

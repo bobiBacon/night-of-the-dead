@@ -36,11 +36,14 @@ public class ModItems {
     public static final Item VINEGAR = registryHelper.register("vinegar",new Alcohol(new Item.Settings(),new StatusEffectInstance(StatusEffects.INSTANT_DAMAGE)));
 
     public static final Item BREWING_BARREL = registryHelper.register("brewing_barrel", new BlockItem(net.bobbacon2.block.ModBlocks.BREWING_BARREL, new FabricItemSettings()));
+    public static final Item SOUL_WORM_TUMOR = registryHelper.register("soul_worm_tumor", new BlockItem(ModBlocks.SOUL_WORM_TUMOR, new FabricItemSettings()));
+    public static final Item ManaExtractor = registryHelper.register("mana_extractor", new BlockItem(ModBlocks.ManaExtractor, new FabricItemSettings()));
     public static final Item ANCIENT_PEDESTAL = registryHelper.register("ancient_pedestal", new BlockItem(ModBlocks.ANCIENT_PEDESTAL, new FabricItemSettings()));
 
     public static final Item BLOODY_WATER = registryHelper.register("bloody_water",new Item(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE)));
     //TODO faire en sorte que ce soit un alcool qui donne de la vie quand on est un vampire
     public static final Item BLOOD_BOTTLE = registryHelper.register("blood_bottle",new BloodBottle(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(ModEffects.INSANITY,300,1)).setVampireEffects(new StatusEffectInstance(StatusEffects.INSTANT_DAMAGE)));
+    public static final Item SOUL_BOTTLE = registryHelper.register("soul_bottle",new Item(new FabricItemSettings()));
     public static final Item CURSED_BLOOD_BOTTLE = registryHelper.register("cursed_blood_bottle",new BloodBottle(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(ModEffects.INSANITY,300,2),new StatusEffectInstance(StatusEffects.WITHER,300,2)).setVampireEffects(new StatusEffectInstance(StatusEffects.INSTANT_DAMAGE,0,5),new StatusEffectInstance(StatusEffects.STRENGTH,6000,1)));
     public static final Item FERMENTED_WATER = registryHelper.register("fermented_water",new Alcohol(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(StatusEffects.HUNGER,200,0)));
     public static final Item SOBRIETY_POTION = registryHelper.register("sobriety_potion",new Alcohol(new FabricItemSettings().recipeRemainder(Items.GLASS_BOTTLE),new StatusEffectInstance(ModEffects.SOBRIETY,1200,0)));

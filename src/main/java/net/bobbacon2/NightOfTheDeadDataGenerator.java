@@ -49,6 +49,8 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(ModBlocks.REFINERY);
 			addDrop(ModBlocks.BLOOD_POOL);
 			addDrop(ModBlocks.BREWING_BARREL);
+			addDrop(ModBlocks.ANCIENT_PEDESTAL);
+			addDropWithSilkTouch(ModBlocks.SOUL_WORM_TUMOR);
 		}
 	}
 	public static class MyTagGenerator extends FabricTagProvider<Item> {
@@ -152,6 +154,11 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 					.criterion(FabricRecipeProvider.hasItem(Items.SCULK_CATALYST),
 							FabricRecipeProvider.conditionsFromItem(Items.SCULK_CATALYST))
 					.offerTo(consumer);
+			ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.ManaExtractor).pattern("iii").pattern(" cr").pattern("iii")
+					.input('i',Items.IRON_INGOT).input('c', net.bobbacon.item.ModItems.CryingDiamond).input('r',Items.REDSTONE)
+					.criterion(FabricRecipeProvider.hasItem(net.bobbacon.item.ModItems.CryingDiamond),
+							FabricRecipeProvider.conditionsFromItem(net.bobbacon.item.ModItems.CryingDiamond))
+					.offerTo(consumer);
 		}
 
 
@@ -163,6 +170,7 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
+			blockStateModelGenerator.registerSimpleState(ModBlocks.SOUL_WORM_TUMOR);
 		}
 
 		@Override
@@ -186,8 +194,8 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(ModItems.VAMPIRES_DRINK,Models.GENERATED);
 			itemModelGenerator.register(ModItems.ARTIFICIAL_MANA,Models.GENERATED);
 			itemModelGenerator.register(ModItems.VAMPIRITE,Models.GENERATED);
+			itemModelGenerator.register(ModItems.SOUL_BOTTLE,Models.GENERATED);
 			itemModelGenerator.register(ModItems.SACRIFICIAL_DAGGER,Models.HANDHELD);
-
 		}
 	}
 	private static class ModEnglishLangProvider extends FabricLanguageProvider {

@@ -4,8 +4,8 @@
 	"parent": "block/block",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "block/soul_worm_larva",
-		"particle": "block/soul_worm_larva"
+		"0": "night-of-the-dead:block/soul_worm_larva",
+		"particle": "night-of-the-dead:block/soul_worm_larva"
 	},
 	"elements": [
 		{
@@ -35,8 +35,8 @@
 			}
 		},
 		{
-			"from": [-3, 0, -3],
-			"to": [18, 0, 19],
+			"from": [-3, 0.02, -3],
+			"to": [18, 0.02, 19],
 			"faces": {
 				"north": {"uv": [0, 0, 5.25, 0], "texture": "#0"},
 				"east": {"uv": [0, 0, 5.5, 0], "texture": "#0"},

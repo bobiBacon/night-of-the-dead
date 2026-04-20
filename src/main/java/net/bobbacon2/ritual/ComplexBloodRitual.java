@@ -94,8 +94,8 @@ public class ComplexBloodRitual extends BasicBloodRitual{
             if (i%40==0){
                 for (BlockPos pos:BlockPos.iterate(center.west(2).south(2),center.north(2).east(2))){
                     BlockState blockState = world.getBlockState(pos);
-                    if (blockState.getBlock() instanceof AncienPedestal block&&block.isCharged(blockState)){
-                        block.consume(world,pos,blockState);
+                    if (blockState.getBlock() instanceof AncienPedestal block&&block.isFullyCharged(blockState)){
+                        block.consumeAll(world,pos,blockState);
                         return true;
                     }
                 }

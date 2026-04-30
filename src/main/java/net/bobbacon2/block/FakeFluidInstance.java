@@ -1,7 +1,7 @@
 package net.bobbacon2.block;
 
 public class FakeFluidInstance {
-    public final FakeFluid fluid;
+    public FakeFluid fluid;
     public float amount;
 
     public FakeFluidInstance(FakeFluid fluid,float amount) {
@@ -11,6 +11,12 @@ public class FakeFluidInstance {
     public FakeFluidInstance(FakeFluidInstance fakeFluidInstance) {
         this.fluid = fakeFluidInstance.fluid;
         this.amount=fakeFluidInstance.amount;
+    }
+    public boolean isEmpty(){
+        return fluid==FakeFluids.EMPTY||amount<=0;
+    }
+    public void transform(FakeFluid newFluid){
+        fluid=newFluid;
     }
 
     public static FakeFluidInstance combine(FakeFluidInstance f,FakeFluidInstance f2){

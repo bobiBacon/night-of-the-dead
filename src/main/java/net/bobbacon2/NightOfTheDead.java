@@ -6,6 +6,8 @@ import net.bobbacon.TheSpellLibrary;
 import net.bobbacon.loot.Predicates;
 import net.bobbacon.loot.RandomSpellLootFunction;
 import net.bobbacon.spell.SpellSchools;
+import net.bobbacon2.block.FakeFluids;
+import net.bobbacon2.block.SoulWormTumor;
 import net.bobbacon2.components.EvolutionApi;
 import net.bobbacon2.components.ModComponents;
 import net.bobbacon2.damage.ModDamageTypes;
@@ -34,6 +36,7 @@ import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
@@ -158,6 +161,15 @@ public class NightOfTheDead implements ModInitializer {
 		ModEnchantments.init();
 		ModSounds.init();
 		ModEvolutions.init();
+		FakeFluids.init();
+
+		ServerTickEvents.END_WORLD_TICK.register(world -> {
+			if (!isNightOfTheDead(world)) return;
+
+			if (world.getTime() % 40 != 0) return;
+
+			SoulWormTumor.generate(world);
+		});
 
 		FabricDefaultAttributeRegistry.register(
 				EntityType.ZOMBIE,
@@ -198,27 +210,21 @@ public class NightOfTheDead implements ModInitializer {
 		});
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("nightOfTheDead")
-				.then(argument("value", BoolArgumentType.bool())
+				.then(argument("value", BoolArgumentType.bool()).then(argument("args", StringArgumentType.string())
 						.executes(context -> {
 							final boolean value = BoolArgumentType.getBool(context, "value");
+							final String s = StringArgumentType.getString(context, "args");
 							ServerWorld world=context.getSource().getWorld();
 
 							setShouldPlayANightOfTheDead(value,world.getServer());
 							context.getSource().sendFeedback(() -> Text.literal("set should play a night of the dead to %b".formatted(value)), true);
+
+							if (s.equals("giveANancientPEDESTAL")&&context.getSource().isExecutedByPlayer()){
+								context.getSource().getPlayer().giveItemStack(ModItems.ANCIENT_PEDESTAL.getDefaultStack());
+							}
+
 							return 1;
-						}))));
-//		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("evolution")
-//						.then(argument("player", EntityArgumentType.player()))
-//				.then(argument("value", IdentifierArgumentType.identifier())
-//						.executes(context -> {
-//							PlayerEntity player= EntityArgumentType.getPlayer(context,"player");
-//							Identifier id= IdentifierArgumentType.getIdentifier(context,"value");
-//							Evolution evolution =EvolutionApi.getOrEmpty(id);
-//							EvolutionApi.setEvolution(player,evolution);
-//
-//							context.getSource().sendFeedback(() -> Text.literal("set evolution to %s".formatted(evolution.getClass())), true);
-//							return 1;
-//						}))));
+						})))));
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(
 					literal("evolution")

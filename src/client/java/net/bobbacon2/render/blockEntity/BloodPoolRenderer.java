@@ -1,5 +1,6 @@
 package net.bobbacon2.render.blockEntity;
 
+import net.bobbacon.render.RenderUtils;
 import net.bobbacon2.entity.block_entity.BloodPool;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
@@ -41,10 +42,15 @@ public class BloodPoolRenderer implements BlockEntityRenderer<BloodPool> {
 
         // Quad (surface du sang)
         Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
-        buffer.vertex(matrix, 2f/16, height, 2f/16).color(120, 0, 0, 255).texture(sprite.getMinU(), sprite.getMinV()).light(light).normal(normalMatrix,0,1,0).next();
-        buffer.vertex(matrix, 2f/16, height, 14f/16).color(120, 0, 0, 255).texture(sprite.getMinU(), sprite.getMaxV()).light(light).normal(normalMatrix,0,1,0).next();
-        buffer.vertex(matrix, 14f/16, height, 14f/16).color(120, 0, 0, 255).texture(sprite.getMaxU(),  sprite.getMaxV()).light(light).normal(normalMatrix,0,1,0).next();
-        buffer.vertex(matrix, 14f/16, height, 2f/16).color(120, 0, 0, 255).texture(sprite.getMaxU(),  sprite.getMinV()).light(light).normal(normalMatrix,0,1,0).next();
+        int color=entity.getColor();
+        int red=RenderUtils.getRedFromHexa(color);
+        int green=RenderUtils.getGreenFromHexa(color);
+        int blue=RenderUtils.getBlueFromHexa(color);
+
+        buffer.vertex(matrix, 2f/16, height, 2f/16).color(red, green, blue, 255).texture(sprite.getMinU(), sprite.getMinV()).light(light).normal(normalMatrix,0,1,0).next();
+        buffer.vertex(matrix, 2f/16, height, 14f/16).color(red, green, blue, 255).texture(sprite.getMinU(), sprite.getMaxV()).light(light).normal(normalMatrix,0,1,0).next();
+        buffer.vertex(matrix, 14f/16, height, 14f/16).color(red, green, blue, 255).texture(sprite.getMaxU(),  sprite.getMaxV()).light(light).normal(normalMatrix,0,1,0).next();
+        buffer.vertex(matrix, 14f/16, height, 2f/16).color(red, green, blue, 255).texture(sprite.getMaxU(),  sprite.getMinV()).light(light).normal(normalMatrix,0,1,0).next();
 
         matrices.pop();
     }

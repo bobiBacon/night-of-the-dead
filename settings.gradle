@@ -8,3 +8,10 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
+includeBuild("../the-spell-library"){
+	dependencySubstitution {
+		substitute module("net.bobbacon:the-spell-library")
+//				use project(":")
+
+	}
+}

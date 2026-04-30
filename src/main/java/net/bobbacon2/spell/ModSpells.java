@@ -19,6 +19,7 @@ public class ModSpells {
     public static final SpellDef<?> COMPLEX_BLOOD_RITUAL_SPELL = Registry.register(SpellRegistry.getSpellRegistry(), Identifier.of(NightOfTheDead.MOD_ID,"complex_blood_ritual"),new SpellDef<>(new ComplexBloodRitualSpell(), SpellSchools.Necromancy,20).useTinted2dSymbol(0xFF0000));
     public static final SpellDef<?> Punishment = registryHelper.register("punishment",new SpellDef<>(new PunishmentSpell(8,40),SpellSchools.Divine,40).setCooldown(200).useTinted2dSymbol(0xFFB900).setCastTime(20).customSymbolPath(new Identifier("minecraft","item/golden_sword")).withRenderer());
     public static final SpellDef<?> Exorcism = registryHelper.register("exorcism",new SpellDef<>(new InstantDamageSpell(15,2, ModDamageTypes.Holy, ParticleTypes.ELECTRIC_SPARK),SpellSchools.Divine,20).setCooldown(40).useTinted2dSymbol(0x751100).setCastTime(20));
+    public static final SpellDef<?> Vampire = registryHelper.register("vampire",new SpellDef<>(new VampiresRitualSpell(),SpellSchools.Necromancy,20).useTinted2dSymbol(0xFF0000));
 
     public static void init(){
 

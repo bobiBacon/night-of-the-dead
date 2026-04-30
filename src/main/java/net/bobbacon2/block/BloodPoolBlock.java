@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public class BloodPoolBlock extends BlockWithEntity {
+public class BloodPoolBlock extends BlockWithEntity implements FakeFluidReceiver{
     protected final static VoxelShape shape1= Block.createCuboidShape(3,0,3,13,1,13);
     protected final static VoxelShape shape2= Block.createCuboidShape(2,1,2,14,2,14);
     protected final static VoxelShape shape3= Block.createCuboidShape(1,2,1,15,6,15);
@@ -49,5 +49,31 @@ public class BloodPoolBlock extends BlockWithEntity {
             return be.onUse(state, world, pos,  player,  hand,  hit);
         }
         return ActionResult.PASS;
+    }
+
+    @Override
+    public void receiveFluid(FakeFluidInstance fakeFluidInstance,World world,BlockPos pos) {
+        BlockEntity blockEntity= world.getBlockEntity(pos);
+        if (blockEntity instanceof BloodPool pool){
+            pool.receiveFluid(fakeFluidInstance,world,pos);
+        }
+    }
+
+    @Override
+    public boolean canReceive(FakeFluidInstance fakeFluidInstance, World world, BlockPos pos) {
+        BlockEntity blockEntity= world.getBlockEntity(pos);
+        if (blockEntity instanceof BloodPool pool){
+            return pool.canReceive(fakeFluidInstance,world,pos);
+        };
+        return false;
+    }
+
+    @Override
+    public FakeFluidInstance getFluid(World world, BlockPos pos) {
+        BlockEntity blockEntity= world.getBlockEntity(pos);
+        if (blockEntity instanceof BloodPool pool){
+            return pool.getFluid(world,pos);
+        }
+        return new FakeFluidInstance(FakeFluids.EMPTY,0);
     }
 }

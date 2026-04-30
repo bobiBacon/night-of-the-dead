@@ -1,24 +1,15 @@
 package net.bobbacon2.entity.block_entity;
 
-import net.bobbacon.TheSpellLibraryDataGenerator;
 import net.bobbacon.ritual.Ritual;
 import net.bobbacon2.NightOfTheDeadDataGenerator;
 import net.bobbacon2.enchants.ModEnchantments;
-import net.bobbacon2.ritual.CorruptionRitual;
-import net.bobbacon.ritual.RitualManager;
-import net.bobbacon2.item.ModItems;
-import net.bobbacon2.ritual.CorruptionRitual;
-import net.bobbacon2.spell.ItemAffectingRitual;
-import net.minecraft.block.Block;
+import net.bobbacon2.ritual.AltarRitual;
+import net.bobbacon2.ritual.ItemAffectingRitual;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
@@ -30,7 +21,6 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -49,8 +39,8 @@ public class AltarBE extends BlockEntity {
         super(ModBE.ALTAR_BE, pos, state);
     }
 
-    public boolean tryCastRitual(ItemAffectingRitual itemAffectingRitual){
-        if (itemAffectingRitual instanceof Ritual ritual && itemAffectingRitual.canAffect(getStack()) &&ritual.tryStart()){
+    public boolean tryCastRitual(AltarRitual ritual){
+        if (ritual.tryStart()){
             ritualId=ritual.id;
             markDirty();
             return true;
@@ -58,7 +48,7 @@ public class AltarBE extends BlockEntity {
         return false;
     }
     public boolean canCastRitual(Ritual ritual){
-        return ritual.hasRitualSite();
+        return ritual.canStart();
     }
 
     @Override

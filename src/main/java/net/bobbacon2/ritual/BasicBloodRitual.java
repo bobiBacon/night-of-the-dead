@@ -2,12 +2,10 @@ package net.bobbacon2.ritual;
 
 import net.bobbacon.ritual.Phase;
 import net.bobbacon.ritual.Ritual;
-import net.bobbacon2.NightOfTheDead;
 import net.bobbacon2.NightOfTheDeadDataGenerator;
 import net.bobbacon2.block.ModBlocks;
 import net.bobbacon2.entity.block_entity.BloodPool;
 import net.bobbacon2.item.ModItems;
-import net.bobbacon2.spell.ItemAffectingRitual;
 import net.bobbacon2.status_effect.ModEffects;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -18,13 +16,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class BasicBloodRitual extends AltarRitual implements ItemAffectingRitual {
+public class BasicBloodRitual extends  ItemAffectingRitual {
     public BasicBloodRitual(BlockPos center, World world) {
         super(center, world);
     }
@@ -46,15 +43,14 @@ public class BasicBloodRitual extends AltarRitual implements ItemAffectingRitual
     public boolean hasRitualSite() {
 
         boolean ground=true;
-        for (int i = -2; i <3 ; i++) {
-            for (int j = -2; j < 3; j++) {
-                BlockPos pos= center.down().east(i).north(j);
-                if (!world.getBlockState(pos).isOf(Blocks.DEEPSLATE_TILES)){
-                    ground=false;
-                }
-            }
-        }
-        boolean altar= getAltar().isOf(ModBlocks.ALTAR);
+//        for (int i = -2; i <3 ; i++) {
+//            for (int j = -2; j < 3; j++) {
+//                BlockPos pos= center.down().east(i).north(j);
+//                if (!world.getBlockState(pos).isOf(Blocks.DEEPSLATE_TILES)){
+//                    ground=false;
+//                }
+//            }
+//        }
         int pillarCount=0;
         if (isPillar(center.north(2).east(2)))pillarCount++;
         if (isPillar(center.north(2).west(2)))pillarCount++;
@@ -71,7 +67,7 @@ public class BasicBloodRitual extends AltarRitual implements ItemAffectingRitual
 
 
 
-        return altar&&ground&&pillarCount>=2&&hasWall&& searchInArea(Blocks.SKELETON_SKULL)>=2 && searchInArea(Blocks.CANDLE)>=2 && poolCount>=2;
+        return pillarCount>=2&&hasWall&& searchInArea(Blocks.SKELETON_SKULL)>=2 && searchInArea(Blocks.CANDLE)>=2 && poolCount>=2;
     }
     protected ArrayList<BloodPool> getPools(){
         ArrayList<BloodPool> pools= new ArrayList<>();

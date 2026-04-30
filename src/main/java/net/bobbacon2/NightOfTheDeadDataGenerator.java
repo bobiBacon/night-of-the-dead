@@ -50,6 +50,7 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(ModBlocks.BLOOD_POOL);
 			addDrop(ModBlocks.BREWING_BARREL);
 			addDrop(ModBlocks.ANCIENT_PEDESTAL);
+			addDrop(ModBlocks.ManaExtractor);
 			addDropWithSilkTouch(ModBlocks.SOUL_WORM_TUMOR);
 		}
 	}
@@ -61,6 +62,7 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 		public static final TagKey<Item> CAN_USE_IN_BLOOD_RITUAL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "can_blood_ritual"));
 //		public static final TagKey<Item> CAN_USE_IN_COMPLEX_BLOOD_RITUAL = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "can_complex_blood_ritual"));
 		public static final TagKey<Item> HOOKABLE = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "hookable"));
+		public static final TagKey<Item> SOLUBLE = TagKey.of(RegistryKeys.ITEM, Identifier.of(NightOfTheDead.MOD_ID, "soluble"));
 		public static final TagKey<Block> FIRE = TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft","fire"));
 
 		public MyTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
@@ -86,6 +88,8 @@ public class NightOfTheDeadDataGenerator implements DataGeneratorEntrypoint {
 			getOrCreateTagBuilder(ALTAR_PLACEABLE)
 					.addTag(CAN_USE_IN_BLOOD_RITUAL)
 					.addTag(CORRUPTIBLE);
+			getOrCreateTagBuilder(SOLUBLE)
+					.add(ModItems.VAMPIRITE);
 //			getTagBuilder(FIRE)
 //					.
 //			getOrCreateTagBuilder(HOOKABLE)

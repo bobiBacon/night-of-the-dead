@@ -5,6 +5,7 @@ import net.bobbacon.spell.Spell;
 import net.bobbacon.spell.SpellDef;
 import net.bobbacon2.block.ModBlocks;
 import net.bobbacon2.entity.block_entity.AltarBE;
+import net.bobbacon2.ritual.AltarRitual;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -75,5 +76,5 @@ public abstract class AltarRitualSpell extends Spell {
         }
         return b;
     }
-    public abstract ItemAffectingRitual newRitual(BlockPos center);
+    public abstract AltarRitual newRitual(BlockPos center);
 }

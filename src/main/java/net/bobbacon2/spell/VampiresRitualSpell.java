@@ -2,31 +2,32 @@ package net.bobbacon2.spell;
 
 import net.bobbacon.spell.Spell;
 import net.bobbacon.spell.SpellDef;
-import net.bobbacon2.ritual.CorruptionRitual;
+import net.bobbacon2.ritual.AltarRitual;
 import net.bobbacon2.ritual.ItemAffectingRitual;
+import net.bobbacon2.ritual.VampiresRitual;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class CorruptionRitualSpell extends AltarRitualSpell {
+public class VampiresRitualSpell extends AltarRitualSpell {
 
 
-    public CorruptionRitualSpell(SpellDef<? extends Spell> type, World world, LivingEntity user, CorruptionRitualSpell template) {
+    public VampiresRitualSpell(SpellDef<? extends Spell> type, World world, LivingEntity user, VampiresRitualSpell template) {
         super(type, world,user,template);
     }
 
-    public CorruptionRitualSpell(){
+    public VampiresRitualSpell(){
         super();
     }
 
     @Override
     public Spell createFromTemplate(SpellDef<? extends Spell> type, World world, LivingEntity user) {
-        return new CorruptionRitualSpell(type,world,user,this);
+        return new VampiresRitualSpell(type,world,user,this);
     }
 
     @Override
-    public ItemAffectingRitual newRitual(BlockPos center) {
-        return new CorruptionRitual(center,world);
+    public AltarRitual newRitual(BlockPos center) {
+        return new VampiresRitual(center,world);
     }
 
 

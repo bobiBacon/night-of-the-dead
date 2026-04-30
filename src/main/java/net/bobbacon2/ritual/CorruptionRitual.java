@@ -9,7 +9,6 @@ import net.bobbacon2.entity.MetalSupport;
 import net.bobbacon2.item.ModItems;
 import net.bobbacon.ritual.Phase;
 import net.bobbacon.ritual.Ritual;
-import net.bobbacon2.spell.ItemAffectingRitual;
 import net.bobbacon2.status_effect.ModEffects;
 import net.bobbacon2.utils.GeometryUtils;
 import net.minecraft.block.AbstractFireBlock;
@@ -41,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CorruptionRitual extends AltarRitual implements ItemAffectingRitual {
+public class CorruptionRitual extends ItemAffectingRitual {
     BlockPos pillar1;
     BlockPos pillar2;
     BlockPos pillar3;
